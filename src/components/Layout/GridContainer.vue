@@ -14,7 +14,10 @@ import {
     <div class="common-layout">
         <n-space vertical size="large">
             <n-layout>
-                <n-layout-header>颐和园路 </n-layout-header>
+                <n-layout-header>
+                    颐和园路 
+                    <div class="header"></div>
+                </n-layout-header>
                 <!-- <n-layout-content content-style="padding: 24px;"> -->
                 <n-layout-content>
                     <n-grid x-gap="12" :cols="24">
