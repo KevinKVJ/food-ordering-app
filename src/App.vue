@@ -8,7 +8,7 @@ import { RouterView } from "vue-router";
 
     
 <template>
-    <main-container/>
+    <!-- <main-container/> -->
     <router-view></router-view>
 </template>
 

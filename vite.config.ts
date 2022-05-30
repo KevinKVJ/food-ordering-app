@@ -16,6 +16,9 @@ export default defineConfig({
         }),
         Components({
             resolvers: [ElementPlusResolver(), NaiveUiResolver()],
+            // exclude:["./src/components/**/*"]
+            // dirs: ['src/components'],
+            dts: true,
         }),
     ],
     resolve: {
