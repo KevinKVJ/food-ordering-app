@@ -9,11 +9,33 @@ import {
     WineOutline as WineIcon,
     Notifications as NotiIcon,
     EllipsisVertical as ElliIcon,
+    PersonCircleOutline as UserIcon,
+    Pencil as EditIcon,
+    LogOutOutline as LogoutIcon,
 } from '@vicons/ionicons5';
+import ProductManagement from '@/views/subpages/ProductManagement.vue';
 
 function renderIcon(icon: Component) {
     return () => h(NIcon, null, { default: () => h(icon) });
 }
+
+const dropdownOptions = [
+    {
+        label: '用户资料',
+        key: 'profile',
+        icon: renderIcon(UserIcon),
+    },
+    {
+        label: '编辑用户资料',
+        key: 'editProfile',
+        icon: renderIcon(EditIcon),
+    },
+    {
+        label: '退出登录',
+        key: 'logout',
+        icon: renderIcon(LogoutIcon),
+    },
+];
 
 const menuOptions: MenuOption[] = [
     {
@@ -259,28 +281,33 @@ const layoutSiderStyle = reactive<CSSProperties>({
 </script>
 
 <style lang="scss" scoped>
-.headerstyle{
-    /* display: flex; */
-    width: 100%;
-    padding: 20px;
-}
-.client-icons {
-    margin: 0 auto;
-    /* width: 100%; */
-
+.headerstyle {
     display: flex;
-    /* flex: 0 0 0%; */
-    align-items: center;
-    /* justify-content: center; */
-    /* justify-self: flex-end; */
-    /* text-align: center; */
-    > div{
-        /* margin-left: 10px; */
+    width: 100%;
+    padding: 10px 0;
+    /* padding-right: 50px; */
+    .client-icons {
+        margin-left: auto;
+        margin-right: 20px;
+        width: fit-content;
         display: flex;
+        /* flex: 0 0 0%; */
         align-items: center;
-        /* margin:0 auto; */
+        /* justify-content: center; */
+        /* justify-self: flex-end; */
+        /* text-align: center; */
+        > div {
+            margin-left: 6px;
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    .main-logo {
+        margin-left: 20px;
     }
 }
+
 .common-layout {
     height: 100%;
 }
@@ -294,6 +321,8 @@ const layoutSiderStyle = reactive<CSSProperties>({
 
 .contents {
     margin-left: 20px;
+    /* padding: 8px; */
+    background-color: transparent;
 }
 </style>
 
@@ -303,16 +332,20 @@ const layoutSiderStyle = reactive<CSSProperties>({
             <!-- <n-switch v-model:value="collapsed" /> -->
             <n-layout-header bordered>
                 <div class="headerstyle">
-                    <!-- <div class="main-logo"></div> -->
+                    <div class="main-logo">
+                        <n-card title="卡片" size="small"></n-card>
+                    </div>
                     <div class="client-icons">
                         <div>
-                            <n-icon size="40" color="#dbdcdc" :component="NotiIcon" />
+                            <n-icon size="30" color="#dbdcdc" :component="NotiIcon" />
                         </div>
                         <div>
                             <n-avatar round :size="48" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                         </div>
                         <div>
-                            <n-icon size="40" color="#dbdcdc" :component="ElliIcon" />
+                            <n-dropdown :options="dropdownOptions" trigger="click">
+                                <n-icon size="30" color="#dbdcdc" :component="ElliIcon" />
+                            </n-dropdown>
                         </div>
                     </div>
                 </div>
@@ -347,11 +380,12 @@ const layoutSiderStyle = reactive<CSSProperties>({
                         :collapsed-width="64"
                         :collapsed-icon-size="22"
                         :options="menuOptions"
+                        accordion
                     />
                 </n-layout-sider>
 
                 <n-layout-content class="contents">
-                    <span>内容</span>
+                    <product-management/>
                 </n-layout-content>
             </n-layout-content>
         </n-layout>
