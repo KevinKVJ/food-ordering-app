@@ -285,6 +285,7 @@ const layoutSiderStyle = reactive<CSSProperties>({
     display: flex;
     width: 100%;
     padding: 10px 0;
+
     /* padding-right: 50px; */
     .client-icons {
         margin-left: auto;
@@ -293,6 +294,7 @@ const layoutSiderStyle = reactive<CSSProperties>({
         display: flex;
         /* flex: 0 0 0%; */
         align-items: center;
+
         /* justify-content: center; */
         /* justify-self: flex-end; */
         /* text-align: center; */
@@ -311,9 +313,11 @@ const layoutSiderStyle = reactive<CSSProperties>({
 .common-layout {
     height: 100%;
 }
+
 .n-layout-sider {
     background-color: #fff;
 }
+
 .layout-contents {
     background-color: #f5f7fb;
     /* max-width: 1200px */
@@ -384,9 +388,9 @@ const layoutSiderStyle = reactive<CSSProperties>({
                     />
                 </n-layout-sider>
 
-                <n-layout-content class="contents">
-                    <product-management/>
-                </n-layout-content>
+                <NLayoutContent class="contents">
+                    <product-management />
+                </NLayoutContent>
             </n-layout-content>
         </n-layout>
         <!-- <n-layout> -->
