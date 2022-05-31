@@ -1,12 +1,11 @@
-<script setup lang="ts">
-
-</script>
+<!-- <script setup lang="tsx">
+</script> -->
 
 <template>
-    <n-layout-container></n-layout-container>
+    <NLayoutContainer></NLayoutContainer>
 </template>
 
-<style lang="scss" scoped>
+<!-- <style lang="scss" scoped>
 
-</style>
+</style> -->
 

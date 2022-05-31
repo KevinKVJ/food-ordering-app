@@ -16,11 +16,11 @@
     "skipLibCheck": true,
     "baseUrl": "./",
     "paths":{
-      "@": ["Frontend/src"],
-      "@/*": ["Frontend/src/*"],
+      "@": ["src"],
+      "@/*": ["src/*"],
     },
     "types": ["naive-ui/volar"],
   },
-  "include": ["Frontend/src/**/*.ts", "Frontend/src/**/*.d.ts", "Frontend/src/**/*.tsx", "Frontend/src/**/*.vue","./components.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue","./components.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
