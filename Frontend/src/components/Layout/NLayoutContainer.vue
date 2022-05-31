@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { CSSProperties, h, ref, reactive } from 'vue';
 import type { Component } from 'vue';
 import { NIcon } from 'naive-ui';
@@ -16,8 +16,13 @@ import {
 import ProductManagement from '@/views/subpages/ProductManagement.vue';
 
 function renderIcon(icon: Component) {
-    return () => h(NIcon, null, { default: () => h(icon) });
+    // return () => h(NIcon,null, { default: () => h(icon) });
+    // return () => h(NIcon, h(icon));
+    // const Icon = h(icon);
+    return () => <NIcon component={icon}></NIcon>
 }
+
+const getLabel = (label:string) => () => <span style={{fontSize:'15px',letterSpacing:'0.3px'}}>{label}</span>
 
 const dropdownOptions = [
     {
@@ -39,28 +44,43 @@ const dropdownOptions = [
 
 const menuOptions: MenuOption[] = [
     {
-        label: '且听风吟',
-        key: 'hear-the-wind-sing',
+        label: getLabel('Products'),
+        key: 'products',
         icon: renderIcon(BookIcon),
     },
     {
-        label: '1973年的弹珠玩具',
-        key: 'pinball-1973',
+        label: getLabel('Discounts'),
+        key: 'discounts',
         icon: renderIcon(BookIcon),
-        disabled: true,
-        children: [
-            {
-                label: '鼠',
-                key: 'rat',
-            },
-        ],
     },
     {
-        label: '寻羊冒险记',
-        key: 'a-wild-sheep-chase',
-        disabled: true,
+        label: getLabel('Orders'),
+        key: 'orders',
         icon: renderIcon(BookIcon),
     },
+    {
+        label: getLabel('Customer Reviews'),
+        key: 'customer-reviews',
+        icon: renderIcon(BookIcon),
+    },
+    // {
+    //     label: '1973年的弹珠玩具',
+    //     key: 'pinball-1973',
+    //     icon: renderIcon(BookIcon),
+    //     disabled: true,
+    //     children: [
+    //         {
+    //             label: '鼠',
+    //             key: 'rat',
+    //         },
+    //     ],
+    // },
+    // {
+    //     label: '寻羊冒险记',
+    //     key: 'a-wild-sheep-chase',
+    //     disabled: true,
+    //     icon: renderIcon(BookIcon),
+    // },
     {
         label: '舞，舞，舞',
         key: 'dance-dance-dance1',

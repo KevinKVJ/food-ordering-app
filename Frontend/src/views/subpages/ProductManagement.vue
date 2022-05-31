@@ -11,7 +11,7 @@ const columns: DataTableColumns = [
     {
         title: 'Image',
         key: 'image',
-        width: 30,
+        width: 50,
         fixed: 'left',
         render() {
             return <n-avatar bordered size={48} src='https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg' />;
@@ -26,7 +26,7 @@ const columns: DataTableColumns = [
             // return h('span', ['row ', index]);
             return <span>{`row ${index}`}</span>;
         },
-        ellipsis:true
+        ellipsis: true,
     },
     {
         title: 'Price',
@@ -91,13 +91,36 @@ const data = reactive(
 <template>
     <div>
         <n-layout has-sider siderPlacement="right" position="absolute">
-            <n-layout embedded class="contents-style">
-                <!-- <n-layout-header>颐和园路</n-layout-header>
-                <n-layout-content content-style="padding: 24px;"> 平山道 </n-layout-content>
-                <n-layout-footer>成府路</n-layout-footer> -->
-                <n-data-table :columns="columns" :data="data" :pagination="{ pageSize: 20 }" :max-height="250" :scroll-x="1800" />
+            <!-- :content-style="{display:'flex',flexFlow:'column nowrap'}" -->
+            <n-layout embedded class="contents-style" :content-style="{ display: 'flex', flexFlow: 'column nowrap' }">
+                <n-layout-header :style="{ backgroundColor: 'transparent' }">
+                    <h1>Products Management</h1>
+                    <n-space>
+                        <n-button type="info">Oops!</n-button>
+                        <n-button type="info">Oops!</n-button>
+                        <n-button type="info">Oops!</n-button>
+                        <n-button type="error">Delete</n-button>
+                    </n-space>
+                </n-layout-header>
+                <n-layout-content :style="{ backgroundColor: 'transparent', flex: 1 }">
+                    <n-data-table
+                        :columns="columns"
+                        :data="data"
+                        :pagination="{ pageSize: 20 }"
+                        :style="{ height: '100%' }"
+                        :scroll-x="1800"
+                        flex-height
+                    />
+                </n-layout-content>
+                <!-- <n-layout-footer>成府路</n-layout-footer> -->
+                <!-- :max-height="250"  height: `100%`-->
             </n-layout>
-            <n-layout-sider content-style="padding: 24px;" show-trigger="bar">
+            <n-layout-sider
+                content-style="padding: 24px;"
+                show-trigger
+                :style="{ backgroundColor: 'transparent' }"
+                class="category-sider"
+            >
                 <categories-list />
             </n-layout-sider>
         </n-layout>
@@ -121,5 +144,14 @@ const data = reactive(
 
 .n-layout-content {
     background: rgba(128, 128, 128, 0.4);
+}
+/* :deep(.n-layout-toggle-bar) */
+.n-layout-sider {
+    :deep(.n-layout-toggle-bar) {
+        top: 100px;
+    }
+    :deep(.n-layout-toggle-button) {
+        top: 100px;
+    }
 }
 </style>
