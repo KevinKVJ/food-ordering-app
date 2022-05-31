@@ -1,51 +1,77 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { h, reactive } from 'vue';
-import { DataTableColumns } from 'naive-ui';
+import type { DataTableColumns, PaginationProps } from 'naive-ui';
 
-const columns:DataTableColumns = [
+const columns: DataTableColumns = [
     {
         type: 'selection',
-        // fixed: 'left',
+        width: 10,
+        fixed: 'left',
+    },
+    {
+        title: 'Image',
+        key: 'image',
+        width: 30,
+        fixed: 'left',
+        render() {
+            return <n-avatar bordered size={48} src='https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg' />;
+        },
     },
     {
         title: 'Name',
-        key: 'name',
-        width: 200,
-        // fixed: 'left',
-    },
-    {
-        title: 'Age',
-        key: 'age',
-        width: 100,
-        // fixed: 'left',
-    },
-    {
-        title: 'Row',
-        key: 'row',
+        key: 'name1',
+        width: 30,
+        fixed: 'left',
         render(row: any, index: number) {
-            return h('span', ['row ', index]);
+            // return h('span', ['row ', index]);
+            return <span>{`row ${index}`}</span>;
+        },
+        ellipsis:true
+    },
+    {
+        title: 'Price',
+        key: 'price',
+        width: 50,
+        // fixed: 'left',
+        render(row: any, index: number) {
+            // return h('span', ['row ', index]);
+            return <span>{`row ${index}`}</span>;
         },
     },
     {
-        title: 'Row1',
-        key: 'row1',
+        title: 'Monthly sales',
+        key: 'monthlySales',
         render(row: any, index: number) {
-            return h('span', ['row ', index]);
+            // return h('span', ['row ', index]);
+            return <span>{`row ${index}`}</span>;
+        },
+        width: 50,
+    },
+    {
+        title: 'Options',
+        key: 'options',
+        width: 80,
+        render(row: any, index: number) {
+            return <span>{`row ${index}`}</span>;
         },
     },
     {
-        title: 'Row2',
-        key: 'row2',
+        title: 'Inventory',
+        key: 'inventory',
         render(row: any, index: number) {
-            return h('span', ['row ', index]);
+            return <span>{`row ${index}`}</span>;
         },
         width: 100,
         // fixed: 'right',
     },
     {
-        title: 'Address',
-        key: 'address',
-        width: 200,
+        title: 'Discount',
+        key: 'discount',
+        width: 100,
+        render(row: any, index: number) {
+            // return h('span', ['row ', index]);
+            return <span>{index}</span>;
+        },
         // fixed: 'right',
     },
 ];
@@ -59,7 +85,7 @@ const data = reactive(
     }))
 );
 
-const pagination = { pageSize: 20 };
+// const pagination:PaginationProps = { pageSize: 20 };
 </script>
 
 <template>
@@ -69,16 +95,17 @@ const pagination = { pageSize: 20 };
                 <!-- <n-layout-header>颐和园路</n-layout-header>
                 <n-layout-content content-style="padding: 24px;"> 平山道 </n-layout-content>
                 <n-layout-footer>成府路</n-layout-footer> -->
-                <n-data-table :columns="columns" :data="data" :pagination="pagination" :max-height="250" :scroll-x="1800" />
+                <n-data-table :columns="columns" :data="data" :pagination="{ pageSize: 20 }" :max-height="250" :scroll-x="1800" />
             </n-layout>
-            <n-layout-sider content-style="padding: 24px;" show-trigger="bar"> 海淀桥 </n-layout-sider>
-            
+            <n-layout-sider content-style="padding: 24px;" show-trigger="bar">
+                <categories-list />
+            </n-layout-sider>
         </n-layout>
     </div>
 </template>
 
 <style lang="scss" scoped>
-.contents-style{
+.contents-style {
     padding: 30px;
 }
 
