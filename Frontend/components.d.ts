@@ -5,17 +5,17 @@ import '@vue/runtime-core'
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    CategoriesList: typeof import('./Frontend/src/components/Presentational/CategoriesList.vue')['default']
-    Container: typeof import('./Frontend/src/components/Layout/Container.vue')['default']
-    GridContainer: typeof import('./Frontend/src/components/Layout/GridContainer.vue')['default']
-    HelloWorld: typeof import('./Frontend/src/components/HelloWorld.vue')['default']
+    CategoriesList: typeof import('./src/components/Presentational/CategoriesList.vue')['default']
+    Container: typeof import('./src/components/Layout/Container.vue')['default']
+    GridContainer: typeof import('./src/components/Layout/GridContainer.vue')['default']
+    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
     NDataTable: typeof import('naive-ui')['NDataTable']
     NDropdown: typeof import('naive-ui')['NDropdown']
     NLayout: typeof import('naive-ui')['NLayout']
-    NLayoutContainer: typeof import('./Frontend/src/components/Layout/NLayoutContainer.vue')['default']
+    NLayoutContainer: typeof import('./src/components/Layout/NLayoutContainer.vue')['default']
     NLayoutContent: typeof import('naive-ui')['NLayoutContent']
     NLayoutHeader: typeof import('naive-ui')['NLayoutHeader']
     NLayoutSider: typeof import('naive-ui')['NLayoutSider']
