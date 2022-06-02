@@ -2,9 +2,9 @@ package app.ordering.food.common;
 
 public enum ResultEnum {
 
-    SUCCESS(200),
-    BAD_REQUEST(400),
-    NOT_FOUND(404);
+    SUCCESS(1000),
+    BAD_REQUEST(1001),
+    NOT_FOUND(1002);
 
     private final Integer code;
 

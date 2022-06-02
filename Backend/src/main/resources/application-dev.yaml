@@ -5,6 +5,11 @@ spring:
     username: root
     password: 123456
     type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      validation-timeout: 1500
+      connection-timeout: 2000
+      max-lifetime: 300000
+      maximum-pool-size: 50
   sql:
     init:
       data-locations: classpath:db/data.sql
