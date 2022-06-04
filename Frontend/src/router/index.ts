@@ -1,24 +1,32 @@
-import { createRouter, createWebHistory,RouteRecordRaw } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 import MainPage from '@/views/PageStyle1.vue'
-import Lululu from '@/views/lululu.vue'
+import Login from '@/views/LoginAndSignup/Login.vue'
+import Signup from '@/views/LoginAndSignup/Signup.vue'
 
-const routes:RouteRecordRaw[] = [
+const routes: RouteRecordRaw[] = [
     {
-        path:'/',
-        component:MainPage,
+        path: '/',
+        component: MainPage,
         // children:[{
         //     path:'/user',
         //     component:Lululu
         // }]
     },
-    // {
-    //     path:'/lululu',
-    //     component:Lululu,
-    //     name:'lalala'
-    //     // meta:{
-    //     //     title:"666"
-    //     // }
-    // }
+    {
+        path: '/login',
+        component: Login,
+        meta: {
+            title: "Login"
+        }
+    },
+    {
+        path: '/signup',
+        component: Signup,
+        meta: {
+            title: "Signup"
+        }
+    },
 ]
 
 const router = createRouter({
