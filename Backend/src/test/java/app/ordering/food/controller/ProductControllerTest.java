@@ -3,7 +3,6 @@ package app.ordering.food.controller;
 import app.ordering.food.service.MinioService;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.corba.se.spi.ior.ObjectKey;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +18,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,18 +29,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-class MerchantControllerTest {
+class ProductControllerTest {
 
-    private final String  baseUrl = "/api/v1/merchant";
+    private final String baseUrl = "/api/v1/product";
 
     @Resource
-    private       MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Resource
     private MinioService minioService;
 
     @Test
-    void getMerchants() throws Exception {
+    void getProducts() throws Exception {
         String url = baseUrl + "/all";
         RequestBuilder request = MockMvcRequestBuilders.get(url)
                 .accept(MediaType.APPLICATION_JSON)
@@ -56,8 +54,8 @@ class MerchantControllerTest {
     }
 
     @Test
-    void getMerchantById() throws Exception {
-        String  url        = baseUrl + "/one";
+    void getProductById() throws Exception {
+        String url = baseUrl + "/one";
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("id", 1);
         RequestBuilder request = MockMvcRequestBuilders.post(url)
@@ -76,14 +74,11 @@ class MerchantControllerTest {
     void insert() throws Exception {
         String url = baseUrl + "/insert";
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("phone", "1000000999");
-        requestBody.put("password", "password");
-        requestBody.put("name", "test");
-        requestBody.put("description", "description");
-        requestBody.put("address", "address");
-        requestBody.put("publicPhone", "publicPhone");
-        requestBody.put("publicAddress", "publicAddress");
-        requestBody.put("businessHours","businessHours");
+        requestBody.put("name", "name");
+        requestBody.put("monthly", 150);
+        requestBody.put("inventory", 120);
+        requestBody.put("discount", 20);
+        requestBody.put("price", 1050);
         RequestBuilder request = MockMvcRequestBuilders.post(url)
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .accept(MediaType.APPLICATION_JSON)
@@ -95,14 +90,9 @@ class MerchantControllerTest {
         mvcResult.getResponse().setCharacterEncoding("UTF-8");
         System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
 
-        String bucket = "food-ordering-app-merchants";
-        String filename = "4.jpg";
+        String bucket = "food-ordering-app-products";
+        String filename = "3.jpg";
         Assertions.assertTrue(minioService.existObject(bucket, filename));
         minioService.removeObject(bucket, filename);
-    }
-
-    @Test
-    void update() throws Exception {
-
     }
 }

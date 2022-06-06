@@ -248,7 +248,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
             return Result.error("001P041", "businessHours参数类型不匹配");
         }
 
-        if (requestBody.size() > 7) {
+        if (requestBody.size() > 8) {
             return Result.error("001P042", "参数体包含多余参数");
         }
 
