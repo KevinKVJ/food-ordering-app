@@ -10,7 +10,7 @@ CREATE TABLE t_merchant
     `name`        VARCHAR(128)       NULL COMMENT '商家名字',
     `description` VARCHAR(512)       NULL COMMENT '商家描述',
     `address`     VARCHAR(256)       NULL COMMENT '商家地址',
-    `public_phones` VARCHAR(512)     NULL COMMENT '商家对外电话',
+    `public_phone` VARCHAR(512)     NULL COMMENT '商家对外电话',
     `public_address` VARCHAR(512)    NULL COMMENT '商家对外地址',
     `business_hours` VARCHAR(512)    NULL COMMENT '商家营业时间',
     `create_at`   DATETIME           NULL COMMENT '创建时间',

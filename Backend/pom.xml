@@ -26,8 +26,27 @@
         <spring-boot-starter-test.version>2.5.12</spring-boot-starter-test.version>
         <mysql-connector-java.version>8.0.25</mysql-connector-java.version>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+        <jakarta.validation.version>2.0.2</jakarta.validation.version>
+        <spring-boot-starter-data-redis.version>2.5.12</spring-boot-starter-data-redis.version>
+        <spring-boot-starter-jdbc.version>2.5.12</spring-boot-starter-jdbc.version>
+        <minio.version>8.2.1</minio.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>${spring-boot-starter-data-redis.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta.validation.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
@@ -51,6 +70,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jdbc</artifactId>
+            <version>${spring-boot-starter-jdbc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -75,7 +95,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <version>${spring-boot-starter-test.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

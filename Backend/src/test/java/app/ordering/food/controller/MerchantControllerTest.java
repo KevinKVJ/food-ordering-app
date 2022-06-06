@@ -1,6 +1,5 @@
 package app.ordering.food.controller;
 
-import app.ordering.food.common.ResultEnum;
 import cn.hutool.json.JSONUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,7 +38,7 @@ class MerchantControllerTest {
                 .contentType(MediaType.APPLICATION_JSON);
         MvcResult mvcResult = mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.code").value("0000000"))
                 .andReturn();
         mvcResult.getResponse().setCharacterEncoding("UTF-8");
         System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));

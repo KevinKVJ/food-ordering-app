@@ -11,31 +11,27 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Result<T> implements Serializable {
 
-    private Integer code;
+    private String code;
     private String  msg;
     private T       data;
 
     public static <T> Result<T> success(T data) {
-        return new Result<>(ResultEnum.SUCCESS.getCode(), ResultEnum.getMsg(ResultEnum.SUCCESS), data);
+        return new Result<>("0000000", "OK", data);
     }
 
     public static <T> Result<T> success(T data, String msg) {
-        return new Result<>(ResultEnum.SUCCESS.getCode(), msg, data);
+        return new Result<>("0000000", msg, data);
     }
 
     public static <T> Result<T> success() {
-        return new Result<>(ResultEnum.SUCCESS.getCode(), ResultEnum.getMsg(ResultEnum.SUCCESS), null);
+        return new Result<>("0000000", "OK", null);
     }
 
     public static <T> Result<T> success(String msg) {
-        return new Result<>(ResultEnum.SUCCESS.getCode(), msg, null);
+        return new Result<>("0000000", msg, null);
     }
 
-    public static <T> Result<T> error(ResultEnum resultEnum) {
-        return new Result<>(resultEnum.getCode(), ResultEnum.getMsg(resultEnum), null);
-    }
-
-    public static <T> Result<T> error(ResultEnum resultEnum, String msg) {
-        return new Result<>(resultEnum.getCode(), msg, null);
+    public static <T> Result<T> error(String code, String msg) {
+        return new Result<>(code, msg, null);
     }
 }

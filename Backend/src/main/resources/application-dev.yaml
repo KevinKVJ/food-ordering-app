@@ -17,8 +17,30 @@ spring:
       mode: always
   application:
     name: food-ordering-app
+  redis:
+    port: 6379
+    database: 0
+    timeout: 60000
+  servlet:
+    multipart:
+      # 文件请求及大小限制
+      max-request-size: 100MB
+      max-file-size: 100MB
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
   mapper-locations: classpath:mapper/*.xml
+
+minio:
+  endpoint: http://127.0.0.1:9000
+  accessKey: AKIAIOSFODNN7EXAMPLE
+  secretKey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+  bucketForMerchants: food-ordering-app-merchants
+  bucketForProducts: food-ordering-app-products
+
+# 文件压缩
+server:
+  compression:
+    enabled: true
+    mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain

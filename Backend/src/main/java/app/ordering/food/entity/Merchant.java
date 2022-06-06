@@ -21,6 +21,9 @@ public class Merchant implements Serializable {
     private String name;
     private String description;
     private String address;
+    private String publicPhone;
+    private String publicAddress;
+    private String businessHours;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createAt;
     @TableField(fill = FieldFill.INSERT_UPDATE)
