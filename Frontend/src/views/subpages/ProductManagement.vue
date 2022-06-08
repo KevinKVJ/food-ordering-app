@@ -1,35 +1,43 @@
 <script setup lang="tsx">
-import { h, reactive, ref } from 'vue';
-import type { DataTableColumns, PaginationProps } from 'naive-ui';
+import { reactive, ref } from 'vue';
+import type { DataTableColumns,PaginationProps } from 'naive-ui';
 import { productData } from './ProductDataTypes';
 import http from '@/http/request';
+import { Random } from 'mockjs';
+
+// const aaa = reactive()
 
 const columns: DataTableColumns = [
     {
         type: 'selection',
-        width: '15',
+        // width: '15',
         fixed: 'left',
     },
-    // {
-    //     title: 'Image',
-    //     key: 'image',
-    //     width: 50,
-    //     fixed: 'left',
-    //     render() {
-    //         return <n-avatar bordered size={48} src='https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg' />;
-    //     },
-    // },
+    {
+        title: 'Image',
+        key: 'image',
+        width: 80,
+        fixed: 'left',
+        render(rowObj,index) {
+            return <n-avatar bordered size={48} src={Random.dataImage('400x400', `hello product ${index}`)} />;
+        },
+        align:'center'
+    },
     {
         title: 'ID',
         key: 'id',
-        width: '20',
-        fixed: 'left',
+        align: 'center',
+        width: '80',
+        // fixed: 'left',
+        // render(row){
+        //     return <div>{row.id}</div>
+        // }
     },
     {
         title: 'Name',
         key: 'name',
-        minWidth: 30,
-        fixed: 'left',
+        // width: '150',
+        // fixed: 'left',
         // render(row: any, index: number) {
         //     // return h('span', ['row ', index]);
         //     return <span>{`row ${index}`}</span>;
@@ -39,11 +47,11 @@ const columns: DataTableColumns = [
     {
         title: 'Price',
         key: 'price',
-        width: 25,
+        // width: 80,
         // fixed: 'left',
         // render(row: any, index: number) {
         //     // return h('span', ['row ', index]);
-        //     return <span>{`row ${index}`}</span>;
+        //     return <span>{row.price}</span>;
         // },
     },
     {
@@ -53,7 +61,7 @@ const columns: DataTableColumns = [
         //     // return h('span', ['row ', index]);
         //     return <span>{`row ${index}`}</span>;
         // },
-        width: 25,
+        // width: 80,
     },
     // {
     //     title: 'Options',
@@ -69,13 +77,13 @@ const columns: DataTableColumns = [
         // render(row: any, index: number) {
         //     return <span>{`row ${index}`}</span>;
         // },
-        width: 25,
+        // width: 80,
         // fixed: 'right',
     },
     {
         title: 'Discount',
         key: 'discount',
-        width: 25,
+        // width: 80
         // render(row: any, index: number) {
         //     // return h('span', ['row ', index]);
         //     return <span>{index}</span>;
@@ -84,28 +92,18 @@ const columns: DataTableColumns = [
     },
 ];
 
-// const data = reactive(
-//     Array.apply(null, Array(46)).map((_, index) => ({
-//         key: index,
-//         name: `Edward King ${index}`,
-//         age: 32,
-//         address: `London, Park Lane no. ${index}`,
-//     }))
-// );
-
 const data = ref<productData[]>();
-http.get('/api/v1/product/all').then(req => {
+http.get('/api/v1/product/all').then((req) => {
     const reqData: productData[] = req.data.data;
     if (!reqData) {
         console.error('Data is invalid or empty, Please check!');
         return;
     }
     data.value = reqData;
-    console.log(reqData);
-    
+    // console.log(reqData);
 });
 
-// const pagination:PaginationProps = { pageSize: 20 };
+const pagination:PaginationProps = { pageSize: 15 } as PaginationProps;
 </script>
 
 <template>
@@ -126,11 +124,12 @@ http.get('/api/v1/product/all').then(req => {
                     <n-data-table
                         :columns="columns"
                         :data="data"
-                        :pagination="{ pageSize: 20 }"
+                        :pagination="pagination"
                         :style="{ height: '100%' }"
-                        :scroll-x="1800"
                         flex-height
-                        :row-key="obj => obj?.id"
+                        :scroll-x="1000"
+                        :row-key="(obj:productData) => obj.id"
+                        :single-line="false"
                     />
                 </n-layout-content>
                 <!-- <n-layout-footer>成府路</n-layout-footer> -->
