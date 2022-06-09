@@ -13,7 +13,7 @@ import {
     Pencil as EditIcon,
     LogOutOutline as LogoutIcon,
 } from '@vicons/ionicons5';
-import ProductManagement from '@/views/subpages/ProductManagement.vue';
+// import ProductManagement from '@/views/subpages/ProductManagement.vue';
 
 function renderIcon(icon: Component) {
     // return () => h(NIcon,null, { default: () => h(icon) });
@@ -409,7 +409,7 @@ const layoutSiderStyle = reactive<CSSProperties>({
                 </n-layout-sider>
 
                 <NLayoutContent class="contents">
-                    <product-management />
+                    <ProductManagement/>
                 </NLayoutContent>
             </n-layout-content>
         </n-layout>

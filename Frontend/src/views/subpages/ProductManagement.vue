@@ -1,11 +1,9 @@
 <script setup lang="tsx">
-import { reactive, ref } from 'vue';
-import type { DataTableColumns,PaginationProps } from 'naive-ui';
+import { ref } from 'vue';
+import type { DataTableColumns, PaginationProps } from 'naive-ui';
 import type { productData } from './ProductDataTypes';
 import http from '@/http/request';
 import { Random } from 'mockjs';
-
-// const aaa = reactive()
 
 const columns: DataTableColumns = [
     {
@@ -18,17 +16,17 @@ const columns: DataTableColumns = [
         key: 'image',
         width: 80,
         fixed: 'left',
-        render(rowObj,index) {
+        render(rowObj, index) {
             return <n-avatar bordered size={48} src={Random.dataImage('400x400', `hello product ${index}`)} />;
         },
-        align:'center'
+        align: 'center',
     },
     {
         title: 'ID',
         key: 'id',
         align: 'center',
         width: '80',
-        // fixed: 'left',
+        fixed: 'left',
         // render(row){
         //     return <div>{row.id}</div>
         // }
@@ -36,8 +34,8 @@ const columns: DataTableColumns = [
     {
         title: 'Name',
         key: 'name',
-        // width: '150',
-        // fixed: 'left',
+        width: '150',
+        fixed: 'left',
         // render(row: any, index: number) {
         //     // return h('span', ['row ', index]);
         //     return <span>{`row ${index}`}</span>;
@@ -93,7 +91,7 @@ const columns: DataTableColumns = [
 ];
 
 const data = ref<productData[]>();
-http.get('/api/v1/product/all').then((req) => {
+http.get('/api/v1/product/all').then(req => {
     const reqData: productData[] = req.data.data;
     if (!reqData) {
         console.error('Data is invalid or empty, Please check!');
@@ -103,7 +101,18 @@ http.get('/api/v1/product/all').then((req) => {
     // console.log(reqData);
 });
 
-const pagination:PaginationProps = { pageSize: 15 } as PaginationProps;
+const pagination: PaginationProps = { pageSize: 15 } as PaginationProps;
+
+const handleAddProduct = () => (showAdd.value = true);
+const showAdd = ref(false);
+const formAdd = ref({
+    user: {
+        name: '',
+        age: '',
+    },
+    phone: '',
+});
+
 </script>
 
 <template>
@@ -114,9 +123,9 @@ const pagination:PaginationProps = { pageSize: 15 } as PaginationProps;
                 <n-layout-header :style="{ backgroundColor: 'transparent' }">
                     <h1>Products Management</h1>
                     <n-space>
-                        <n-button type="info">Oops!</n-button>
-                        <n-button type="info">Oops!</n-button>
-                        <n-button type="info">Oops!</n-button>
+                        <n-button type="info" @click="handleAddProduct">Add</n-button>
+                        <!-- <n-button type="info">Oops!</n-button>
+                        <n-button type="info">Oops!</n-button> -->
                         <n-button type="error">Delete</n-button>
                     </n-space>
                 </n-layout-header>
@@ -139,6 +148,41 @@ const pagination:PaginationProps = { pageSize: 15 } as PaginationProps;
                 <categories-list />
             </n-layout-sider>
         </n-layout>
+        <n-modal v-model:show="showAdd" :mask-closable="false">
+            <n-card closable @close="showAdd = false" style="width: 600px" :bordered="false" size="huge" role="dialog" aria-modal="true">
+                <template #header>Add New Product</template>
+                <n-form size="medium" model="formAdd" :label-width="80">
+                    <n-form-item label="Product Name" path="user.name">
+                        <n-input v-model:value="formAdd.user.name" placeholder="Name" />
+                    </n-form-item>
+                    <n-form-item label="Price" path="user.age">
+                        <n-input v-model:value="formAdd.user.age" placeholder="Price" />
+                    </n-form-item>
+                    <n-form-item label="Inventory" path="phone">
+                        <n-input v-model:value="formAdd.phone" placeholder="Inventory" />
+                    </n-form-item>
+                    <!--  @click="handleValidateClick" -->
+                    <n-grid :cols="24" :x-gap="8">
+                        <n-form-item-gi :span="20" label="Discount">
+                            <!-- v-model:value="model.sliderValue" -->
+                            <n-slider :step="1" :format-tooltip="(value: number) => `${value}%`" />
+                            <!-- v-model:value="value"  -->
+                        </n-form-item-gi>
+                        <n-form-item-gi :span="4">
+                            <n-input type="text" disabled placeholder="" />
+                        </n-form-item-gi>
+                    </n-grid>
+                    <n-form-item label="Categories(Tags)" size="large">
+                        <!-- v-model:value="formAdd.multipleSelectValue" :options="generalOptions"-->
+                        <n-select placeholder="Select" multiple />
+                    </n-form-item>
+                    <div :style="{ display: 'flex', justifyContent: 'center' }">
+                        <n-button attr-type="button">Confirm</n-button>
+                    </div>
+                </n-form>
+                <!-- <template #footer> 尾部 </template> -->
+            </n-card>
+        </n-modal>
     </div>
 </template>
 

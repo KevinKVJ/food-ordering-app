@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
-import MainPage from '@/views/MainPage.vue'
+import MainPage from '@/views/MainPage/MainPage.vue'
 import Login from '@/views/LoginAndSignup/Login.vue'
 import Signup from '@/views/LoginAndSignup/Signup.vue'
 
