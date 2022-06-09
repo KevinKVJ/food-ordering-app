@@ -30,8 +30,14 @@
         <spring-boot-starter-data-redis.version>2.5.12</spring-boot-starter-data-redis.version>
         <spring-boot-starter-jdbc.version>2.5.12</spring-boot-starter-jdbc.version>
         <minio.version>8.2.1</minio.version>
+        <spring-security-crypto.version>5.2.2.RELEASE</spring-security-crypto.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+            <version>${spring-security-crypto.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>

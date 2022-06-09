@@ -1,6 +1,5 @@
 package app.ordering.food;
 
-import app.ordering.food.common.Result;
 import app.ordering.food.service.MinioService;
 import cn.hutool.core.io.IoUtil;
 import org.springframework.boot.ApplicationArguments;

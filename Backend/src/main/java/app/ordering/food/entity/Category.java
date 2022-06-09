@@ -11,16 +11,12 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("t_product")
-public class Product implements Serializable {
-    private static final long          serialVersionUID = 3567653491060394672L;
+@TableName("t_category")
+public class Category implements Serializable {
+    private static final long          serialVersionUID = 3567653491060394673L;
     @TableId(type = IdType.AUTO)
     private              Integer       id;
-    private              String        name;
-    private              Integer       monthly;
-    private              Integer       inventory;
-    private              Integer       discount;
-    private              Integer       price;
+    private              String        description;
     private              Integer       merchantId;
     @TableField(fill = FieldFill.INSERT)
     private              LocalDateTime createAt;

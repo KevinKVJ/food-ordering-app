@@ -2,6 +2,7 @@ package app.ordering.food.service.impl;
 
 import app.ordering.food.common.Result;
 import app.ordering.food.service.MinioService;
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.IoUtil;
 import io.minio.*;
 import io.minio.messages.Item;
@@ -15,10 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("minioService")
 public class MinioServiceImpl implements MinioService {
@@ -62,9 +60,40 @@ public class MinioServiceImpl implements MinioService {
     }
 
     @Override
+    public Optional<String> downloadBase64(String bucket, String filename) {
+        Optional<String> file = Optional.empty();
+        // Check if arg is null
+        if (bucket == null || filename == null) {
+            return file;
+        }
+        // Make the bucket if it does not exist
+        makeBucket(bucket);
+        // Check if the file exists
+        if (!existObject(bucket, filename)) {
+            return file;
+        }
+        InputStream inputStream = null;
+        try {
+            inputStream = minioClient.getObject(GetObjectArgs.builder().bucket(bucket).object(filename).build());
+            file = Optional.of(Base64.encode(inputStream));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return file;
+    }
+
+    @Override
     public ResponseEntity<byte[]> download(String bucket, String filename) {
         // Check if arg is null
-        if (filename == null) {
+        if (bucket == null || filename == null) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
         // Make the bucket if it does not exist

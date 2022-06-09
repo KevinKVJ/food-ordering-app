@@ -3,7 +3,7 @@ package app.ordering.food.controller;
 import app.ordering.food.service.MinioService;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,9 +18,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,18 +31,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-class ProductControllerTest {
+class CategoryControllerTest {
 
-    private final String baseUrl = "/api/v1/product";
+    private final String  baseUrl = "/api/v1/category";
 
     @Resource
     private MockMvc mockMvc;
 
-    @Resource
-    private MinioService minioService;
-
     @Test
-    void getProducts() throws Exception {
+    void getCategories() throws Exception {
         String url = baseUrl + "/all";
         RequestBuilder request = MockMvcRequestBuilders.get(url)
                 .accept(MediaType.APPLICATION_JSON)
@@ -54,52 +53,109 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProductById() throws Exception {
+    void getCategoriesByMerchantId() throws Exception {
+        String              url         = baseUrl + "/merchant";
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("merchantId", 1);
+        RequestBuilder request = MockMvcRequestBuilders.post(url)
+                .content(new ObjectMapper().writeValueAsString(requestBody))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("0000000"))
+                .andReturn();
+        mvcResult.getResponse().setCharacterEncoding("UTF-8");
+        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
+    }
+
+    @Test
+    @DisplayName("No arguments passed")
+    void getCategoriesByMerchantId1() throws Exception {
+        String url = baseUrl + "/merchant";
+        RequestBuilder request = MockMvcRequestBuilders.post(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(request)
+                .andExpect(status().is(400))
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("Invalid arguments passed")
+    void getCategoriesByMerchantId2() throws Exception {
+        String              url         = baseUrl + "/merchant";
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("merchant_id", 1);
+        RequestBuilder request = MockMvcRequestBuilders.post(url)
+                .content(new ObjectMapper().writeValueAsString(requestBody))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("005P002"))
+                .andReturn();
+        mvcResult.getResponse().setCharacterEncoding("UTF-8");
+        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
+    }
+
+    @Test
+    @DisplayName("Merchant ID is null")
+    void getCategoriesByMerchantId3() throws Exception {
+        String              url         = baseUrl + "/merchant";
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("merchantId", null);
+        RequestBuilder request = MockMvcRequestBuilders.post(url)
+                .content(new ObjectMapper().writeValueAsString(requestBody))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("005P003"))
+                .andReturn();
+        mvcResult.getResponse().setCharacterEncoding("UTF-8");
+        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
+    }
+
+    @Test
+    @DisplayName("Merchant ID is not an integer")
+    void getCategoriesByMerchantId4() throws Exception {
+        String              url         = baseUrl + "/merchant";
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("merchantId", "test");
+        RequestBuilder request = MockMvcRequestBuilders.post(url)
+                .content(new ObjectMapper().writeValueAsString(requestBody))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("005P004"))
+                .andReturn();
+        mvcResult.getResponse().setCharacterEncoding("UTF-8");
+        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
+    }
+
+    @Test
+    @DisplayName("Merchant ID does not exist")
+    void getCategoriesByMerchantId5() throws Exception {
+        String              url         = baseUrl + "/merchant";
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("merchantId", -1);
+        RequestBuilder request = MockMvcRequestBuilders.post(url)
+                .content(new ObjectMapper().writeValueAsString(requestBody))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("005B001"))
+                .andReturn();
+        mvcResult.getResponse().setCharacterEncoding("UTF-8");
+        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
+    }
+
+    @Test
+    void getCategoryById() throws Exception {
         String url = baseUrl + "/id";
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("id", 1);
-        RequestBuilder request = MockMvcRequestBuilders.post(url)
-                .content(new ObjectMapper().writeValueAsString(requestBody))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
-        MvcResult mvcResult = mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("0000000"))
-                .andReturn();
-        mvcResult.getResponse().setCharacterEncoding("UTF-8");
-        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
-    }
-
-    @Test
-    void insert() throws Exception {
-        String url = baseUrl + "/insert";
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("name", "name");
-        requestBody.put("monthly", 150);
-        requestBody.put("inventory", 120);
-        requestBody.put("discount", 20);
-        requestBody.put("price", 1050);
-        requestBody.put("merchantId", 2);
-        RequestBuilder request = MockMvcRequestBuilders.post(url)
-                .content(new ObjectMapper().writeValueAsString(requestBody))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
-        MvcResult mvcResult = mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("0000000"))
-                .andReturn();
-        mvcResult.getResponse().setCharacterEncoding("UTF-8");
-        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
-
-        String bucket = "food-ordering-app-products";
-        String filename = "3.jpg";
-        Assertions.assertTrue(minioService.existObject(bucket, filename));
-        minioService.removeObject(bucket, filename);
-    }
-
-    @Test
-    void downloadBase64() throws Exception {
-        String url = baseUrl + "/image64";
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("id", 1);
         RequestBuilder request = MockMvcRequestBuilders.post(url)

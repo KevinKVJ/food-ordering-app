@@ -3,7 +3,6 @@ package app.ordering.food.controller;
 import app.ordering.food.service.MinioService;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.corba.se.spi.ior.ObjectKey;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +18,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +55,7 @@ class MerchantControllerTest {
 
     @Test
     void getMerchantById() throws Exception {
-        String  url        = baseUrl + "/one";
+        String  url        = baseUrl + "/id";
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("id", 1);
         RequestBuilder request = MockMvcRequestBuilders.post(url)
@@ -102,7 +100,19 @@ class MerchantControllerTest {
     }
 
     @Test
-    void update() throws Exception {
-
+    void downloadBase64() throws Exception {
+        String url = baseUrl + "/image64";
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("id", 1);
+        RequestBuilder request = MockMvcRequestBuilders.post(url)
+                .content(new ObjectMapper().writeValueAsString(requestBody))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("0000000"))
+                .andReturn();
+        mvcResult.getResponse().setCharacterEncoding("UTF-8");
+        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
     }
 }

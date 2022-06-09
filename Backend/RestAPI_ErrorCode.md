@@ -10,6 +10,7 @@
 |  Product | 002 |
 |  Minio | 003 |
 |  Redis | 004 |
+|  Category | 005 |
 
 ##### Error Type
 

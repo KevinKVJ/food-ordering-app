@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface MinioService {
     Result<List<Map<String, Object>>> list(String bucket);
@@ -15,4 +16,5 @@ public interface MinioService {
     boolean existObject(String bucket, String filename);
     void removeObject(String bucket, String filename);
     void removeBucket(String bucket);
+    Optional<String> downloadBase64(String bucket, String filename);
 }
