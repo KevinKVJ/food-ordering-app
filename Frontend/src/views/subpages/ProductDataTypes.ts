@@ -9,7 +9,3 @@ export interface productData {
         "createAt": string,
         "updateAt": string,
 }
-
-// export const isProductDataArr = (objArr:any):objArr is productData[] => {
-
-// }

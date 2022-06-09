@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { reactive, ref } from 'vue';
 import type { DataTableColumns,PaginationProps } from 'naive-ui';
-import { productData } from './ProductDataTypes';
+import type { productData } from './ProductDataTypes';
 import http from '@/http/request';
 import { Random } from 'mockjs';
 
