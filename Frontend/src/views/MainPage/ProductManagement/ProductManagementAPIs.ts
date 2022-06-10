@@ -1,4 +1,5 @@
 import API from '@/http/request'
+import { productDataInserted } from './ProductDataTypes';
 
 /**
  * API: Get All Products
@@ -21,4 +22,4 @@ export const apiGetProductOptionsByID = (body: { id: number }) => API.post('/api
  * API: Get All Products
  */
 /* TODO 剔除某些Key */
-export const apiInsertAProduct = (body: { id: number }) => API.post('/api/v1/product/insert',body);
+export const apiInsertAProduct = (body: productDataInserted) => API.post('/api/v1/product/insert',body);

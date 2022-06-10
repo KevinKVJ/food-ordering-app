@@ -8,7 +8,8 @@ const props = defineProps({
     tableData: Array,
 });
 
-const pagination: PaginationProps = { pageSize: 15 } as PaginationProps;
+
+const pagination = { pageSize: 15 } as PaginationProps;
 
 const columns: DataTableColumns = [
     {

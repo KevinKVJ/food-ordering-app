@@ -1,28 +1,73 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
 import type { productData } from './ProductDataTypes';
-import http from '@/http/request';
+// import http from '@/http/request';
+import { apiInsertAProduct, apiGetAllProducts } from './ProductManagementAPIs';
 
-const tableData = ref<productData[]>();
-http.get('/api/v1/product/all').then((req) => {
+const tableData = ref<productData[]>([]);
+// http.get('/api/v1/product/all').then(req => {
+//     const reqData: productData[] = req.data.data;
+//     if (!reqData) {
+//         console.error('Data is invalid or empty, Please check!');
+//         return;
+//     }
+//     tableData.value = reqData;
+//     // console.log(reqData);
+// });
+
+apiGetAllProducts().then(req => {
     const reqData: productData[] = req.data.data;
     if (!reqData) {
         console.error('Data is invalid or empty, Please check!');
         return;
     }
     tableData.value = reqData;
-    // console.log(reqData);
+    console.log(reqData);
 });
 
-const handleAddProduct = () => (showAdd.value = true);
+const handleAddProductModal = () => (showAdd.value = true);
 const showAdd = ref(false);
 const formAdd = ref({
-    user: {
-        name: '',
-        age: '',
-    },
-    phone: '',
+    id: 0,
+    name: '',
+    price: 0,
+    inventory: 0,
+    discount: 0,
+    monthly: 0,
+    merchantId: 0,
 });
+const showAddLoading = ref(false);
+
+const handleAddProduct = async () => {
+    // formAdd.value['id'] = 4112;
+    // tableData.value.push(formAdd.value);
+    showAddLoading.value = true;
+    try {
+        await apiInsertAProduct(formAdd.value);
+        const getAllRes = await apiGetAllProducts();
+        tableData.value = getAllRes.data.data;
+    } catch (error) {
+        console.error(error);
+        alert('Error!!!');
+    }
+
+    // setTimeout(() => {
+    //     formAdd.value = {
+    //         id: 0,
+    //         name: '',
+    //         price: 0,
+    //         inventory: 0,
+    //         discount: 0,
+    //         monthly: 0,
+    //     };
+    // }, 3000);
+    setTimeout(() => {
+        showAddLoading.value = false;
+    }, 2000);
+    setTimeout(() => {
+        showAdd.value = false;
+    }, 2000);
+};
 </script>
 
 <template>
@@ -33,60 +78,77 @@ const formAdd = ref({
                 <n-layout-header :style="{ backgroundColor: 'transparent' }">
                     <h2>Products Management</h2>
                     <n-space>
-                        <n-button type="info" @click="handleAddProduct">Add</n-button>
+                        <n-button type="info" @click="handleAddProductModal">Add</n-button>
                         <!-- <n-button type="info">Oops!</n-button>
                         <n-button type="info">Oops!</n-button> -->
                         <n-button type="error">Delete</n-button>
                     </n-space>
                 </n-layout-header>
                 <n-layout-content :style="{ backgroundColor: 'transparent', flex: 1 }">
-                    <ProdDataTable :tableData="tableData"/>
+                    <ProdDataTable :tableData="tableData" />
                 </n-layout-content>
             </n-layout>
 
-            <n-layout-sider :content-style="{padding: '24px'}" show-trigger :style="{ backgroundColor: 'transparent' }" class="category-sider">
+            <n-layout-sider
+                :content-style="{ padding: '24px' }"
+                show-trigger
+                :style="{ backgroundColor: 'transparent' }"
+                class="category-sider"
+            >
                 <ProdCategoriesSider />
             </n-layout-sider>
-
         </n-layout>
 
         <n-modal v-model:show="showAdd" :mask-closable="false">
-            <n-card closable @close="showAdd = false" style="width: 600px" :bordered="false" size="huge" role="dialog" aria-modal="true">
-                <template #header>Add New Product</template>
-                <n-form size="medium" model="formAdd" :label-width="80">
-                    <n-form-item label="Product Name" path="user.name">
-                        <n-input v-model:value="formAdd.user.name" placeholder="Name" />
-                    </n-form-item>
-                    <n-form-item label="Price" path="user.age">
-                        <n-input v-model:value="formAdd.user.age" placeholder="Price" />
-                    </n-form-item>
-                    <n-form-item label="Inventory" path="phone">
-                        <n-input v-model:value="formAdd.phone" placeholder="Inventory" />
-                    </n-form-item>
-                    <!--  @click="handleValidateClick" -->
-                    <n-grid :cols="24" :x-gap="8">
-                        <n-form-item-gi :span="20" label="Discount">
-                            <!-- v-model:value="model.sliderValue" -->
-                            <n-slider :step="1" :format-tooltip="(value: number) => `${value}%`" />
-                            <!-- v-model:value="value"  -->
-                        </n-form-item-gi>
-                        <n-form-item-gi :span="4">
-                            <n-input type="text" disabled placeholder="" />
-                        </n-form-item-gi>
-                    </n-grid>
-                    <n-form-item label="Categories(Tags)" size="large">
-                        <!-- v-model:value="formAdd.multipleSelectValue" :options="generalOptions"-->
-                        <n-select placeholder="Select" multiple />
-                    </n-form-item>
-                    <div :style="{ display: 'flex', justifyContent: 'center' }">
-                        <n-space>
-                            <n-button type="success">Confirm</n-button>
-                            <n-button attr-type="button" @click="showAdd = false">Cancel</n-button>
-                        </n-space>
-                    </div>
-                </n-form>
-                <!-- <template #footer> 尾部 </template> -->
-            </n-card>
+            <n-spin :show="showAddLoading">
+                <template #description> Adding... </template>
+                <n-card
+                    closable
+                    @close="showAdd = false"
+                    style="width: 600px"
+                    :bordered="false"
+                    size="huge"
+                    role="dialog"
+                    aria-modal="true"
+                >
+                    <template #header>Add New Product</template>
+                    <!--  model="formAdd" -->
+                    <n-form size="medium" :label-width="80">
+                        <n-form-item label="Product Name">
+                            <n-input v-model:value="formAdd.name" placeholder="Name" />
+                        </n-form-item>
+                        <n-form-item label="Price">
+                            <n-input v-model:value="formAdd.price" placeholder="Price" />
+                        </n-form-item>
+                        <n-form-item label="Inventory">
+                            <n-input v-model:value="formAdd.inventory" placeholder="Inventory" />
+                        </n-form-item>
+                        <!--  @click="handleValidateClick" -->
+                        <n-grid :cols="24" :x-gap="8">
+                            <n-form-item-gi :span="20" label="Discount">
+                                <!-- v-model:value="model.sliderValue" -->
+                                <n-slider :step="1" v-model:value="formAdd.discount" :format-tooltip="(value: number) => `${value}%`" />
+                                <!-- v-model:value="value"  -->
+                            </n-form-item-gi>
+                            <n-form-item-gi :span="4">
+                                <n-input type="text" disabled placeholder="" :value="`${formAdd.discount}%`" />
+                            </n-form-item-gi>
+                        </n-grid>
+                        <n-form-item label="Categories(Tags)" size="large">
+                            <!-- v-model:value="formAdd.multipleSelectValue" :options="generalOptions"-->
+                            <n-select placeholder="Select" multiple />
+                        </n-form-item>
+                        <div :style="{ display: 'flex', justifyContent: 'center' }">
+                            <n-space>
+                                <n-button type="success" @click="handleAddProduct">Confirm</n-button>
+                                <n-button attr-type="button" @click="showAdd = false">Cancel</n-button>
+                            </n-space>
+                        </div>
+                        {{ formAdd }}
+                    </n-form>
+                    <!-- <template #footer> 尾部 </template> -->
+                </n-card>
+            </n-spin>
         </n-modal>
     </div>
 </template>
