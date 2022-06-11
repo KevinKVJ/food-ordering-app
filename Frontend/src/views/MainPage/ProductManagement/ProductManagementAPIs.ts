@@ -9,20 +9,20 @@ export const apiGetAllProducts = () => API.get('/api/v1/product/all');
 /**
  * API: Get All Products
  */
-export const apiGetAProductImgByID = (body: { id: number }) => API.post('/api/v1/product/image',body);
+export const apiGetAProductImgByID = (body: { id: number }) => API.post('/api/v1/product/image', body);
 /**
  * API: Get All Products
  */
-export const apiGetANoImgProductByID = (body: { id: number }) => API.post('/api/v1/product/image',body);
+export const apiGetANoImgProductByID = (body: { id: number }) => API.post('/api/v1/product/image', body);
 /**
  * API: Get All Products
  */
-export const apiGetProductOptionsByID = (body: { id: number }) => API.post('/api/v1/product/options',body);
+export const apiGetProductOptionsByID = (body: { id: number }) => API.post('/api/v1/product/options', body);
 /**
  * API: Get All Products
  */
 /* TODO 剔除某些Key */
-export const apiInsertAProduct = (body: productDataInserted) => API.post('/api/v1/product/insert',body);
+export const apiInsertAProduct = (body: productDataInserted) => API.post('/api/v1/product/insert', body);
 
 
 
@@ -30,4 +30,10 @@ export const apiInsertAProduct = (body: productDataInserted) => API.post('/api/v
 /**
  * API: Get All Categories
  */
-export const apiGetAllCategoies = () => API.get('/api/v1/category/all');
+export const apiGetAllCategoies = () => API.get('/api/v1/category/self/merchant');
+
+
+/**
+ * API: Get All Products By Category Id
+ */
+export const apiGetProductsByCategoryId = (body:{ id: number }) => API.post("/api/v1/category/self/allproducts",body);

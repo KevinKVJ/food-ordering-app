@@ -1,5 +1,6 @@
 <script setup lang="tsx">
 import { reactive } from 'vue';
+import { productCategory } from '../ProductDataTypes';
 
 const data = reactive([
     {
@@ -12,10 +13,11 @@ const data = reactive([
     },
 ]);
 
-const props = defineProps({
-    categoryData:Array
-})
+const props = defineProps<{
+    categoryData?: productCategory[];
+}>();
 
+const emits = defineEmits(['getProdsByCategory', 'getAllProds']);
 </script>
 <template>
     <n-list class="list-styles">
@@ -27,7 +29,13 @@ const props = defineProps({
                 <n-button>Edit</n-button>
             </div>
         </template>
-        <template v-for="(item, index) in data">
+        <n-list-item>
+            <div class="list-item-style1" @click="emits('getAllProds')">
+                <!-- (${item.items.length})` -->
+                All Products
+            </div>
+        </n-list-item>
+        <template v-for="(item, index) in props.categoryData">
             <n-list-item>
                 <!-- <template #prefix>
         <n-button>Pr</n-button>
@@ -40,9 +48,10 @@ const props = defineProps({
                     Biu<br />
                     Biu<br />
                 </n-thing> -->
-                
-                <div class="list-item-style1">
-                    {{`${item.name} (${item.items.length})`}}
+
+                <div class="list-item-style1" @click="emits('getProdsByCategory', item.id)">
+                    <!-- (${item.items.length})` -->
+                    {{ `${item.name}` }}
                 </div>
             </n-list-item>
         </template>
@@ -53,11 +62,13 @@ const props = defineProps({
 .list-styles {
     background-color: transparent;
 }
-.list-item-style1{
-    width: fit-content;
+.list-item-style1 {
+    width: 100%;
     padding-left: 8px;
+    cursor: pointer;
+    user-select: none;
 }
-.list-item-style2{
+.list-item-style2 {
     display: flex;
     justify-content: center;
     align-items: center;

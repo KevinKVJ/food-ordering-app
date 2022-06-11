@@ -1,8 +1,8 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
-import type { productData,productCategory } from './ProductDataTypes';
+import type { productData, productCategory } from './ProductDataTypes';
 // import http from '@/http/request';
-import { apiInsertAProduct, apiGetAllProducts, apiGetAllCategoies } from './ProductManagementAPIs';
+import { apiInsertAProduct, apiGetAllProducts, apiGetAllCategoies, apiGetProductsByCategoryId } from './ProductManagementAPIs';
 
 const categories = ref<productCategory[]>([]);
 const tableData = ref<productData[]>([]);
@@ -16,17 +16,21 @@ const tableData = ref<productData[]>([]);
 //     // console.log(reqData);
 // });
 
-apiGetAllProducts().then(req => {
-    const reqData: productData[] = req.data.data;
-    if (!reqData) {
-        console.error('Data is invalid or empty, Please check!');
-        return;
-    }
-    tableData.value = reqData;
-});
+apiGetAllProducts()
+    .then(req => {
+        const reqData: productData[] = req.data.data;
+        if (!reqData) {
+            throw new Error('Data is invalid or empty, Please check!');
+        }
+        // return reqData;
+        tableData.value = reqData;
+    })
+    .catch(err => {
+        console.error(err);
+    });
 
 apiGetAllCategoies().then(req => {
-    const reqData:productCategory[] = req.data.data;
+    const reqData: productCategory[] = req.data.data;
     if (!reqData) {
         console.error('Data is invalid or empty, Please check!');
         return;
@@ -77,6 +81,24 @@ const handleAddProduct = async () => {
         showAdd.value = false;
     }, 2000);
 };
+
+const handleGetProdsByCategory = async (id:number) => {
+    try {
+        const reqData = await apiGetProductsByCategoryId({id})
+        tableData.value = reqData.data.data;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+const handleGetAllProds = async () => {
+    try {
+        const reqData = await apiGetAllProducts()
+        tableData.value = reqData.data.data;
+    } catch (err) {
+        console.error(err);
+    }
+} 
 </script>
 
 <template>
@@ -104,7 +126,7 @@ const handleAddProduct = async () => {
                 :style="{ backgroundColor: 'transparent' }"
                 class="category-sider"
             >
-                <ProdCategoriesSider />
+                <ProdCategoriesSider :category-data="categories" @get-prods-by-category="handleGetProdsByCategory" @get-all-prods="handleAddProduct" />
             </n-layout-sider>
         </n-layout>
 
