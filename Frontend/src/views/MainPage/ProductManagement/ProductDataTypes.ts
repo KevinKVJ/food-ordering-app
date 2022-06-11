@@ -11,3 +11,8 @@ export interface productData {
 }
 
 export type productDataInserted = Omit<productData,'id'>
+
+export interface productCategory {
+    "id": number,
+    "name": string,
+}

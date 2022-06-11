@@ -11,6 +11,11 @@ const data = reactive([
         items: ['333', '4444'],
     },
 ]);
+
+const props = defineProps({
+    categoryData:Array
+})
+
 </script>
 <template>
     <n-list class="list-styles">
@@ -35,6 +40,7 @@ const data = reactive([
                     Biu<br />
                     Biu<br />
                 </n-thing> -->
+                
                 <div class="list-item-style1">
                     {{`${item.name} (${item.items.length})`}}
                 </div>

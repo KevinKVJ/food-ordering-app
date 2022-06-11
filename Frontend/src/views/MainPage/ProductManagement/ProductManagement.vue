@@ -1,9 +1,10 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
-import type { productData } from './ProductDataTypes';
+import type { productData,productCategory } from './ProductDataTypes';
 // import http from '@/http/request';
-import { apiInsertAProduct, apiGetAllProducts } from './ProductManagementAPIs';
+import { apiInsertAProduct, apiGetAllProducts, apiGetAllCategoies } from './ProductManagementAPIs';
 
+const categories = ref<productCategory[]>([]);
 const tableData = ref<productData[]>([]);
 // http.get('/api/v1/product/all').then(req => {
 //     const reqData: productData[] = req.data.data;
@@ -22,7 +23,15 @@ apiGetAllProducts().then(req => {
         return;
     }
     tableData.value = reqData;
-    console.log(reqData);
+});
+
+apiGetAllCategoies().then(req => {
+    const reqData:productCategory[] = req.data.data;
+    if (!reqData) {
+        console.error('Data is invalid or empty, Please check!');
+        return;
+    }
+    categories.value = reqData;
 });
 
 const handleAddProductModal = () => (showAdd.value = true);
@@ -118,10 +127,10 @@ const handleAddProduct = async () => {
                             <n-input v-model:value="formAdd.name" placeholder="Name" />
                         </n-form-item>
                         <n-form-item label="Price">
-                            <n-input v-model:value="formAdd.price" placeholder="Price" />
+                            <n-input v-model.number:value="formAdd.price" placeholder="Price" />
                         </n-form-item>
                         <n-form-item label="Inventory">
-                            <n-input v-model:value="formAdd.inventory" placeholder="Inventory" />
+                            <n-input v-model.number:value="formAdd.inventory" placeholder="Inventory" />
                         </n-form-item>
                         <!--  @click="handleValidateClick" -->
                         <n-grid :cols="24" :x-gap="8">

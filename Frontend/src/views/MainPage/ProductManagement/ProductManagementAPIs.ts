@@ -23,3 +23,11 @@ export const apiGetProductOptionsByID = (body: { id: number }) => API.post('/api
  */
 /* TODO 剔除某些Key */
 export const apiInsertAProduct = (body: productDataInserted) => API.post('/api/v1/product/insert',body);
+
+
+
+
+/**
+ * API: Get All Categories
+ */
+export const apiGetAllCategoies = () => API.get('/api/v1/category/all');
