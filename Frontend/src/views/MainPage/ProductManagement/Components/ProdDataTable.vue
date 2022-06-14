@@ -1,17 +1,21 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
-import type { DataTableColumns, PaginationProps } from 'naive-ui';
+// import { ref, toRaw, unref, VNodeChild } from 'vue';
+import { DataTableColumns, DataTableCreateRowKey, NButton, PaginationProps } from 'naive-ui';
 import { Random } from 'mockjs';
 import type { productData } from '../ProductDataTypes';
+import type { RowKey } from 'naive-ui/es/data-table/src/interface';
 
-const props = defineProps({
+const { tableData } = defineProps({
     tableData: Array,
+    // checkedRows: Array,
+    // changeCheckedRow: Function
 });
 
+const emits = defineEmits(['deleteDataRow','checkedRows']);
 
 const pagination = { pageSize: 15 } as PaginationProps;
 
-const columns: DataTableColumns = [
+const columns: DataTableColumns<productData> = [
     {
         type: 'selection',
         // width: '15',
@@ -22,7 +26,7 @@ const columns: DataTableColumns = [
         key: 'image',
         width: 80,
         fixed: 'left',
-        render(rowObj, index) {
+        render(rowData, index) {
             return <n-avatar bordered size={48} src={Random.dataImage('400x400', `hello product ${index}`)} />;
         },
         align: 'center',
@@ -94,20 +98,45 @@ const columns: DataTableColumns = [
         // },
         // fixed: 'right',
     },
+    {
+        key: 'operation',
+        render(rowData) {
+            return (
+                <NButton type='error' size='small' onClick={() => emits('deleteDataRow', [rowData.id])}>
+                    Delete
+                </NButton>
+            );
+        },
+        width: 80,
+        fixed: 'right',
+        align: 'center',
+        className: 'col-operation',
+        // cellProps:() => {
+        //     return {
+        //         innerHTML: 'div'
+        //     }
+        // }
+    },
 ];
+
+
+
 </script>
 
 <template>
+<!-- emits('update:checkedRows',rowKeys)   changeCheckedRow?.(rowKeys)-->
+        <!-- :checked-row-keys="checkedRows" -->
     <div class="wrapper">
         <n-data-table
             :columns="columns"
-            :data="props.tableData"
+            :data="tableData"
             :pagination="pagination"
             :style="{ height: '100%' }"
             flex-height
             :scroll-x="800"
             :row-key="(obj:productData) => obj.id"
             :single-line="false"
+            @update:checked-row-keys="(rowKeys:RowKey[]) => emits('checkedRows',rowKeys)"
         />
     </div>
 </template>
@@ -115,5 +144,8 @@ const columns: DataTableColumns = [
 <style scoped lang="scss">
 .wrapper {
     height: 100%;
+}
+.col-operation {
+    padding: 0px;
 }
 </style>

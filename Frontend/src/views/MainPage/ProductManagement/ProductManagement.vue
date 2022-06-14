@@ -1,41 +1,35 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
+import { onMounted, ref, toRaw } from 'vue';
 import type { productData, productCategory } from './ProductDataTypes';
 // import http from '@/http/request';
 import { apiInsertAProduct, apiGetAllProducts, apiGetAllCategoies, apiGetProductsByCategoryId } from './ProductManagementAPIs';
 
 const categories = ref<productCategory[]>([]);
 const tableData = ref<productData[]>([]);
-// http.get('/api/v1/product/all').then(req => {
-//     const reqData: productData[] = req.data.data;
-//     if (!reqData) {
-//         console.error('Data is invalid or empty, Please check!');
-//         return;
-//     }
-//     tableData.value = reqData;
-//     // console.log(reqData);
-// });
 
-apiGetAllProducts()
-    .then(req => {
-        const reqData: productData[] = req.data.data;
+const _log = (item: any) => console.log(item);
+onMounted(() => {
+    apiGetAllProducts()
+        .then(req => {
+            const reqData: productData[] = req.data.data;
+            if (!reqData) {
+                throw new Error('Data is invalid or empty, Please check!');
+            }
+
+            tableData.value = reqData;
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    apiGetAllCategoies().then(req => {
+        const reqData: productCategory[] = req.data.data;
         if (!reqData) {
-            throw new Error('Data is invalid or empty, Please check!');
+            console.error('Data is invalid or empty, Please check!');
+            return;
         }
-        // return reqData;
-        tableData.value = reqData;
-    })
-    .catch(err => {
-        console.error(err);
+        categories.value = reqData;
     });
-
-apiGetAllCategoies().then(req => {
-    const reqData: productCategory[] = req.data.data;
-    if (!reqData) {
-        console.error('Data is invalid or empty, Please check!');
-        return;
-    }
-    categories.value = reqData;
 });
 
 const handleAddProductModal = () => (showAdd.value = true);
@@ -82,23 +76,40 @@ const handleAddProduct = async () => {
     }, 2000);
 };
 
-const handleGetProdsByCategory = async (id:number) => {
+const handleGetProdsByCategory = async (id: number) => {
     try {
-        const reqData = await apiGetProductsByCategoryId({id})
+        const reqData = await apiGetProductsByCategoryId({ id });
         tableData.value = reqData.data.data;
     } catch (err) {
         console.error(err);
     }
-}
+};
 
 const handleGetAllProds = async () => {
     try {
-        const reqData = await apiGetAllProducts()
+        const reqData = await apiGetAllProducts();
         tableData.value = reqData.data.data;
     } catch (err) {
         console.error(err);
     }
-} 
+};
+
+const checkedRowKeysRef = ref<(string | number)[]>([]);
+const handleDelete = (ids: (string | number)[]) => {
+    try {
+        const aaa = toRaw(tableData.value).filter((item, index) => !ids.includes(item.id));
+
+        tableData.value = aaa;
+        checkedRowKeysRef.value = [];
+        // TODO API adding
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+// const handleCheckedRow = (rowKeys: (string | number)[]) => {
+//     checkedRowKeysRef.value = rowKeys;
+// };
 </script>
 
 <template>
@@ -110,23 +121,38 @@ const handleGetAllProds = async () => {
                     <h2>Products Management</h2>
                     <n-space>
                         <n-button type="info" @click="handleAddProductModal">Add</n-button>
-                        <!-- <n-button type="info">Oops!</n-button>
-                        <n-button type="info">Oops!</n-button> -->
-                        <n-button type="error">Delete</n-button>
+                        <n-button type="error" @click="handleDelete(checkedRowKeysRef)">{{checkedRowKeysRef.length === 0 ? 'Delete' : `Delete(${checkedRowKeysRef.length})`}}</n-button>
                     </n-space>
                 </n-layout-header>
                 <n-layout-content :style="{ backgroundColor: 'transparent', flex: 1 }">
-                    <ProdDataTable :tableData="tableData" />
+                    <!-- v-model:checkedRows="checkedRowKeysRef" -->
+                    <ProdDataTable
+                        :tableData="tableData"
+                        @delete-data-row="handleDelete"
+                        @checked-rows="
+                            rowKeys => {
+                                // _log(`rowKeys: ${rowKeys}`);
+                                // _log(tableData);
+                                checkedRowKeysRef = rowKeys;
+                            }
+                        "
+                    />
                 </n-layout-content>
             </n-layout>
 
+            <!-- class="category-sider" -->
             <n-layout-sider
-                :content-style="{ padding: '24px' }"
+                :content-style="{ padding: '0 18px' }"
                 show-trigger
                 :style="{ backgroundColor: 'transparent' }"
-                class="category-sider"
+                width="170"
+                :native-scrollbar="false"
             >
-                <ProdCategoriesSider :category-data="categories" @get-prods-by-category="handleGetProdsByCategory" @get-all-prods="handleAddProduct" />
+                <ProdCategoriesSider
+                    :category-data="categories"
+                    @get-prods-by-category="handleGetProdsByCategory"
+                    @get-all-prods="handleGetAllProds"
+                />
             </n-layout-sider>
         </n-layout>
 
@@ -186,7 +212,7 @@ const handleGetAllProds = async () => {
 
 <style lang="scss" scoped>
 .contents-style {
-    padding: 20px;
+    padding: 5px 20px;
 }
 
 .n-layout-header {

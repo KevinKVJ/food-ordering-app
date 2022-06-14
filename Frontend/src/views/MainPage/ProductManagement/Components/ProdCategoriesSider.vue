@@ -2,7 +2,7 @@
 import { reactive } from 'vue';
 import { productCategory } from '../ProductDataTypes';
 
-const data = reactive([
+/* const data = reactive([
     {
         name: 'Junk Food',
         items: ['1', '22'],
@@ -11,7 +11,7 @@ const data = reactive([
         name: 'Junk Food1',
         items: ['333', '4444'],
     },
-]);
+]); */
 
 const props = defineProps<{
     categoryData?: productCategory[];
@@ -21,9 +21,9 @@ const emits = defineEmits(['getProdsByCategory', 'getAllProds']);
 </script>
 <template>
     <n-list class="list-styles">
-        <!-- <template #header>
-      hhh
-    </template> -->
+        <template #header>
+            <h3>Categories</h3>
+        </template>
         <template #footer>
             <div class="list-item-style2">
                 <n-button>Edit</n-button>
