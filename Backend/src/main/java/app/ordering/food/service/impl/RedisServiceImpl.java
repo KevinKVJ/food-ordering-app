@@ -1,6 +1,5 @@
 package app.ordering.food.service.impl;
 
-import app.ordering.food.common.Result;
 import app.ordering.food.service.RedisService;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -22,75 +21,64 @@ public class RedisServiceImpl implements RedisService {
     public void flushDb() {
         stringRedisTemplate.execute((RedisCallback<Object>) connection -> {
             connection.flushDb();
-            return "ok";
+            return "db cleared";
         });
     }
 
     @Override
-    public Result<List<String>> getKeys() {
+    public List<String> getKeys() {
         Set<String> keys = stringRedisTemplate.keys("*");
         if (keys == null) {
-            return Result.error("004M001", "redis获取键失败");
+            return null;
         }
-        List<String> result = new ArrayList<>(keys);
-        return Result.success(result, "redis获取键成功");
+        return new ArrayList<>(keys);
     }
 
     @Override
-    public Result<Void> updateWithTtl(String key, String val, long timeout) {
-        if (key == null) {
-            return Result.error("004P001", "redis键为null");
+    public boolean updateWithTtl(String key, String val, long ttl) {
+        if (key == null || val == null) {
+            return false;
         }
-        if (val == null) {
-            return Result.error("004P002", "redis值为null");
+        if (ttl < 0) {
+            return false;
         }
-        stringRedisTemplate.opsForValue().set(key, val, timeout, TimeUnit.SECONDS);
-        return Result.success("redis键值插入成功");
+        if (ttl == 0) {
+            stringRedisTemplate.opsForValue().set(key, val);
+        } else {
+            stringRedisTemplate.opsForValue().set(key, val, ttl, TimeUnit.SECONDS);
+        }
+        return true;
     }
 
     @Override
-    public Result<Void> update(String key, String val) {
-        if (key == null) {
-            return Result.error("004P003", "redis键为null");
-        }
-        if (val == null) {
-            return Result.error("004P004", "redis值为null");
-        }
-        stringRedisTemplate.opsForValue().set(key, val);
-        return Result.success("redis键值插入成功");
+    public boolean update(String key, String val) {
+        return updateWithTtl(key, val, 0);
     }
 
     @Override
-    public Result<String> get(String key) {
+    public String get(String key) {
         if (key == null) {
-            return Result.error("004P005", "redis键为null");
+            return null;
         }
         Boolean found = stringRedisTemplate.hasKey(key);
         if (found == null) {
-            return Result.error("004P006", "redis获取键失败");
+            return null;
         }
         if (!found) {
-            return Result.error("004B001", "redis键不存在");
+            return null;
         }
-        return Result.success(stringRedisTemplate.opsForValue().get(key), "redis值获取成功");
+        return stringRedisTemplate.opsForValue().get(key);
     }
 
     @Override
-    public Result<Void> delete(String key) {
+    public boolean delete(String key) {
         if (key == null) {
-            return Result.error("004P007", "redis键为null");
-        }
-        Boolean found = stringRedisTemplate.hasKey(key);
-        if (found == null) {
-            return Result.error("004P008", "redis获取键失败");
-        }
-        if (!found) {
-            return Result.error("004B002", "redis键不存在");
+            return false;
         }
         Boolean del = stringRedisTemplate.delete(key);
         if (del == null) {
-            return Result.error("004P009", "redis删除键失败");
+            return false;
         }
-        return Result.success("redis删除键成功");
+        return del;
     }
 }

@@ -2,14 +2,12 @@
 
 #### Principle
 
-##### Module / Microservice (001-999)
+##### Controller / Microservice (001-999)
 
 | Module | Code  |
 | --- | --- |
 |  Merchant | 001 |
 |  Product | 002 |
-|  Minio | 003 |
-|  Redis | 004 |
 |  Category | 005 |
 
 ##### Error Type
@@ -29,3 +27,4 @@
 | Error Code | 含义 |
 | --- | --- |
 | 0000000 | 成功返回结果 |
+| 0000001 | request body 不符合json格式 |

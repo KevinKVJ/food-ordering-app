@@ -1,12 +1,13 @@
 package app.ordering.food.service.impl;
 
-import app.ordering.food.common.Result;
 import app.ordering.food.service.MinioService;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.IoUtil;
 import io.minio.*;
 import io.minio.messages.Item;
 import lombok.SneakyThrows;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,8 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service("minioService")
 public class MinioServiceImpl implements MinioService {
@@ -25,7 +31,7 @@ public class MinioServiceImpl implements MinioService {
     private MinioClient minioClient;
 
     @Override
-    public Result<List<Map<String, Object>>> list(String bucket) {
+    public List<Map<String, Object>> list(String bucket) {
         // Make the bucket if it does not exist
         makeBucket(bucket);
         Iterable<io.minio.Result<Item>> objects = minioClient.
@@ -44,9 +50,9 @@ public class MinioServiceImpl implements MinioService {
                 args.put("directory", item.isDir());
                 items.add(args);
             }
-            return Result.success(items, "返回bucket内容成功");
+            return items;
         } catch (Exception e) {
-            return Result.error("003M001", e.getMessage());
+            return null;
         }
     }
 
@@ -60,22 +66,23 @@ public class MinioServiceImpl implements MinioService {
     }
 
     @Override
-    public Optional<String> downloadBase64(String bucket, String filename) {
-        Optional<String> file = Optional.empty();
+    //@Cacheable(value = "minioServiceCache", key = "{#bucket, #filename}", unless = "#result==null")
+    public String downloadBase64(String bucket, String filename) {
         // Check if arg is null
         if (bucket == null || filename == null) {
-            return file;
+            return null;
         }
         // Make the bucket if it does not exist
         makeBucket(bucket);
         // Check if the file exists
         if (!existObject(bucket, filename)) {
-            return file;
+            return null;
         }
         InputStream inputStream = null;
+        String fileIn64 = null;
         try {
             inputStream = minioClient.getObject(GetObjectArgs.builder().bucket(bucket).object(filename).build());
-            file = Optional.of(Base64.encode(inputStream));
+            fileIn64 = Base64.encode(inputStream);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -87,31 +94,29 @@ public class MinioServiceImpl implements MinioService {
                 }
             }
         }
-        return file;
+        return fileIn64;
     }
 
     @Override
-    public ResponseEntity<byte[]> download(String bucket, String filename) {
+    public byte[] download(String bucket, String filename) {
         // Check if arg is null
         if (bucket == null || filename == null) {
-            return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
+            return null;
         }
         // Make the bucket if it does not exist
         makeBucket(bucket);
         // Check if the file exists
         if (!existObject(bucket, filename)) {
-            return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
+            return null;
         }
         InputStream            inputStream           = null;
         ByteArrayOutputStream  byteArrayOutputStream = null;
+        byte[] bytes = null;
         try {
             inputStream = minioClient.getObject(GetObjectArgs.builder().bucket(bucket).object(filename).build());
             byteArrayOutputStream = new ByteArrayOutputStream();
             IoUtil.copy(inputStream, byteArrayOutputStream);
-            byte[] bytes = byteArrayOutputStream.toByteArray();
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setContentType(MediaType.IMAGE_JPEG);
-            return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+            bytes = byteArrayOutputStream.toByteArray();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -130,10 +135,11 @@ public class MinioServiceImpl implements MinioService {
                 }
             }
         }
-        return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
+        return bytes;
     }
 
     @Override
+    //@CacheEvict(value = "minioServiceCache", key = "{#bucket, #filename}", condition = "#result==true")
     public boolean upload(String bucket, MultipartFile multipartFile, String filename) {
         if (bucket == null) {
             return false;
@@ -194,19 +200,23 @@ public class MinioServiceImpl implements MinioService {
     }
 
     @Override
-    public void removeObject(String bucket, String filename) {
+    //@CacheEvict(value = "minioServiceCache", key = "{#bucket, #filename}", condition = "#result==true")
+    public boolean removeObject(String bucket, String filename) {
         if (bucket != null && filename != null && existObject(bucket, filename)) {
             try {
                 minioClient.removeObject(
                         RemoveObjectArgs.builder().bucket(bucket).object(filename).build());
+                return true;
             } catch (Exception ignored) {
 
             }
         }
+        return false;
     }
 
     @Override
-    public void removeBucket(String bucket) {
+    //@CacheEvict(value = "minioServiceCache", allEntries = true, condition = "#result==true")
+    public boolean removeBucket(String bucket) {
         if (bucket != null) {
             try {
                 boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucket).build());
@@ -226,10 +236,13 @@ public class MinioServiceImpl implements MinioService {
                         }
                     });
                     minioClient.removeBucket(RemoveBucketArgs.builder().bucket(bucket).build());
+                    return true;
                 }
+                return false;
             } catch (Exception ignored) {
 
             }
         }
+        return false;
     }
 }

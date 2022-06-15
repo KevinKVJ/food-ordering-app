@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS t_category;
 CREATE TABLE t_category
 (
     `id`    INT AUTO_INCREMENT NOT NULL COMMENT '主键ID',
-    `description` VARCHAR(512)       NULL COMMENT '商品类目描述',
+    `name` VARCHAR(512)       NULL COMMENT '类目名称',
     `merchant_id`   INT NULL COMMENT '商家ID',
     `create_at`   DATETIME           NULL COMMENT '创建时间',
     `update_at`   DATETIME           NULL COMMENT '修改时间',

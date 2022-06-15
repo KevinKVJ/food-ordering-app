@@ -1,6 +1,7 @@
 package app.ordering.food;
 
 import app.ordering.food.service.MinioService;
+import app.ordering.food.service.RedisService;
 import cn.hutool.core.io.IoUtil;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -20,8 +21,14 @@ public class DataInitializer implements ApplicationRunner {
     @Resource
     private MinioService minioService;
 
+    @Resource
+    private RedisService redisService;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        // clear redis cache
+        redisService.flushDb();
+        // add default images
         File file;
         FileInputStream fileInputStream;
         String filename;

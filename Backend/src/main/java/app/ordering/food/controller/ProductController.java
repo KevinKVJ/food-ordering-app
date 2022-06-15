@@ -10,7 +10,9 @@ import cn.hutool.core.io.IoUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.ResourceUtils;
@@ -24,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/product")
@@ -103,7 +104,13 @@ public class ProductController {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
         String filename = id + ".jpg";
-        return minioService.download(bucket, filename);
+        byte[] bytes = minioService.download(bucket, filename);
+        if (bytes == null) {
+            return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
+        }
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
     }
 
     @ApiOperation("Upload the image of a product by its ID")
@@ -357,9 +364,9 @@ public class ProductController {
             return Result.error("002B004", "merchant不存在");
         }
         String           filename = id + ".jpg";
-        Optional<String> image64  = minioService.downloadBase64(bucket,filename);
-        if (image64.isPresent()) {
-            return Result.success(image64.get(), "merchant图片获取成功");
+        String image64  = minioService.downloadBase64(bucket,filename);
+        if (image64 != null) {
+            return Result.success(image64, "merchant图片获取成功");
         }
         return Result.error("002M006", "merchant图片获取失败");
     }

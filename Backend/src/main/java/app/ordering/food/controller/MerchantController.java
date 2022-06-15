@@ -1,15 +1,19 @@
 package app.ordering.food.controller;
 
+import app.ordering.food.common.JwtUtils;
 import app.ordering.food.common.Result;
 import app.ordering.food.entity.Merchant;
 import app.ordering.food.service.MerchantService;
 import app.ordering.food.service.MinioService;
+import app.ordering.food.service.RedisService;
 import cn.hutool.core.io.IoUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,7 +28,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/merchant")
@@ -38,10 +41,16 @@ public class MerchantController {
     private MinioService minioService;
 
     @Resource
+    private RedisService redisService;
+
+    @Resource
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Value("${minio.bucketForMerchants}")
     private String bucket;
+
+    @Value("${spring.redis.jwtTimeout}")
+    private long timeout;
 
     @ApiOperation("Get all merchants")
     @GetMapping("/all")
@@ -102,39 +111,14 @@ public class MerchantController {
         if (merchant == null) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
-        String fileName = id + ".jpg";
-        return minioService.download(bucket, fileName);
-    }
-
-    @ApiOperation("Get the base64 image of a merchant by its ID")
-    @PostMapping("/image64")
-    public Result<String> getImage64ById(@RequestBody @NotNull Map<String, Object> requestBody) {
-        if (requestBody == null) {
-            return Result.error("001P064", "参数体为null");
+        String filename = id + ".jpg";
+        byte[] bytes = minioService.download(bucket, filename);
+        if (bytes == null) {
+            return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
-        if (!requestBody.containsKey("id")) {
-            return Result.error("001P065", "参数体不包含id");
-        }
-        if (requestBody.get("id") == null) {
-            return Result.error("001P066", "id为null");
-        }
-        if (!(requestBody.get("id") instanceof Integer)) {
-            return Result.error("001P067", "id参数类型不匹配");
-        }
-        if (requestBody.size() > 1) {
-            return Result.error("001P068", "参数体包含多余参数");
-        }
-        Integer id      = (Integer) requestBody.get("id");
-        Merchant merchant = merchantService.getById(id);
-        if (merchant == null) {
-            return Result.error("001B008", "merchant不存在");
-        }
-        String           filename = id + ".jpg";
-        Optional<String> image64  = minioService.downloadBase64(bucket,filename);
-        if (image64.isPresent()) {
-            return Result.success(image64.get(), "merchant图片获取成功");
-        }
-        return Result.error("001M005", "merchant图片获取失败");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
     }
 
     @ApiOperation("Upload the image of a merchant by its ID")
@@ -458,18 +442,55 @@ public class MerchantController {
             return Result.error("001P016", "参数体包含多余参数");
         }
         try {
-            Merchant merchant = merchantService.getOne(new QueryWrapper<Merchant>()
-                    .eq("phone", phone));
+            Merchant merchant = merchantService.getByPhone(phone);
             if (merchant == null) {
                 return Result.error("001B003", "账号不存在 登录失败");
             }
             if (!bCryptPasswordEncoder.matches(password, merchant.getPassword())) {
                 return Result.error("001B009", "密码不匹配 登录失败");
             }
-            // todo
-            return Result.success("");
+            // Generate JWT
+            String token = JwtUtils.createToken(merchant);
+            if (token == null) {
+                return Result.error("001B012", "token生成失败");
+            }
+            // Check if JWT is in redis, if not, cache it with an expiry time
+            if (redisService.get(token) != null) {
+                return Result.error("001B010", "用户已经登录");
+            } else {
+                redisService.updateWithTtl(token, merchant.getId().toString(), timeout);
+                return Result.success(token, "用户成功登录 token已保存");
+            }
         } catch (Exception e) {
             return Result.error("001O001", e.getMessage());
         }
+    }
+
+    @ApiOperation("Merchant logout")
+    @PostMapping("/logout")
+    public Result<Void> logout(@RequestBody @NotNull Map<String, Object> requestBody) {
+        if (requestBody == null) {
+            return Result.error("001P069", "参数体为空");
+        }
+        if (!requestBody.containsKey("token")) {
+            return Result.error("001P070", "参数体不包含token");
+        }
+        if (requestBody.get("token") == null) {
+            return Result.error("001P071", "token为null");
+        }
+        if (!(requestBody.get("token") instanceof String)) {
+            return Result.error("001P072", "token参数类型不匹配");
+        }
+        if (requestBody.size() > 1) {
+            return Result.error("001P073", "参数体包含多余参数");
+        }
+        String token = (String)requestBody.get("token");
+        if (redisService.get(token) == null) {
+            return Result.error("001B011", "用户未登录或token已经过期");
+        }
+        if (!redisService.delete(token)) {
+            return Result.error("001M006", "token删除失败");
+        }
+        return Result.success("token删除成功");
     }
 }

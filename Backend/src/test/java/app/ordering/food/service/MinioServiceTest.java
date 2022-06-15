@@ -17,4 +17,11 @@ class MinioServiceTest {
         String bucket = "food-ordering-app";
         minioService.removeBucket(bucket);
     }
+
+    @Test
+    void getImage64() {
+        String bucket = "food-ordering-app-products";
+        String filename = "1.jpg";
+        System.out.println(minioService.downloadBase64(bucket, filename));
+    }
 }

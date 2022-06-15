@@ -1,6 +1,7 @@
 package app.ordering.food.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,8 +23,10 @@ public class Product implements Serializable {
     private              Integer       discount;
     private              Integer       price;
     private              Integer       merchantId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT)
     private              LocalDateTime createAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private              LocalDateTime updateAt;
 }

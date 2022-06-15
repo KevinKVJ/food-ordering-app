@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/food_ordering_app?useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=America/Edmonton&useLegacyDatetimeCode=false
+    url: jdbc:mysql://localhost:3306/food_ordering_app?useSSL=true&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=America/Edmonton&useLegacyDatetimeCode=false
     username: root
     password: 123456
     type: com.zaxxer.hikari.HikariDataSource
@@ -21,6 +21,7 @@ spring:
     port: 6379
     database: 0
     timeout: 60000
+    jwtTimeout: 86400  # 缓存1天
   servlet:
     multipart:
       # 文件请求及大小限制
@@ -32,7 +33,7 @@ spring:
       time-to-live: 600000 # 存活10分钟
       cache-null-values: false
     type: redis
-    cache-names: merchantServiceCache,productServiceCache
+    cache-names: merchantServiceCache,productServiceCache,minioServiceCache
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -47,8 +48,15 @@ minio:
   bucketForMerchants: food-ordering-app-merchants
   bucketForProducts: food-ordering-app-products
 
-# 文件压缩
 server:
+  # 文件压缩
   compression:
     enabled: true
     mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain
+  # tomcat调优
+  tomcat:
+    accept-count: 1000
+    threads:
+      min-spare: 100
+      max: 800
+

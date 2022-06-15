@@ -21,13 +21,13 @@ public class RedisConfig extends CachingConfigurerSupport {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(factory);
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        ObjectMapper                om                          = new ObjectMapper();
-        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        om.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
-        jackson2JsonRedisSerializer.setObjectMapper(om);
-        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-        redisTemplate.setKeySerializer(stringRedisSerializer);
-        redisTemplate.setHashKeySerializer(stringRedisSerializer);
+        ObjectMapper                objectMapper                          = new ObjectMapper();
+        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
+        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
+
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.afterPropertiesSet();

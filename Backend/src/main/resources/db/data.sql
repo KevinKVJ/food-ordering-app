@@ -16,7 +16,7 @@ VALUES
 ('product2', 5, 100, 10, 1000, 2, now(), now());
 
 DELETE FROM t_category;
-INSERT INTO t_category (description, merchant_id, create_at, update_at)
+INSERT INTO t_category (name, merchant_id, create_at, update_at)
 VALUES
 ('category1', 1, now(), now()),
 ('category2', 1, now(), now()),
