@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { onMounted, ref, toRaw } from 'vue';
+import { onMounted, ref, toRaw, toRef } from 'vue';
 import type { productData, productCategory } from './ProductDataTypes';
 // import http from '@/http/request';
 import { apiInsertAProduct, apiGetAllProducts, apiGetAllCategoies, apiGetProductsByCategoryId } from './ProductManagementAPIs';
@@ -96,9 +96,11 @@ const handleGetAllProds = async () => {
 
 const checkedRowKeysRef = ref<(string | number)[]>([]);
 const handleDelete = (ids: (string | number)[]) => {
+    if (ids.length === 0) {
+        return;
+    }
     try {
-        const aaa = toRaw(tableData.value).filter((item, index) => !ids.includes(item.id));
-
+        const aaa = tableData.value.filter((item, index) => !ids.includes(item.id));
         tableData.value = aaa;
         checkedRowKeysRef.value = [];
         // TODO API adding
@@ -121,22 +123,13 @@ const handleDelete = (ids: (string | number)[]) => {
                     <h2>Products Management</h2>
                     <n-space>
                         <n-button type="info" @click="handleAddProductModal">Add</n-button>
-                        <n-button type="error" @click="handleDelete(checkedRowKeysRef)">{{checkedRowKeysRef.length === 0 ? 'Delete' : `Delete(${checkedRowKeysRef.length})`}}</n-button>
+                        <n-button type="error" @click="handleDelete(checkedRowKeysRef)" v-if="!(checkedRowKeysRef.length === 0)">{{
+                            `Delete(${checkedRowKeysRef.length})`
+                        }}</n-button>
                     </n-space>
                 </n-layout-header>
                 <n-layout-content :style="{ backgroundColor: 'transparent', flex: 1 }">
-                    <!-- v-model:checkedRows="checkedRowKeysRef" -->
-                    <ProdDataTable
-                        :tableData="tableData"
-                        @delete-data-row="handleDelete"
-                        @checked-rows="
-                            rowKeys => {
-                                // _log(`rowKeys: ${rowKeys}`);
-                                // _log(tableData);
-                                checkedRowKeysRef = rowKeys;
-                            }
-                        "
-                    />
+                    <ProdDataTable :tableData="tableData" @delete-data-row="handleDelete" v-model:checked-rows="checkedRowKeysRef" />
                 </n-layout-content>
             </n-layout>
 
@@ -149,7 +142,7 @@ const handleDelete = (ids: (string | number)[]) => {
                 :native-scrollbar="false"
             >
                 <ProdCategoriesSider
-                    :category-data="categories"
+                    v-model:category-data="categories"
                     @get-prods-by-category="handleGetProdsByCategory"
                     @get-all-prods="handleGetAllProds"
                 />
