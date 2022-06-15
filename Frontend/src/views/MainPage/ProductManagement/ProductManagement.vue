@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { onMounted, ref, toRaw, toRef } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { productData, productCategory } from './ProductDataTypes';
 // import http from '@/http/request';
 import { apiInsertAProduct, apiGetAllProducts, apiGetAllCategoies, apiGetProductsByCategoryId } from './ProductManagementAPIs';
