@@ -103,11 +103,11 @@ const columns: DataTableColumns<productData> = [
         render(rowData) {
             return (
                 <NButton type='error' size='small' onClick={() => emits('deleteDataRow', [rowData.id])}>
-                    Delete
+                    <span style={{fontSize:'14px'}}>Delete</span>
                 </NButton>
             );
         },
-        width: 80,
+        width: 86,
         fixed: 'right',
         align: 'center',
         className: 'col-operation',

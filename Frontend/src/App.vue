@@ -12,7 +12,7 @@ import { RouterView } from 'vue-router';
 
 <template>
     <!-- <main-container/> -->
-    <router-view></router-view>
+    <router-view />
 </template>
 
 <style lang="scss">
