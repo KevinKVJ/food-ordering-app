@@ -2,14 +2,17 @@ package app.ordering.food.controller;
 
 import app.ordering.food.common.JwtUtils;
 import app.ordering.food.common.Result;
-import app.ordering.food.entity.Merchant;
-import app.ordering.food.service.MerchantService;
-import app.ordering.food.service.MinioService;
-import app.ordering.food.service.RedisService;
+import app.ordering.food.entity.*;
+import app.ordering.food.repository.OrderDetailsRepository;
+import app.ordering.food.service.*;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sun.corba.se.spi.ior.ObjectKey;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.mockito.internal.matchers.Or;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,17 +25,24 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/merchant")
 @Api(tags = "Merchant Controller")
 public class MerchantController {
+
+    @Resource
+    private OrderService orderService;
+
+    @Resource
+    private OrderDetailsRepository orderDetailsRepository;
 
     @Resource
     private MerchantService merchantService;
@@ -44,75 +54,194 @@ public class MerchantController {
     private RedisService redisService;
 
     @Resource
+    private CategoryService categoryService;
+
+    @Resource
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Resource
+    private ProductToCategoryService productToCategoryService;
+
+    @Resource
+    private ProductService productService;
+
     @Value("${minio.bucketForMerchants}")
-    private String bucket;
+    private String bucketForMerchants;
 
     @Value("${spring.redis.jwtTimeout}")
     private long timeout;
 
-    @ApiOperation("Get all merchants")
-    @GetMapping("/all")
-    public Result<List<Merchant>> list() {
-        List<Merchant> merchants = merchantService.list();
-        if (merchants == null) {
-            return Result.error("001M001", "获取merchant列表失败");
+    @ApiOperation("Get all orders of the merchant")
+    @GetMapping("api/v1/merchant/order/all")
+    public Result<List<Map<String, Object>>> getOrders(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        Integer merchantId =  Integer.valueOf(redisService.get(token));
+        Merchant merchant   = merchantService.getById(merchantId);
+        if (merchant == null) {
+            return Result.error("", "merchant id不存在");
         }
-        return Result.success(merchants, "获取merchant列表成功");
+        List<Order> orders = orderService.list(new QueryWrapper<Order>().eq("merchant_id", merchantId));
+        if (orders == null) {
+            return Result.error("", "merchant获取order失败");
+        }
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Order order : orders) {
+            Map<String, Object> map = MapUtil.newHashMap();
+            BeanUtil.copyProperties(order, map);
+            OrderDetails orderDetails = orderDetailsRepository.findByOrderId(order.getId());
+            map.put("products", orderDetails.getProducts());
+            result.add(map);
+        }
+        return Result.success(result, "merchant获取order成功");
     }
 
-    @ApiOperation("Get a merchant without its image by its ID")
-    @PostMapping("/id")
-    public Result<Merchant> getById(@RequestBody @NotNull Map<String, Object> requestBody) {
+    @ApiOperation("Update the category")
+    @PostMapping("api/v1/merchant/category/update")
+    public Result<Category> update(@RequestBody @NotNull Map<String, Object> requestBody) {
         if (requestBody == null) {
-            return Result.error("001P001", "参数体为null");
+            return Result.error("","参数体为null");
         }
+        int length = 0;
         if (!requestBody.containsKey("id")) {
-            return Result.error("001P002", "参数体不包含id");
+            return Result.error("", "参数体不包含category id");
         }
         if (requestBody.get("id") == null) {
-            return Result.error("001P003", "id为null");
+            return Result.error("", "category id为null");
         }
         if (!(requestBody.get("id") instanceof Integer)) {
-            return Result.error("001P004", "id参数类型不匹配");
+            return Result.error("", "category id参数类型不匹配");
+        }
+        ++length;
+        Integer id = (Integer) requestBody.get("id");
+        Category category = categoryService.getById(id);
+        if (category == null) {
+            return Result.error("", "category id不存在");
+        }
+        if (requestBody.containsKey("name")) {
+            if (requestBody.get("name") == null) {
+                return Result.error("", "name为null");
+            }
+            if (!(requestBody.get("name") instanceof String)) {
+                return Result.error("", "name参数类型不匹配");
+            }
+            String name = (String)requestBody.get("name");
+            category.setName(name);
+            ++length;
+        }
+        Integer newMerchantId = null;
+        if (requestBody.containsKey("merchantId")) {
+            if (requestBody.get("merchantId") == null) {
+                return Result.error("", "merchant id为null");
+            }
+            if (!(requestBody.get("merchantId") instanceof Integer)) {
+                return Result.error("", "merchant id参数类型不匹配");
+            }
+            newMerchantId = (Integer) requestBody.get("merchantId");
+            Merchant merchant = merchantService.getById(newMerchantId);
+            if (merchant == null) {
+                return Result.error("", "merchant id不存在");
+            }
+            ++length;
+        }
+        if (length < requestBody.size()) {
+            return Result.error("", "参数体包含多余参数");
+        }
+        Integer merchantId = category.getMerchantId();
+        // If the merchant ID is changed, remove all product IDs that belong to the category.
+        if (newMerchantId != null && !newMerchantId.equals(merchantId)) {
+            productToCategoryService.remove(new QueryWrapper<ProductToCategory>().eq("category_id", id));
+        }
+        category.setUpdateAt(null);
+        if (!categoryService.save(category)) {
+            return Result.error("", "category更新失败");
+        }
+        return Result.success(category, "category更新成功");
+    }
+
+    @ApiOperation("Insert batch categories")
+    @PostMapping("api/v1/merchant/category/insertbatch")
+    public Result<List<Category>> insertBatch(HttpServletRequest request,
+                                              @RequestBody @NotNull Map<String, Object> requestBody) {
+        String token = request.getHeader("Authorization").substring(7);
+        Integer id =  Integer.valueOf(redisService.get(token));
+        Merchant merchant   = merchantService.getById(id);
+        if (merchant == null) {
+            return Result.error("", "merchant id不存在");
+        }
+        if (requestBody == null) {
+            return Result.error("","参数体为null");
+        }
+        if (!requestBody.containsKey("names")) {
+            return Result.error("", "参数体不包含names");
+        }
+        if (requestBody.get("names") == null) {
+            return Result.error("", "names为null");
+        }
+        if (!(requestBody.get("names") instanceof List<?>)) {
+            return Result.error("", "names参数类型不匹配");
         }
         if (requestBody.size() > 1) {
-            return Result.error("001P005", "参数体包含多余参数");
+            return Result.error("", "参数体包含多余参数");
         }
-        Integer id = (Integer) requestBody.get("id");
+        List<?> names = (List<?>) requestBody.get("names");
+        List<Category> categories = new ArrayList<>();
+        for (Object name : names) {
+            if (name == null) {
+                return Result.error("", "names列表包含为null的元素");
+            }
+            if (!(name instanceof String)) {
+                return Result.error("", "names列表包含类型不匹配的元素");
+            }
+            Category category = new Category();
+            category.setName((String)name);
+            category.setMerchantId(id);
+            categories.add(category);
+        }
+        if (!categoryService.saveBatch(categories)) {
+            return Result.error("", "category批量插入失败");
+        }
+        return Result.success(categories, "category批量插入成功");
+    }
+
+    @ApiOperation("Get all categories of the merchant")
+    @GetMapping("api/v1/merchant/category")
+    public Result<List<Category>> getCategoriesByMerchantId(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        Integer id =  Integer.valueOf(redisService.get(token));
+        Merchant merchant   = merchantService.getById(id);
+        if (merchant == null) {
+            return Result.error("", "merchant id不存在");
+        }
+        List<Category> categories = categoryService.listByMerchantId(id);
+        if (categories == null) {
+            return Result.error("", "获取category列表失败");
+        }
+        return Result.success(categories, "获取category列表成功");
+    }
+
+    @ApiOperation("Get the merchant without the merchant's image")
+    @PostMapping("api/v1/merchant")
+    public Result<Merchant> getById(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        Integer id =  Integer.valueOf(redisService.get(token));
         Merchant merchant = merchantService.getById(id);
         if (merchant == null) {
-            return Result.error("001B001", "merchant不存在");
+            return Result.error("", "merchant不存在");
         }
         return Result.success(merchant, "merchant获取成功");
     }
 
-    @ApiOperation("Get the image of a merchant by its ID")
-    @PostMapping("/image")
-    public ResponseEntity<byte[]> getImageById(@RequestBody @NotNull Map<String, Object> requestBody) {
-        if (requestBody == null) {
-            return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
-        }
-        if (!requestBody.containsKey("id")) {
-            return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
-        }
-        if (requestBody.get("id") == null) {
-            return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
-        }
-        if (!(requestBody.get("id") instanceof Integer)) {
-            return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
-        }
-        if (requestBody.size() > 1) {
-            return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
-        }
-        Integer id = (Integer) requestBody.get("id");
+    @ApiOperation("Get the image of the merchant itself")
+    @GetMapping("api/v1/merchant/image")
+    public ResponseEntity<byte[]> getImageById(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        Integer id =  Integer.valueOf(redisService.get(token));
         Merchant merchant = merchantService.getById(id);
         if (merchant == null) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
         String filename = id + ".jpg";
-        byte[] bytes = minioService.download(bucket, filename);
+        byte[] bytes = minioService.download(bucketForMerchants, filename);
         if (bytes == null) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
@@ -121,34 +250,175 @@ public class MerchantController {
         return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
     }
 
-    @ApiOperation("Upload the image of a merchant by its ID")
-    @PostMapping("/upload")
-    public Result<Void> uploadImageById(
-            @RequestParam("id") @NotNull Integer id,
+    @ApiOperation("Merchant Login")
+    @PostMapping("api/v1/merchant/login")
+    public Result<String> login(@RequestBody @NotNull Map<String, Object> requestBody) {
+        if (requestBody == null) {
+            return Result.error("001P009", "参数体为空");
+        }
+        if (!requestBody.containsKey("phone")) {
+            return Result.error("001P010", "参数体不包含phone");
+        }
+        if (requestBody.get("phone") == null) {
+            return Result.error("001P011", "phone为null");
+        }
+        if (!(requestBody.get("phone") instanceof String)) {
+            return Result.error("001P012", "phone参数类型不匹配");
+        }
+        if (!requestBody.containsKey("password")) {
+            return Result.error("001P013", "参数体不包含password");
+        }
+        if (requestBody.get("password") == null) {
+            return Result.error("001P014", "password为null");
+        }
+        if (!(requestBody.get("password") instanceof String)) {
+            return Result.error("001P015", "password参数类型不匹配");
+        }
+        String phone = (String)requestBody.get("phone");
+        String password = (String)requestBody.get("password");
+        if (requestBody.size() > 2) {
+            return Result.error("001P016", "参数体包含多余参数");
+        }
+        try {
+            Merchant merchant = merchantService.getByPhone(phone);
+            if (merchant == null) {
+                return Result.error("001B003", "账号不存在 登录失败");
+            }
+            if (!bCryptPasswordEncoder.matches(password, merchant.getPassword())) {
+                return Result.error("001B009", "密码不匹配 登录失败");
+            }
+            // Generate JWT
+            String token = JwtUtils.createToken(merchant);
+            if (token == null) {
+                return Result.error("001B012", "token生成失败");
+            }
+            // Check if JWT is in redis, if not, cache it with an expiry time
+            if (redisService.get(token) != null) {
+                return Result.error("001B010", "用户已经登录");
+            } else {
+                redisService.updateWithTtl(token, merchant.getId().toString(), timeout);
+                return Result.success(token, "用户成功登录 token已保存");
+            }
+        } catch (Exception e) {
+            return Result.error("001O001", e.getMessage());
+        }
+    }
+
+    @ApiOperation("Merchant logout")
+    @PostMapping("api/v1/merchant/logout")
+    public Result<Void> logout(@RequestBody @NotNull Map<String, Object> requestBody) {
+        if (requestBody == null) {
+            return Result.error("001P069", "参数体为空");
+        }
+        if (!requestBody.containsKey("token")) {
+            return Result.error("001P070", "参数体不包含token");
+        }
+        if (requestBody.get("token") == null) {
+            return Result.error("001P071", "token为null");
+        }
+        if (!(requestBody.get("token") instanceof String)) {
+            return Result.error("001P072", "token参数类型不匹配");
+        }
+        if (requestBody.size() > 1) {
+            return Result.error("001P073", "参数体包含多余参数");
+        }
+        String token = (String)requestBody.get("token");
+        if (redisService.get(token) == null) {
+            return Result.error("001B011", "用户未登录或token已经过期");
+        }
+        if (!redisService.delete(token)) {
+            return Result.error("001M006", "token删除失败");
+        }
+        return Result.success("token删除成功");
+    }
+
+    @ApiOperation("Get all categories of a product by the product ID")
+    @PostMapping("api/v1/merchant/product/categories")
+    public Result<List<Category>> getCategoriesByProductId(@RequestBody @NotNull Map<String, Object> requestBody) {
+        if (requestBody == null) {
+            return Result.error("005P011","参数体为null");
+        }
+        if (!requestBody.containsKey("productId")) {
+            return Result.error("005P012", "参数体不包含productId");
+        }
+        if (requestBody.get("productId") == null) {
+            return Result.error("005P013", "productId为null");
+        }
+        if (!(requestBody.get("productId") instanceof Integer)) {
+            return Result.error("005P014", "productId参数类型不匹配");
+        }
+        if (requestBody.size() > 1) {
+            return Result.error("005P015", "参数体包含多余参数");
+        }
+        Integer productId = (Integer) requestBody.get("productId");
+        Product product   = productService.getById(productId);
+        if (product == null) {
+            return Result.error("005B003", "product id不存在");
+        }
+        List<Category> categories = categoryService.getCategoriesByProductId(productId);
+        if (categories == null) {
+            return Result.error("005M003", "获取category列表失败");
+        }
+        return Result.success(categories, "获取category成功");
+    }
+
+    @ApiOperation("Get all products of a category by the category ID")
+    @PostMapping("api/v1/merchant/category/products")
+    public Result<List<Product>> getProductsByCategoryId(@RequestBody @NotNull Map<String, Object> requestBody) {
+        if (requestBody == null) {
+            return Result.error("005P016","参数体为null");
+        }
+        if (!requestBody.containsKey("id")) {
+            return Result.error("005P017", "参数体不包含id");
+        }
+        if (requestBody.get("productId") == null) {
+            return Result.error("005P018", "id为null");
+        }
+        if (!(requestBody.get("productId") instanceof Integer)) {
+            return Result.error("005P019", "id参数类型不匹配");
+        }
+        if (requestBody.size() > 1) {
+            return Result.error("005P020", "参数体包含多余参数");
+        }
+        Integer categoryId = (Integer) requestBody.get("id");
+        Category category = categoryService.getById(categoryId);
+        if (category == null) {
+            return Result.error("005M004", "category id不存在");
+        }
+        List<Product> products = categoryService.getProductsByCategoryId(categoryId);
+        if (products == null) {
+            return Result.error("005M005", "获取product列表失败");
+        }
+        return Result.success(products, "获取product列表成功");
+    }
+
+    @ApiOperation("Upload the image of a merchant by the merchant ID")
+    @PostMapping("api/v1/merchant/image/upload")
+    public Result<Void> uploadImage(
+            HttpServletRequest request,
             @RequestPart("file") @NotNull MultipartFile multipartFile
     ) {
-        if (id == null) {
-            return Result.error("001P006", "id为null");
+        String token = request.getHeader("Authorization").substring(7);
+        Integer id =  Integer.valueOf(redisService.get(token));
+        Merchant merchant   = merchantService.getById(id);
+        if (merchant == null) {
+            return Result.error("", "merchant id不存在");
         }
         if (multipartFile == null) {
             return Result.error("001P007", "multipartFile为null");
-        }
-        Merchant merchant = merchantService.getById(id);
-        if (merchant == null) {
-            return Result.error("001B002", "merchant不存在");
         }
         if (!"image/jpeg".equals(multipartFile.getContentType())) {
             return Result.error("001P008", "multipartFile不是image/jpeg");
         }
         String filename = id + ".jpg";
-        if (!minioService.upload(bucket, multipartFile, filename)) {
+        if (!minioService.upload(bucketForMerchants, multipartFile, filename)) {
             return Result.error("001M004", "multipartFile上传失败");
         }
         return Result.success("multipartFile上传成功");
     }
 
-    @ApiOperation("Insert a merchant")
-    @PostMapping("/insert")
+    @ApiOperation("Insert a merchant except the merchant's image")
+    @PostMapping("api/v1/merchant/insert")
     public Result<Merchant> insert(@RequestBody @NotNull Map<String, Object> requestBody) {
         if (requestBody == null) {
             return Result.error("001P017", "参数体为null");
@@ -285,212 +555,122 @@ public class MerchantController {
                 contentType,
                 IoUtil.readBytes(fileInputStream)
         );
-        if (!minioService.upload(bucket, multipartFile, filename)) {
+        if (!minioService.upload(bucketForMerchants, multipartFile, filename)) {
             return Result.error("001M003", "merchant插入失败");
         }
         return Result.success(merchant, "merchant插入成功");
     }
 
-    @ApiOperation("Update a merchant")
-    @PostMapping("/update")
-    public Result<Merchant> updateById(@RequestBody @NotNull Map<String, Object> requestBody) {
+    @ApiOperation("Update a merchant except the merchant's image")
+    @PostMapping("api/v1/merchant/update")
+    public Result<Merchant> update(
+            HttpServletRequest request,
+            @RequestBody @NotNull Map<String, Object> requestBody) {
+        String token = request.getHeader("Authorization").substring(7);
+        Integer id =  Integer.valueOf(redisService.get(token));
+        Merchant merchant   = merchantService.getById(id);
+        if (merchant == null) {
+            return Result.error("", "merchant id不存在");
+        }
         if (requestBody == null) {
             return Result.error("001P043", "参数体为null");
         }
         int length = 0;
-        if (!requestBody.containsKey("id")) {
-            return Result.error("001P044", "参数体不包含id");
-        }
-        if (requestBody.get("id") == null) {
-            return Result.error("001P045", "id为null");
-        }
-        if (!(requestBody.get("id") instanceof Integer)) {
-            return Result.error("001P046", "id参数类型不匹配");
-        }
-        Integer id = (Integer) requestBody.get("id");
-        Merchant merchant = merchantService.getById(id);
-        if (merchant == null) {
-            return Result.error("001B005", "获取merchant失败");
-        } else {
+        if (requestBody.containsKey("phone")) {
+            if (requestBody.get("phone") == null) {
+                return Result.error("001P047", "phone为null");
+            }
+            if (!(requestBody.get("phone") instanceof String)) {
+                return Result.error("001P048", "phone参数类型不匹配");
+            }
+            String newPhone = (String)requestBody.get("phone");
+            if (!newPhone.equals(merchant.getPhone())) {
+                Merchant temp2 = merchantService.getOne(new QueryWrapper<Merchant>()
+                        .eq("phone", newPhone));
+                if (temp2 != null) {
+                    return Result.error("001B006", "phone已经存在");
+                }
+            }
+            merchant.setPhone((String)requestBody.get("phone"));
             ++length;
-            if (requestBody.containsKey("phone")) {
-                if (requestBody.get("phone") == null) {
-                    return Result.error("001P047", "phone为null");
-                }
-                if (!(requestBody.get("phone") instanceof String)) {
-                    return Result.error("001P048", "phone参数类型不匹配");
-                }
-                String newPhone = (String)requestBody.get("phone");
-                if (!newPhone.equals(merchant.getPhone())) {
-                    Merchant temp2 = merchantService.getOne(new QueryWrapper<Merchant>()
-                            .eq("phone", newPhone));
-                    if (temp2 != null) {
-                        return Result.error("001B006", "phone已经存在");
-                    }
-                }
-                merchant.setPhone((String)requestBody.get("phone"));
-                ++length;
+        }
+        if (requestBody.containsKey("password")) {
+            if (requestBody.get("password") == null) {
+                return Result.error("001P049", "password为null");
             }
-            if (requestBody.containsKey("password")) {
-                if (requestBody.get("password") == null) {
-                    return Result.error("001P049", "password为null");
-                }
-                if (!(requestBody.get("password") instanceof String)) {
-                    return Result.error("001P050", "password参数类型不匹配");
-                }
-                merchant.setPassword(bCryptPasswordEncoder.encode((String)requestBody.get("password")));
-                ++length;
+            if (!(requestBody.get("password") instanceof String)) {
+                return Result.error("001P050", "password参数类型不匹配");
             }
-            if (requestBody.containsKey("name")) {
-                if (requestBody.get("name") == null) {
-                    return Result.error("001P051", "name为null");
-                }
-                if (!(requestBody.get("name") instanceof String)) {
-                    return Result.error("001P052", "name参数类型不匹配");
-                }
-                merchant.setName((String)requestBody.get("name"));
-                ++length;
+            merchant.setPassword(bCryptPasswordEncoder.encode((String)requestBody.get("password")));
+            ++length;
+        }
+        if (requestBody.containsKey("name")) {
+            if (requestBody.get("name") == null) {
+                return Result.error("001P051", "name为null");
             }
-            if (requestBody.containsKey("description")) {
-                if (requestBody.get("description") == null) {
-                    return Result.error("001P053", "description为null");
-                }
-                if (!(requestBody.get("description") instanceof String)) {
-                    return Result.error("001P054", "description参数类型不匹配");
-                }
-                merchant.setDescription((String)requestBody.get("description"));
-                ++length;
+            if (!(requestBody.get("name") instanceof String)) {
+                return Result.error("001P052", "name参数类型不匹配");
             }
-            if (requestBody.containsKey("address")) {
-                if (requestBody.get("address") == null) {
-                    return Result.error("001P055", "address为null");
-                }
-                if (!(requestBody.get("address") instanceof String)) {
-                    return Result.error("001P056", "address参数类型不匹配");
-                }
-                merchant.setAddress((String)requestBody.get("address"));
-                ++length;
+            merchant.setName((String)requestBody.get("name"));
+            ++length;
+        }
+        if (requestBody.containsKey("description")) {
+            if (requestBody.get("description") == null) {
+                return Result.error("001P053", "description为null");
             }
-            if (requestBody.containsKey("publicPhone")) {
-                if (requestBody.get("publicPhone") == null) {
-                    return Result.error("001P057", "publicPhone为null");
-                }
-                if (!(requestBody.get("publicPhone") instanceof String)) {
-                    return Result.error("001P058", "publicPhone参数类型不匹配");
-                }
-                merchant.setPublicPhone((String)requestBody.get("publicPhone"));
-                ++length;
+            if (!(requestBody.get("description") instanceof String)) {
+                return Result.error("001P054", "description参数类型不匹配");
             }
-            if (requestBody.containsKey("publicAddress")) {
-                if (requestBody.get("publicAddress") == null) {
-                    return Result.error("001P059", "publicAddress为null");
-                }
-                if (!(requestBody.get("publicAddress") instanceof String)) {
-                    return Result.error("001P060", "publicAddress参数类型不匹配");
-                }
-                merchant.setPublicAddress((String)requestBody.get("publicAddress"));
-                ++length;
+            merchant.setDescription((String)requestBody.get("description"));
+            ++length;
+        }
+        if (requestBody.containsKey("address")) {
+            if (requestBody.get("address") == null) {
+                return Result.error("001P055", "address为null");
             }
-            if (requestBody.containsKey("businessHours")) {
-                if (requestBody.get("businessHours") == null) {
-                    return Result.error("001P061", "businessHours为null");
-                }
-                if (!(requestBody.get("businessHours") instanceof String)) {
-                    return Result.error("001P062", "businessHours参数类型不匹配");
-                }
-                merchant.setBusinessHours((String)requestBody.get("businessHours"));
-                ++length;
+            if (!(requestBody.get("address") instanceof String)) {
+                return Result.error("001P056", "address参数类型不匹配");
             }
-            if (requestBody.size() > length) {
-                return Result.error("001P063", "参数体包含多余参数");
+            merchant.setAddress((String)requestBody.get("address"));
+            ++length;
+        }
+        if (requestBody.containsKey("publicPhone")) {
+            if (requestBody.get("publicPhone") == null) {
+                return Result.error("001P057", "publicPhone为null");
             }
-            merchant.setUpdateAt(null);
-            if (!merchantService.updateById(merchant)) {
-                return Result.error("001B007", "merchant更新失败");
+            if (!(requestBody.get("publicPhone") instanceof String)) {
+                return Result.error("001P058", "publicPhone参数类型不匹配");
             }
-            return Result.success(merchant, "merchant更新成功");
+            merchant.setPublicPhone((String)requestBody.get("publicPhone"));
+            ++length;
         }
-    }
-
-    @ApiOperation("Merchant Login")
-    @PostMapping("/login")
-    public Result<String> login(@RequestBody @NotNull Map<String, Object> requestBody) {
-        if (requestBody == null) {
-            return Result.error("001P009", "参数体为空");
-        }
-        if (!requestBody.containsKey("phone")) {
-            return Result.error("001P010", "参数体不包含phone");
-        }
-        if (requestBody.get("phone") == null) {
-            return Result.error("001P011", "phone为null");
-        }
-        if (!(requestBody.get("phone") instanceof String)) {
-            return Result.error("001P012", "phone参数类型不匹配");
-        }
-        if (!requestBody.containsKey("password")) {
-            return Result.error("001P013", "参数体不包含password");
-        }
-        if (requestBody.get("password") == null) {
-            return Result.error("001P014", "password为null");
-        }
-        if (!(requestBody.get("password") instanceof String)) {
-            return Result.error("001P015", "password参数类型不匹配");
-        }
-        String phone = (String)requestBody.get("phone");
-        String password = (String)requestBody.get("password");
-        if (requestBody.size() > 2) {
-            return Result.error("001P016", "参数体包含多余参数");
-        }
-        try {
-            Merchant merchant = merchantService.getByPhone(phone);
-            if (merchant == null) {
-                return Result.error("001B003", "账号不存在 登录失败");
+        if (requestBody.containsKey("publicAddress")) {
+            if (requestBody.get("publicAddress") == null) {
+                return Result.error("001P059", "publicAddress为null");
             }
-            if (!bCryptPasswordEncoder.matches(password, merchant.getPassword())) {
-                return Result.error("001B009", "密码不匹配 登录失败");
+            if (!(requestBody.get("publicAddress") instanceof String)) {
+                return Result.error("001P060", "publicAddress参数类型不匹配");
             }
-            // Generate JWT
-            String token = JwtUtils.createToken(merchant);
-            if (token == null) {
-                return Result.error("001B012", "token生成失败");
+            merchant.setPublicAddress((String)requestBody.get("publicAddress"));
+            ++length;
+        }
+        if (requestBody.containsKey("businessHours")) {
+            if (requestBody.get("businessHours") == null) {
+                return Result.error("001P061", "businessHours为null");
             }
-            // Check if JWT is in redis, if not, cache it with an expiry time
-            if (redisService.get(token) != null) {
-                return Result.error("001B010", "用户已经登录");
-            } else {
-                redisService.updateWithTtl(token, merchant.getId().toString(), timeout);
-                return Result.success(token, "用户成功登录 token已保存");
+            if (!(requestBody.get("businessHours") instanceof String)) {
+                return Result.error("001P062", "businessHours参数类型不匹配");
             }
-        } catch (Exception e) {
-            return Result.error("001O001", e.getMessage());
+            merchant.setBusinessHours((String)requestBody.get("businessHours"));
+            ++length;
         }
-    }
-
-    @ApiOperation("Merchant logout")
-    @PostMapping("/logout")
-    public Result<Void> logout(@RequestBody @NotNull Map<String, Object> requestBody) {
-        if (requestBody == null) {
-            return Result.error("001P069", "参数体为空");
+        if (requestBody.size() > length) {
+            return Result.error("001P063", "参数体包含多余参数");
         }
-        if (!requestBody.containsKey("token")) {
-            return Result.error("001P070", "参数体不包含token");
+        merchant.setUpdateAt(null);
+        if (!merchantService.updateById(merchant)) {
+            return Result.error("001B007", "merchant更新失败");
         }
-        if (requestBody.get("token") == null) {
-            return Result.error("001P071", "token为null");
-        }
-        if (!(requestBody.get("token") instanceof String)) {
-            return Result.error("001P072", "token参数类型不匹配");
-        }
-        if (requestBody.size() > 1) {
-            return Result.error("001P073", "参数体包含多余参数");
-        }
-        String token = (String)requestBody.get("token");
-        if (redisService.get(token) == null) {
-            return Result.error("001B011", "用户未登录或token已经过期");
-        }
-        if (!redisService.delete(token)) {
-            return Result.error("001M006", "token删除失败");
-        }
-        return Result.success("token删除成功");
+        return Result.success(merchant, "merchant更新成功");
     }
 }

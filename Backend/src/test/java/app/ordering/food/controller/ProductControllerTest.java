@@ -31,8 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Rollback
 class ProductControllerTest {
 
-    private final String baseUrl = "/api/v1/product";
-
     @Resource
     private MockMvc mockMvc;
 
@@ -41,7 +39,7 @@ class ProductControllerTest {
 
     @Test
     void getProducts() throws Exception {
-        String url = baseUrl + "/all";
+        String url = "/api/v1/product/all";
         RequestBuilder request = MockMvcRequestBuilders.get(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
@@ -54,8 +52,8 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProductById() throws Exception {
-        String url = baseUrl + "/id";
+    void getById() throws Exception {
+        String url = "/api/v1/product/id";
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("id", 1);
         RequestBuilder request = MockMvcRequestBuilders.post(url)
@@ -71,10 +69,10 @@ class ProductControllerTest {
     }
 
     @Test
-    void insert() throws Exception {
-        String url = baseUrl + "/insert";
+    void insertProduct() throws Exception {
+        String url = "/api/v1/product/insert";
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("name", "name");
+        requestBody.put("name", "productName");
         requestBody.put("monthly", 150);
         requestBody.put("inventory", 120);
         requestBody.put("discount", 20);
@@ -94,12 +92,13 @@ class ProductControllerTest {
         String bucket = "food-ordering-app-products";
         String filename = "3.jpg";
         Assertions.assertTrue(minioService.existObject(bucket, filename));
+        // restore
         minioService.removeObject(bucket, filename);
     }
 
     @Test
-    void downloadBase64() throws Exception {
-        String url = baseUrl + "/image64";
+    void downloadImage64() throws Exception {
+        String url = "/api/v1/product/image64";
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("id", 1);
         RequestBuilder request = MockMvcRequestBuilders.post(url)

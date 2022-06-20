@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/product")
 @Api(tags = "Product Controller")
 public class ProductController {
 
@@ -45,8 +44,8 @@ public class ProductController {
     private ProductService productService;
 
     @ApiOperation("Get all products")
-    @GetMapping("/all")
-    public Result<List<Product>> list() {
+    @GetMapping("api/v1/product/all")
+    public Result<List<Product>> getProducts() {
         List<Product> products = productService.list();
         if (products == null) {
             return Result.error("002M001", "获取product列表失败");
@@ -54,34 +53,8 @@ public class ProductController {
         return Result.success(products, "获取product列表成功");
     }
 
-    @ApiOperation("Get a product without its image by its ID")
-    @PostMapping("/id")
-    public Result<Product> getById(@RequestBody @NotNull Map<String, Object> requestBody) {
-        if (requestBody == null) {
-            return Result.error("002P001", "参数体为null");
-        }
-        if (!requestBody.containsKey("id")) {
-            return Result.error("002P002", "参数体不包含id");
-        }
-        if (requestBody.get("id") == null) {
-            return Result.error("002P003", "id为null");
-        }
-        if (!(requestBody.get("id") instanceof Integer)) {
-            return Result.error("002P004", "id参数类型不匹配");
-        }
-        if (requestBody.size() > 1) {
-            return Result.error("002P005", "参数体包含多余参数");
-        }
-        Integer  id       = (Integer) requestBody.get("id");
-        Product product = productService.getById(id);
-        if (product == null) {
-            return Result.error("002B001", "product不存在");
-        }
-        return Result.success(product, "product获取成功");
-    }
-
-    @ApiOperation("Get the image of a product by its ID")
-    @PostMapping("/image")
+    @ApiOperation("Get the image of a product by the product ID")
+    @PostMapping("api/v1/product/image")
     public ResponseEntity<byte[]> getImageById(@RequestBody @NotNull Map<String, Object> requestBody) {
         if (requestBody == null) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
@@ -113,8 +86,34 @@ public class ProductController {
         return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
     }
 
-    @ApiOperation("Upload the image of a product by its ID")
-    @PostMapping("/upload")
+    @ApiOperation("Get a product without its image by the product ID")
+    @PostMapping("api/v1/product/id")
+    public Result<Product> getById(@RequestBody @NotNull Map<String, Object> requestBody) {
+        if (requestBody == null) {
+            return Result.error("002P001", "参数体为null");
+        }
+        if (!requestBody.containsKey("id")) {
+            return Result.error("002P002", "参数体不包含id");
+        }
+        if (requestBody.get("id") == null) {
+            return Result.error("002P003", "id为null");
+        }
+        if (!(requestBody.get("id") instanceof Integer)) {
+            return Result.error("002P004", "id参数类型不匹配");
+        }
+        if (requestBody.size() > 1) {
+            return Result.error("002P005", "参数体包含多余参数");
+        }
+        Integer  id       = (Integer) requestBody.get("id");
+        Product product = productService.getById(id);
+        if (product == null) {
+            return Result.error("002B001", "product不存在");
+        }
+        return Result.success(product, "product获取成功");
+    }
+
+    @ApiOperation("Upload the image of a product by the product ID")
+    @PostMapping("api/v1/product/upload")
     public Result<Void> uploadImageById(
             @RequestParam("id") @NotNull Integer id,
             @RequestPart("file") @NotNull MultipartFile multipartFile
@@ -139,8 +138,39 @@ public class ProductController {
         return Result.success("multipartFile上传成功");
     }
 
+    @ApiOperation("Get the base64 image of a product by the product ID")
+    @PostMapping("api/v1/product/image64")
+    public Result<String> getImage64ById(@RequestBody @NotNull Map<String, Object> requestBody) {
+        if (requestBody == null) {
+            return Result.error("002P045", "参数体为null");
+        }
+        if (!requestBody.containsKey("id")) {
+            return Result.error("002P046", "参数体不包含id");
+        }
+        if (requestBody.get("id") == null) {
+            return Result.error("002P047", "id为null");
+        }
+        if (!(requestBody.get("id") instanceof Integer)) {
+            return Result.error("002P048", "id参数类型不匹配");
+        }
+        if (requestBody.size() > 1) {
+            return Result.error("002P049", "参数体包含多余参数");
+        }
+        Integer id      = (Integer) requestBody.get("id");
+        Merchant merchant = merchantService.getById(id);
+        if (merchant == null) {
+            return Result.error("002B004", "merchant不存在");
+        }
+        String           filename = id + ".jpg";
+        String image64  = minioService.downloadBase64(bucket,filename);
+        if (image64 != null) {
+            return Result.success(image64, "merchant图片获取成功");
+        }
+        return Result.error("002M006", "merchant图片获取失败");
+    }
+
     @ApiOperation("Insert a product")
-    @PostMapping("/insert")
+    @PostMapping("api/v1/product/insert")
     public Result<Product> insert(@RequestBody @NotNull Map<String, Object> requestBody) {
         if (requestBody == null) {
             return Result.error("002P009", "参数体为null");
@@ -259,7 +289,7 @@ public class ProductController {
     }
 
     @ApiOperation("Update a product")
-    @PostMapping("/update")
+    @PostMapping("api/v1/product/update")
     public Result<Product> updateById(@RequestBody @NotNull Map<String, Object> requestBody) {
         if (requestBody == null) {
             return Result.error("002P026", "参数体为null");
@@ -338,36 +368,5 @@ public class ProductController {
             return Result.error("002P041", "product更新失败");
         }
         return Result.success(product, "product更新成功");
-    }
-
-    @ApiOperation("Get the base64 image of a product by its ID")
-    @PostMapping("/image64")
-    public Result<String> getImage64ById(@RequestBody @NotNull Map<String, Object> requestBody) {
-        if (requestBody == null) {
-            return Result.error("002P045", "参数体为null");
-        }
-        if (!requestBody.containsKey("id")) {
-            return Result.error("002P046", "参数体不包含id");
-        }
-        if (requestBody.get("id") == null) {
-            return Result.error("002P047", "id为null");
-        }
-        if (!(requestBody.get("id") instanceof Integer)) {
-            return Result.error("002P048", "id参数类型不匹配");
-        }
-        if (requestBody.size() > 1) {
-            return Result.error("002P049", "参数体包含多余参数");
-        }
-        Integer id      = (Integer) requestBody.get("id");
-        Merchant merchant = merchantService.getById(id);
-        if (merchant == null) {
-            return Result.error("002B004", "merchant不存在");
-        }
-        String           filename = id + ".jpg";
-        String image64  = minioService.downloadBase64(bucket,filename);
-        if (image64 != null) {
-            return Result.success(image64, "merchant图片获取成功");
-        }
-        return Result.error("002M006", "merchant图片获取失败");
     }
 }

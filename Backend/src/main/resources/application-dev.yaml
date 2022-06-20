@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/food_ordering_app?useSSL=true&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=America/Edmonton&useLegacyDatetimeCode=false
+    url: jdbc:mysql://localhost:13306/food_ordering_app?useSSL=true&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=America/Edmonton&useLegacyDatetimeCode=false
     username: root
     password: 123456
     type: com.zaxxer.hikari.HikariDataSource
@@ -34,6 +34,15 @@ spring:
       cache-null-values: false
     type: redis
     cache-names: merchantServiceCache,productServiceCache,minioServiceCache
+  data:
+    # mongodb设置
+    mongodb:
+      username: mongoadmin
+      password: secret
+      database: orderDetails
+      port: 17017 # 不要使用27017 会和本地mongodb端口冲突
+      host: 127.0.0.1
+      authentication-database: admin
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -53,10 +62,9 @@ server:
   compression:
     enabled: true
     mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain
-  # tomcat调优
-  tomcat:
-    accept-count: 1000
+  # undertow调优
+  undertow:
     threads:
-      min-spare: 100
-      max: 800
-
+      io: 16
+      worker: 256
+    direct-buffers: true

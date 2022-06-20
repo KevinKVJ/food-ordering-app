@@ -23,3 +23,14 @@ VALUES
 ('category3', 2, now(), now());
 
 DELETE FROM t_product_to_category;
+
+DELETE FROM t_order_delivery_method;
+
+DELETE FROM t_order_status;
+
+DELETE FROM t_client;
+INSERT INTO t_client (create_at, update_at)
+VALUES
+(now(), now()),
+(now(), now()),
+(now(), now());
