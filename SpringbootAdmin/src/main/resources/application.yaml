@@ -1,0 +1,12 @@
+server:
+  port: 8085
+  # 文件压缩
+  compression:
+    enabled: true
+    mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain
+  # undertow调优
+  undertow:
+    threads:
+      io: 16
+      worker: 256
+    direct-buffers: true

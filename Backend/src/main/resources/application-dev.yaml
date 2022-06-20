@@ -1,7 +1,9 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:13306/food_ordering_app?useSSL=true&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=America/Edmonton&useLegacyDatetimeCode=false
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    # driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:p6spy:mysql://localhost:13306/food_ordering_app?useSSL=true&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=America/Edmonton&useLegacyDatetimeCode=false
+    # url: jdbc:mysql://localhost:13306/food_ordering_app?useSSL=true&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=America/Edmonton&useLegacyDatetimeCode=false
     username: root
     password: 123456
     type: com.zaxxer.hikari.HikariDataSource
@@ -43,9 +45,16 @@ spring:
       port: 17017 # 不要使用27017 会和本地mongodb端口冲突
       host: 127.0.0.1
       authentication-database: admin
+  boot:
+    # Springboot Admin设置
+    admin:
+      client:
+        url: http://127.0.0.1:8085
 mybatis-plus:
   configuration:
+    # mp日志管理
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
     map-underscore-to-camel-case: true
   mapper-locations: classpath:mapper/*.xml
 
@@ -68,3 +77,26 @@ server:
       io: 16
       worker: 256
     direct-buffers: true
+management:
+  # endpoint管理
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  file:
+    path: /log
+    name: app.log
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+  level:
+    # 只记录sql的参数和返回结果数
+    app:
+      ordering:
+        food:
+          mapper: debug

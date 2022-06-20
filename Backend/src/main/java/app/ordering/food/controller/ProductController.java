@@ -113,7 +113,7 @@ public class ProductController {
     }
 
     @ApiOperation("Upload the image of a product by the product ID")
-    @PostMapping("api/v1/product/upload")
+    @PostMapping("api/v1/product/image/upload")
     public Result<Void> uploadImageById(
             @RequestParam("id") @NotNull Integer id,
             @RequestPart("file") @NotNull MultipartFile multipartFile
