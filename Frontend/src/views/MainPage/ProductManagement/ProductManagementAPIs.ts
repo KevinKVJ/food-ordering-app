@@ -30,10 +30,10 @@ export const apiInsertAProduct = (body: productDataInserted) => API.post('/api/v
 /**
  * API: Get All Categories
  */
-export const apiGetAllCategoies = () => API.get('/api/v1/category/self/merchant');
+export const apiGetAllCategoies = () => API.get('/api/v1/merchant/category');
 
 
 /**
  * API: Get All Products By Category Id
  */
-export const apiGetProductsByCategoryId = (body:{ id: number }) => API.post("/api/v1/category/self/allproducts",body);
+export const apiGetProductsByCategoryId = (body:{ id: number }) => API.post("/api/v1/merchant/category/products",body);
