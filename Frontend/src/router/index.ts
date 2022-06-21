@@ -10,6 +10,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/',
         component: MainPage,
+        redirect:'/prodm',  
         children: [
             {
                 path: '/odm',
