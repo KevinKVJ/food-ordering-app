@@ -2,40 +2,46 @@
 import { DataTableColumns, DataTableCreateRowKey, NButton, PaginationProps } from 'naive-ui';
 import type { orderData } from '../OdDataTypes';
 
+const { tableData } = defineProps<{
+    tableData: any[];
+    // checkedRows: any[],
+}>();
+
 const columns: DataTableColumns<orderData> = [
     {
         title: 'No.',
-        key:"id",
-        align:'center'
+        key: 'id',
+        align: 'center',
     },
     {
-        title:'Client Name',
-        key: "clientName"
+        title: 'Client Name',
+        key: 'clientId',
+        align: 'center',
     },
     {
-        title:'Address',
-        key: "address"
+        title: 'Status',
+        key: 'statusId',
     },
-    // {
-    //     title:'Phone',
-    //     key: "phone"
-    // },
+    {
+        title: 'Address',
+        key: 'address',
+    },
+    {
+        title: 'Phone',
+        key: 'phone',
+    },
+    {
+        title: 'DeliveryMethod',
+        key: 'deliveryMethodId',
+    },
+    {
+        title: 'Total Price',
+        key: 'totalPrice',
+    },
     // {
     //     title:'Payment Method',
     //     key: "paymentMethod"
     // },
-    {
-        title:'Payment Method',
-        key: "paymentMethod"
-    },
-    {
-        title:'Payment Method',
-        key: "paymentMethod"
-    },
-    {
-        title:'Payment Method',
-        key: "paymentMethod"
-    },
 ];
 </script>
 <template>
@@ -45,7 +51,17 @@ const columns: DataTableColumns<orderData> = [
             :row-key="(obj:productData) => obj.id"
             :checked-row-keys="checkedRows"
             @update:checked-row-keys="(rowKeys:RowKey[]) => emits('update:checkedRows',rowKeys)" -->
-        <n-data-table :columns="columns" :style="{ height: '100%' }" flex-height :scroll-x="800" :single-line="false" />
+            <!-- :bordered="false" -->
+            <!-- flex-height -->
+            <!-- :style="{ height: '100%' }" -->
+            <!-- :bordered="false" -->
+            <!-- :single-line="false" -->
+        <n-data-table
+            :columns="columns"
+            :row-key="(obj:orderData) => obj.id"
+            :data="tableData"
+            :scroll-x="800"
+        />
     </div>
 </template>
 

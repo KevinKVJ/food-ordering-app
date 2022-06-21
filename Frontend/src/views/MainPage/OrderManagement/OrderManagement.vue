@@ -1,5 +1,19 @@
 <script setup lang="ts">
+import { apiGetAllOrders } from './OdManagementAPIs';
+import { ref,onMounted, watchEffect } from 'vue';
 
+const tableData = ref([])
+
+onMounted(() => {
+    apiGetAllOrders
+        .then((res) => {
+            console.log(res.data.data);
+            tableData.value = res.data.data;
+        })
+        .catch((err) => {
+            console.error(err);
+        })
+})
 </script>
 
 <template>
@@ -11,26 +25,24 @@
                     <h2>Orders Management</h2>
                     <n-space>
                         <n-button type="info">Add</n-button>
-                        <n-button type="error">{{
-                            `Delete`
-                        }}</n-button>
+                        <n-button type="error">{{ `Delete` }}</n-button>
                     </n-space>
                 </n-layout-header>
                 <n-layout-content :style="{ backgroundColor: 'transparent', flex: 1 }">
                     <!-- <ProdDataTable :tableData="tableData" @delete-data-row="handleDelete" v-model:checked-rows="checkedRowKeysRef" /> -->
-                    <ODDataTable />
+                    <OdDataTable :tableData="tableData"/>
                 </n-layout-content>
             </n-layout>
 
             <!-- class="category-sider" -->
+                <!-- show-trigger -->
             <n-layout-sider
                 :content-style="{ padding: '0 18px' }"
-                show-trigger
                 :style="{ backgroundColor: 'transparent' }"
-                width="400"
+                width="40%"
                 :native-scrollbar="false"
             >
-                    <!-- v-model:category-data="categories"
+                <!-- v-model:category-data="categories"
                     @get-prods-by-category="handleGetProdsByCategory"
                     @get-all-prods="handleGetAllProds" -->
                 <!-- <ProdCategoriesSider /> -->

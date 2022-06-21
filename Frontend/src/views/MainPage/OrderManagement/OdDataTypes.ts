@@ -1,49 +1,50 @@
 export interface orderData {
-    address?: string;
+    address: string;
     /**
      * 买家ID
      */
-    clientId?: number;
+    clientId: number;
     /**
      * 商品评价
      */
-    comment?:  string;
-    createAt?: string;
+    comment:  string;
+    createAt: string;
     /**
      * 配送费
      */
-    deliveryFee?: number;
+    deliveryFee: number;
     /**
      * 配送方式ID外键
      */
-    deliveryMethodId?: number;
+    deliveryMethodId: number;
     /**
      * 送达时间
      */
-    deliveryTime?: string;
-    id?:           number;
+    deliveryTime: string;
+    id:           number;
     /**
      * 商家ID
      */
-    merchantId?: number;
+    merchantId: number;
     /**
      * 支付方式 整数枚举值
      */
-    paymentMethod?: number;
-    phone?:         string;
+    paymentMethod: number;
+    phone:         string;
+    products:      orderProductData[];
     /**
      * 配送员开始送货的时间
      */
-    shipmentTime?: string;
+    shipmentTime: string;
     /**
      * 订单状态
      */
-    statusId?: number;
+    statusId: number;
     /**
      * 总价格
      */
-    totalPrice?: number;
-    updateAt?:   string;
+    totalPrice: number;
+    updateAt:   string;
 }
 
 interface orderProductData {
