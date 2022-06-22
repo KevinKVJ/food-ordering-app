@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 public interface CategoryService extends IService<Category> {
-    List<Category> listByMerchantId(Integer merchantId);
-    List<Category> getCategoriesByProductId(Integer id);
-    List<Product> getProductsByCategoryId(Integer id);
+    List<Category> listByMerchantId(String merchantId);
+    List<Category> getCategoriesByProductId(String id);
+    List<Product> getProductsByCategoryId(String id);
 }

@@ -20,7 +20,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public List<Category> listByMerchantId(Integer merchantId) {
+    public List<Category> listByMerchantId(String merchantId) {
         if (merchantId == null) {
             return null;
         }
@@ -33,12 +33,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public List<Category> getCategoriesByProductId(Integer id) {
+    public List<Category> getCategoriesByProductId(String id) {
         return baseMapper.getCategoriesByProductId(id);
     }
 
     @Override
-    public List<Product> getProductsByCategoryId(Integer id) {
+    public List<Product> getProductsByCategoryId(String id) {
         return baseMapper.getProductsByCategoryId(id);
     }
 }

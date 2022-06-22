@@ -65,13 +65,13 @@ public class ProductController {
         if (requestBody.get("id") == null) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
-        if (!(requestBody.get("id") instanceof Integer)) {
+        if (!(requestBody.get("id") instanceof String)) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
         if (requestBody.size() > 1) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
-        Integer  id       = (Integer) requestBody.get("id");
+        String  id       = (String) requestBody.get("id");
         Product product = productService.getById(id);
         if (product == null) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
@@ -98,13 +98,13 @@ public class ProductController {
         if (requestBody.get("id") == null) {
             return Result.error("002P003", "id为null");
         }
-        if (!(requestBody.get("id") instanceof Integer)) {
+        if (!(requestBody.get("id") instanceof String)) {
             return Result.error("002P004", "id参数类型不匹配");
         }
         if (requestBody.size() > 1) {
             return Result.error("002P005", "参数体包含多余参数");
         }
-        Integer  id       = (Integer) requestBody.get("id");
+        String  id       = (String) requestBody.get("id");
         Product product = productService.getById(id);
         if (product == null) {
             return Result.error("002B001", "product不存在");
@@ -115,7 +115,7 @@ public class ProductController {
     @ApiOperation("Upload the image of a product by the product ID")
     @PostMapping("api/v1/product/image/upload")
     public Result<Void> uploadImageById(
-            @RequestParam("id") @NotNull Integer id,
+            @RequestParam("id") @NotNull String id,
             @RequestPart("file") @NotNull MultipartFile multipartFile
     ) {
         if (id == null) {
@@ -150,13 +150,13 @@ public class ProductController {
         if (requestBody.get("id") == null) {
             return Result.error("002P047", "id为null");
         }
-        if (!(requestBody.get("id") instanceof Integer)) {
+        if (!(requestBody.get("id") instanceof String)) {
             return Result.error("002P048", "id参数类型不匹配");
         }
         if (requestBody.size() > 1) {
             return Result.error("002P049", "参数体包含多余参数");
         }
-        Integer id      = (Integer) requestBody.get("id");
+        String id      = (String) requestBody.get("id");
         Merchant merchant = merchantService.getById(id);
         if (merchant == null) {
             return Result.error("002B004", "merchant不存在");
@@ -231,7 +231,7 @@ public class ProductController {
         if (requestBody.get("merchantId") == null) {
             return Result.error("002P043", "merchantId为null");
         }
-        if (!(requestBody.get("merchantId") instanceof Integer)) {
+        if (!(requestBody.get("merchantId") instanceof String)) {
             return Result.error("002P044", "merchantId参数类型不匹配");
         }
 
@@ -239,7 +239,7 @@ public class ProductController {
             return Result.error("002P025", "参数体包含多余参数");
         }
 
-        Integer  merchantId = (Integer)requestBody.get("merchantId");
+        String  merchantId = (String) requestBody.get("merchantId");
         Merchant merchant   = merchantService.getById(merchantId);
         if (merchant == null) {
             return Result.error("002B003", "merchant id不存在");
@@ -301,10 +301,10 @@ public class ProductController {
         if (requestBody.get("id") == null) {
             return Result.error("002P028", "id为null");
         }
-        if (!(requestBody.get("id") instanceof Integer)) {
+        if (!(requestBody.get("id") instanceof String)) {
             return Result.error("002P029", "id参数类型不匹配");
         }
-        Integer id = (Integer) requestBody.get("id");
+        String id = (String) requestBody.get("id");
         Product product = productService.getById(id);
         if (product == null) {
             return Result.error("002B002", "id不存在");

@@ -9,10 +9,8 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.sun.corba.se.spi.ior.ObjectKey;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.mockito.internal.matchers.Or;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -75,24 +73,27 @@ public class MerchantController {
     @GetMapping("api/v1/merchant/order/all")
     public Result<List<Map<String, Object>>> getOrders(HttpServletRequest request) {
         String token = request.getHeader("Authorization").substring(7);
-        Integer merchantId =  Integer.valueOf(redisService.get(token));
+        String merchantId = redisService.getString(token);
         Merchant merchant   = merchantService.getById(merchantId);
         if (merchant == null) {
             return Result.error("", "merchant id不存在");
         }
-        List<Order> orders = orderService.list(new QueryWrapper<Order>().eq("merchant_id", merchantId));
+        List<Map<String, Object>> orders = orderService.getOrdersOfMerchant(merchantId);
         if (orders == null) {
             return Result.error("", "merchant获取order失败");
         }
-        List<Map<String, Object>> result = new ArrayList<>();
-        for (Order order : orders) {
-            Map<String, Object> map = MapUtil.newHashMap();
-            BeanUtil.copyProperties(order, map);
-            OrderDetails orderDetails = orderDetailsRepository.findByOrderId(order.getId());
-            map.put("products", orderDetails.getProducts());
-            result.add(map);
+        for (Map<String, Object> order : orders) {
+            if (!order.containsKey("id") || order.get("id") == null || !(order.get("id") instanceof String)) {
+                return Result.error("", "获取order列表失败");
+            }
+            String id = (String)order.get("id");
+            OrderDetails orderDetails = orderDetailsRepository.findByOrderId(id);
+            if (orderDetails == null) {
+                return Result.error("", "获取order列表失败");
+            }
+            order.put("products", orderDetails.getProducts());
         }
-        return Result.success(result, "merchant获取order成功");
+        return Result.success(orders, "merchant获取order成功");
     }
 
     @ApiOperation("Update the category")
@@ -108,11 +109,11 @@ public class MerchantController {
         if (requestBody.get("id") == null) {
             return Result.error("", "category id为null");
         }
-        if (!(requestBody.get("id") instanceof Integer)) {
+        if (!(requestBody.get("id") instanceof String)) {
             return Result.error("", "category id参数类型不匹配");
         }
         ++length;
-        Integer id = (Integer) requestBody.get("id");
+        String id = (String) requestBody.get("id");
         Category category = categoryService.getById(id);
         if (category == null) {
             return Result.error("", "category id不存在");
@@ -128,15 +129,15 @@ public class MerchantController {
             category.setName(name);
             ++length;
         }
-        Integer newMerchantId = null;
+        String newMerchantId = null;
         if (requestBody.containsKey("merchantId")) {
             if (requestBody.get("merchantId") == null) {
                 return Result.error("", "merchant id为null");
             }
-            if (!(requestBody.get("merchantId") instanceof Integer)) {
+            if (!(requestBody.get("merchantId") instanceof String)) {
                 return Result.error("", "merchant id参数类型不匹配");
             }
-            newMerchantId = (Integer) requestBody.get("merchantId");
+            newMerchantId = (String) requestBody.get("merchantId");
             Merchant merchant = merchantService.getById(newMerchantId);
             if (merchant == null) {
                 return Result.error("", "merchant id不存在");
@@ -146,7 +147,7 @@ public class MerchantController {
         if (length < requestBody.size()) {
             return Result.error("", "参数体包含多余参数");
         }
-        Integer merchantId = category.getMerchantId();
+        String merchantId = category.getMerchantId();
         // If the merchant ID is changed, remove all product IDs that belong to the category.
         if (newMerchantId != null && !newMerchantId.equals(merchantId)) {
             productToCategoryService.remove(new QueryWrapper<ProductToCategory>().eq("category_id", id));
@@ -163,7 +164,7 @@ public class MerchantController {
     public Result<List<Category>> insertBatch(HttpServletRequest request,
                                               @RequestBody @NotNull Map<String, Object> requestBody) {
         String token = request.getHeader("Authorization").substring(7);
-        Integer id =  Integer.valueOf(redisService.get(token));
+        String id =  redisService.getString(token);
         Merchant merchant   = merchantService.getById(id);
         if (merchant == null) {
             return Result.error("", "merchant id不存在");
@@ -207,7 +208,7 @@ public class MerchantController {
     @GetMapping("api/v1/merchant/category")
     public Result<List<Category>> getCategoriesByMerchantId(HttpServletRequest request) {
         String token = request.getHeader("Authorization").substring(7);
-        Integer id =  Integer.valueOf(redisService.get(token));
+        String id =  redisService.getString(token);
         Merchant merchant   = merchantService.getById(id);
         if (merchant == null) {
             return Result.error("", "merchant id不存在");
@@ -223,7 +224,7 @@ public class MerchantController {
     @PostMapping("api/v1/merchant")
     public Result<Merchant> getById(HttpServletRequest request) {
         String token = request.getHeader("Authorization").substring(7);
-        Integer id =  Integer.valueOf(redisService.get(token));
+        String id =  redisService.getString(token);
         Merchant merchant = merchantService.getById(id);
         if (merchant == null) {
             return Result.error("", "merchant不存在");
@@ -235,7 +236,7 @@ public class MerchantController {
     @GetMapping("api/v1/merchant/image")
     public ResponseEntity<byte[]> getImageById(HttpServletRequest request) {
         String token = request.getHeader("Authorization").substring(7);
-        Integer id =  Integer.valueOf(redisService.get(token));
+        String id =  redisService.getString(token);
         Merchant merchant = merchantService.getById(id);
         if (merchant == null) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
@@ -293,10 +294,10 @@ public class MerchantController {
                 return Result.error("001B012", "token生成失败");
             }
             // Check if JWT is in redis, if not, cache it with an expiry time
-            if (redisService.get(token) != null) {
+            if (redisService.getString(token) != null) {
                 return Result.error("001B010", "用户已经登录");
             } else {
-                redisService.updateWithTtl(token, merchant.getId().toString(), timeout);
+                redisService.updateStringWithTtl(token, merchant.getId().toString(), timeout);
                 return Result.success(token, "用户成功登录 token已保存");
             }
         } catch (Exception e) {
@@ -323,7 +324,7 @@ public class MerchantController {
             return Result.error("001P073", "参数体包含多余参数");
         }
         String token = (String)requestBody.get("token");
-        if (redisService.get(token) == null) {
+        if (redisService.getString(token) == null) {
             return Result.error("001B011", "用户未登录或token已经过期");
         }
         if (!redisService.delete(token)) {
@@ -344,13 +345,13 @@ public class MerchantController {
         if (requestBody.get("productId") == null) {
             return Result.error("005P013", "productId为null");
         }
-        if (!(requestBody.get("productId") instanceof Integer)) {
+        if (!(requestBody.get("productId") instanceof String)) {
             return Result.error("005P014", "productId参数类型不匹配");
         }
         if (requestBody.size() > 1) {
             return Result.error("005P015", "参数体包含多余参数");
         }
-        Integer productId = (Integer) requestBody.get("productId");
+        String productId = (String) requestBody.get("productId");
         Product product   = productService.getById(productId);
         if (product == null) {
             return Result.error("005B003", "product id不存在");
@@ -374,13 +375,13 @@ public class MerchantController {
         if (requestBody.get("productId") == null) {
             return Result.error("005P018", "id为null");
         }
-        if (!(requestBody.get("productId") instanceof Integer)) {
+        if (!(requestBody.get("productId") instanceof String)) {
             return Result.error("005P019", "id参数类型不匹配");
         }
         if (requestBody.size() > 1) {
             return Result.error("005P020", "参数体包含多余参数");
         }
-        Integer categoryId = (Integer) requestBody.get("id");
+        String categoryId = (String) requestBody.get("id");
         Category category = categoryService.getById(categoryId);
         if (category == null) {
             return Result.error("005M004", "category id不存在");
@@ -399,7 +400,7 @@ public class MerchantController {
             @RequestPart("file") @NotNull MultipartFile multipartFile
     ) {
         String token = request.getHeader("Authorization").substring(7);
-        Integer id =  Integer.valueOf(redisService.get(token));
+        String id =  redisService.getString(token);
         Merchant merchant   = merchantService.getById(id);
         if (merchant == null) {
             return Result.error("", "merchant id不存在");
@@ -567,7 +568,7 @@ public class MerchantController {
             HttpServletRequest request,
             @RequestBody @NotNull Map<String, Object> requestBody) {
         String token = request.getHeader("Authorization").substring(7);
-        Integer id =  Integer.valueOf(redisService.get(token));
+        String id = redisService.getString(token);
         Merchant merchant   = merchantService.getById(id);
         if (merchant == null) {
             return Result.error("", "merchant id不存在");

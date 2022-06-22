@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderDetailsRepository extends MongoRepository<OrderDetails, String> {
-    OrderDetails findByOrderId(Integer orderId);
+    OrderDetails findByOrderId(String orderId);
 }

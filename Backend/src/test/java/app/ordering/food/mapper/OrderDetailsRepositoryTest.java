@@ -27,7 +27,7 @@ class OrderDetailsRepositoryTest {
     @Test
     void listOrderDetails() {
         orderDetailsRepository.insert(
-                new OrderDetails(1, new ArrayList<Map<String, Object>>() {{
+                new OrderDetails("1", new ArrayList<Map<String, Object>>() {{
                     add(new HashMap<String, Object>() {{
                         put("name", "name1");
                         put("options", null);
@@ -37,7 +37,7 @@ class OrderDetailsRepositoryTest {
                 }})
         );
         orderDetailsRepository.insert(
-                new OrderDetails(2, new ArrayList<Map<String, Object>>() {{
+                new OrderDetails("2", new ArrayList<Map<String, Object>>() {{
                     add(new HashMap<String, Object>() {{
                         put("name", "name2");
                         put("options", "options2");
@@ -60,8 +60,8 @@ class OrderDetailsRepositoryTest {
         );
         List<OrderDetails> orderDetails = orderDetailsRepository.findAll();
         orderDetails.forEach(System.out::println);
-        assertNull(orderDetailsRepository.findByOrderId(-1));
-        OrderDetails orderDetails1 = orderDetailsRepository.findByOrderId(2);
+        assertNull(orderDetailsRepository.findByOrderId("-1"));
+        OrderDetails orderDetails1 = orderDetailsRepository.findByOrderId("2");
         assertNotNull(orderDetails1);
         orderDetails1.getProducts().forEach(System.out::println);
     }
@@ -69,7 +69,7 @@ class OrderDetailsRepositoryTest {
     @Test
     void updateOrderDetails() {
         orderDetailsRepository.insert(
-                new OrderDetails(3, new ArrayList<Map<String, Object>>() {{
+                new OrderDetails("3", new ArrayList<Map<String, Object>>() {{
                     add(new HashMap<String, Object>() {{
                         put("name", "name1");
                         put("options", null);
@@ -79,7 +79,7 @@ class OrderDetailsRepositoryTest {
                 }})
 
         );
-        OrderDetails orderDetails1 = orderDetailsRepository.findByOrderId(3);
+        OrderDetails orderDetails1 = orderDetailsRepository.findByOrderId("3");
         assertNotNull(orderDetails1);
         System.out.println(orderDetails1);
         orderDetails1.getProducts()
@@ -93,7 +93,6 @@ class OrderDetailsRepositoryTest {
         assertNotNull(newOrderDetails1);
         System.out.println(newOrderDetails1);
     }
-
 
     @AfterEach
     void flushDb() {

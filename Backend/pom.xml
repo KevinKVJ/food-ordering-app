@@ -24,7 +24,7 @@
         <lombok.version>1.18.22</lombok.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
         <spring-boot-starter-test.version>2.5.12</spring-boot-starter-test.version>
-        <mysql-connector-java.version>8.0.25</mysql-connector-java.version>
+        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <jakarta.validation.version>2.0.2</jakarta.validation.version>
         <spring-boot-starter-data-redis.version>2.5.12</spring-boot-starter-data-redis.version>

@@ -13,6 +13,6 @@ import java.io.Serializable;
 @TableName("t_product_to_category")
 public class ProductToCategory implements Serializable {
     private static final long serialVersionUID = 3567653491060394674L;
-    private Integer productId;
-    private Integer categoryId;
+    private String productId;
+    private String categoryId;
 }

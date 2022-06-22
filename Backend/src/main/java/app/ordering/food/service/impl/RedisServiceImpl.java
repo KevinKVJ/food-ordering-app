@@ -2,7 +2,9 @@ package app.ordering.food.service.impl;
 
 import app.ordering.food.service.RedisService;
 import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -12,10 +14,14 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service("redisService")
+@SuppressWarnings("unchecked")
 public class RedisServiceImpl implements RedisService {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @Override
     public void flushDb() {
@@ -27,7 +33,7 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public List<String> getKeys() {
-        Set<String> keys = stringRedisTemplate.keys("*");
+        Set<String> keys = redisTemplate.keys("*");
         if (keys == null) {
             return null;
         }
@@ -35,7 +41,7 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public boolean updateWithTtl(String key, String val, long ttl) {
+    public boolean updateStringWithTtl(String key, String val, long ttl) {
         if (key == null || val == null) {
             return false;
         }
@@ -51,12 +57,12 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public boolean update(String key, String val) {
-        return updateWithTtl(key, val, 0);
+    public boolean updateString(String key, String val) {
+        return updateStringWithTtl(key, val, 0);
     }
 
     @Override
-    public String get(String key) {
+    public String getString(String key) {
         if (key == null) {
             return null;
         }
@@ -70,6 +76,8 @@ public class RedisServiceImpl implements RedisService {
         return stringRedisTemplate.opsForValue().get(key);
     }
 
+
+
     @Override
     public boolean delete(String key) {
         if (key == null) {
@@ -80,5 +88,42 @@ public class RedisServiceImpl implements RedisService {
             return false;
         }
         return del;
+    }
+
+    @Override
+    public <T> boolean updateObjectWithTtl(String key, T val, long ttl) {
+        if (key == null || val == null) {
+            return false;
+        }
+        if (ttl < 0) {
+            return false;
+        }
+        if (ttl == 0) {
+            redisTemplate.opsForValue().set(key, val);
+        } else {
+            redisTemplate.opsForValue().set(key, val, ttl, TimeUnit.SECONDS);
+        }
+        return true;
+    }
+
+    @Override
+    public <T> boolean updateObject(String key, T val) {
+        return updateObjectWithTtl(key, val, 0);
+    }
+
+    @Override
+    public <T> T getObject(String key) {
+        if (key == null) {
+            return null;
+        }
+        Boolean found = redisTemplate.hasKey(key);
+        if (found == null) {
+            return null;
+        }
+        if (!found) {
+            return null;
+        }
+        ValueOperations<String, T> operation = redisTemplate.opsForValue();
+        return operation.get(key);
     }
 }

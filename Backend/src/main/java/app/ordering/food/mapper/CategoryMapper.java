@@ -16,7 +16,7 @@ public interface CategoryMapper extends BaseMapper<Category> {
             "      (SELECT t_product_to_category.category_id\n" +
             "       FROM t_product_to_category\n" +
             "       WHERE t_product_to_category.product_id = #{productId});")
-    List<Category> getCategoriesByProductId(Integer productId);
+    List<Category> getCategoriesByProductId(String productId);
 
     @Select("SELECT *\n" +
             "FROM t_product\n" +
@@ -24,5 +24,5 @@ public interface CategoryMapper extends BaseMapper<Category> {
             "      (SELECT t_product_to_category.product_id\n" +
             "       FROM t_product_to_category\n" +
             "       WHERE t_product_to_category.category_id = #{categoryId});")
-    List<Product> getProductsByCategoryId(Integer categoryId);
+    List<Product> getProductsByCategoryId(String categoryId);
 }

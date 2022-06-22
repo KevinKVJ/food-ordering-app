@@ -73,22 +73,22 @@ public class AdminController {
     @ApiOperation("Get all orders")
     @GetMapping("api/v1/admin/order/all")
     public Result<List<Map<String, Object>>> getOrders() {
-        List<Order>  orders  = orderService.list();
+        List<Map<String, Object>> orders = orderService.getOrders();
         if (orders == null) {
             return Result.error("", "获取order列表失败");
         }
-        List<Map<String, Object>> result = new ArrayList<>();
-        for (Order order : orders) {
-            Map<String, Object> map = MapUtil.newHashMap();
-            BeanUtil.copyProperties(order, map);
-            OrderDetails orderDetails = orderDetailsRepository.findByOrderId(order.getId());
+        for (Map<String, Object> order : orders) {
+            if (!order.containsKey("id") || order.get("id") == null || !(order.get("id") instanceof String)) {
+                return Result.error("", "获取order列表失败");
+            }
+            String      id           = (String) order.get("id");
+            OrderDetails orderDetails = orderDetailsRepository.findByOrderId(id);
             if (orderDetails == null) {
                 return Result.error("", "获取order列表失败");
             }
-            map.put("products", orderDetails.getProducts());
-            result.add(map);
+            order.put("products", orderDetails.getProducts());
         }
-        return Result.success(result, "获取order列表成功");
+        return Result.success(orders, "获取order列表成功");
     }
 
     @ApiOperation("Insert an empty order")
@@ -118,10 +118,10 @@ public class AdminController {
         if (requestBody.get("id") == null) {
             return Result.error("", "id为null");
         }
-        if (!(requestBody.get("id") instanceof Integer)) {
+        if (!(requestBody.get("id") instanceof String)) {
             return Result.error("", "id参数类型不匹配");
         }
-        Integer  id = (Integer) requestBody.get("id");
+        String  id = (String) requestBody.get("id");
         Order order = orderService.getById(id);
         if (order == null) {
             return Result.error("", "id不存在");
@@ -131,10 +131,10 @@ public class AdminController {
             if (requestBody.get("clientId") == null) {
                 return Result.error("", "clientId为null");
             }
-            if (!(requestBody.get("clientId") instanceof Integer)) {
+            if (!(requestBody.get("clientId") instanceof String)) {
                 return Result.error("", "clientId参数类型不匹配");
             }
-            Integer clientId = (Integer) requestBody.get("clientId");
+            String clientId = (String) requestBody.get("clientId");
             Client client = clientService.getById(clientId);
             if (client == null) {
                 return Result.error("", "client id不存在");
@@ -146,10 +146,10 @@ public class AdminController {
             if (requestBody.get("merchantId") == null) {
                 return Result.error("", "merchantId为null");
             }
-            if (!(requestBody.get("merchantId") instanceof Integer)) {
+            if (!(requestBody.get("merchantId") instanceof String)) {
                 return Result.error("", "merchantId参数类型不匹配");
             }
-            Integer merchantId = (Integer) requestBody.get("merchantId");
+            String merchantId = (String) requestBody.get("merchantId");
             Merchant merchant = merchantService.getById(merchantId);
             if (merchant == null) {
                 return Result.error("", "merchant id不存在");
@@ -220,10 +220,10 @@ public class AdminController {
             if (requestBody.get("deliveryMethodId") == null) {
                 return Result.error("", "deliveryMethodId为null");
             }
-            if (!(requestBody.get("deliveryMethodId") instanceof Integer)) {
+            if (!(requestBody.get("deliveryMethodId") instanceof String)) {
                 return Result.error("", "deliveryMethodId参数类型不匹配");
             }
-            Integer deliveryMethodId = (Integer)requestBody.get("deliveryMethodId");
+            String deliveryMethodId = (String) requestBody.get("deliveryMethodId");
             OrderDeliveryMethod orderDeliveryMethod = orderDeliveryMethodService.getById(deliveryMethodId);
             if (orderDeliveryMethod == null) {
                 return Result.error("", "deliveryMethodId为null");
@@ -257,10 +257,10 @@ public class AdminController {
             if (requestBody.get("statusId") == null) {
                 return Result.error("", "statusId为null");
             }
-            if (!(requestBody.get("statusId") instanceof Integer)) {
+            if (!(requestBody.get("statusId") instanceof String)) {
                 return Result.error("", "statusId参数类型不匹配");
             }
-            Integer statusId = (Integer)requestBody.get("statusId");
+            String statusId = (String) requestBody.get("statusId");
             OrderStatus orderStatus = orderStatusService.getById(statusId);
             if (orderStatus == null) {
                 return Result.error("", "status id不存在");
@@ -336,13 +336,13 @@ public class AdminController {
         if (requestBody.get("merchantId") == null) {
             return Result.error("", "merchant id为null");
         }
-        if (!(requestBody.get("merchantId") instanceof Integer)) {
+        if (!(requestBody.get("merchantId") instanceof String)) {
             return Result.error("", "merchant id参数类型不匹配");
         }
         if (requestBody.size() > 1) {
             return Result.error("", "参数体包含多余参数");
         }
-        Integer  merchantId = (Integer) requestBody.get("merchantId");
+        String  merchantId = (String) requestBody.get("merchantId");
         Merchant merchant   = merchantService.getById(merchantId);
         if (merchant == null) {
             return Result.error("", "merchant id不存在");
@@ -366,13 +366,13 @@ public class AdminController {
         if (requestBody.get("id") == null) {
             return Result.error("005P008", "id为null");
         }
-        if (!(requestBody.get("id") instanceof Integer)) {
+        if (!(requestBody.get("id") instanceof String)) {
             return Result.error("005P009", "id参数类型不匹配");
         }
         if (requestBody.size() > 1) {
             return Result.error("005P010", "参数体包含多余参数");
         }
-        Integer id = (Integer) requestBody.get("id");
+        String id = (String) requestBody.get("id");
         Category category = categoryService.getById(id);
         if (category == null) {
             return Result.error("005B002", "id不存在");
@@ -392,13 +392,13 @@ public class AdminController {
         if (requestBody.get("productId") == null) {
             return Result.error("005P013", "productId为null");
         }
-        if (!(requestBody.get("productId") instanceof Integer)) {
+        if (!(requestBody.get("productId") instanceof String)) {
             return Result.error("005P014", "productId参数类型不匹配");
         }
         if (requestBody.size() > 1) {
             return Result.error("005P015", "参数体包含多余参数");
         }
-        Integer productId = (Integer) requestBody.get("productId");
+        String productId = (String) requestBody.get("productId");
         Product product   = productService.getById(productId);
         if (product == null) {
             return Result.error("005B003", "product id不存在");
@@ -422,13 +422,13 @@ public class AdminController {
         if (requestBody.get("productId") == null) {
             return Result.error("005P018", "id为null");
         }
-        if (!(requestBody.get("productId") instanceof Integer)) {
+        if (!(requestBody.get("productId") instanceof String)) {
             return Result.error("005P019", "id参数类型不匹配");
         }
         if (requestBody.size() > 1) {
             return Result.error("005P020", "参数体包含多余参数");
         }
-        Integer categoryId = (Integer) requestBody.get("id");
+        String categoryId = (String) requestBody.get("id");
         Category category = categoryService.getById(categoryId);
         if (category == null) {
             return Result.error("005M004", "category id不存在");
@@ -462,13 +462,13 @@ public class AdminController {
         if (requestBody.get("id") == null) {
             return Result.error("001P003", "id为null");
         }
-        if (!(requestBody.get("id") instanceof Integer)) {
+        if (!(requestBody.get("id") instanceof String)) {
             return Result.error("001P004", "id参数类型不匹配");
         }
         if (requestBody.size() > 1) {
             return Result.error("001P005", "参数体包含多余参数");
         }
-        Integer id = (Integer) requestBody.get("id");
+        String id = (String) requestBody.get("id");
         Merchant merchant = merchantService.getById(id);
         if (merchant == null) {
             return Result.error("001B001", "merchant不存在");
@@ -488,13 +488,13 @@ public class AdminController {
         if (requestBody.get("id") == null) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
-        if (!(requestBody.get("id") instanceof Integer)) {
+        if (!(requestBody.get("id") instanceof String)) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
         if (requestBody.size() > 1) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
         }
-        Integer id = (Integer) requestBody.get("id");
+        String id = (String) requestBody.get("id");
         Merchant merchant = merchantService.getById(id);
         if (merchant == null) {
             return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
@@ -512,7 +512,7 @@ public class AdminController {
     @ApiOperation("Upload the image of a merchant by the merchant ID")
     @PostMapping("api/v1/admin/merchant/image/upload")
     public Result<Void> uploadMerchantImageById(
-            @RequestParam("id") @NotNull Integer id,
+            @RequestParam("id") @NotNull String id,
             @RequestPart("file") @NotNull MultipartFile multipartFile
     ) {
         if (id == null) {
@@ -692,10 +692,10 @@ public class AdminController {
         if (requestBody.get("id") == null) {
             return Result.error("001P045", "id为null");
         }
-        if (!(requestBody.get("id") instanceof Integer)) {
+        if (!(requestBody.get("id") instanceof String)) {
             return Result.error("001P046", "id参数类型不匹配");
         }
-        Integer id = (Integer) requestBody.get("id");
+        String id = (String) requestBody.get("id");
         Merchant merchant = merchantService.getById(id);
         if (merchant == null) {
             return Result.error("001B005", "获取merchant失败");

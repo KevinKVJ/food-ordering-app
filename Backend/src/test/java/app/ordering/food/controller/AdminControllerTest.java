@@ -1,5 +1,7 @@
 package app.ordering.food.controller;
 
+import app.ordering.food.entity.Merchant;
+import app.ordering.food.service.MerchantService;
 import app.ordering.food.service.MinioService;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +37,8 @@ class AdminControllerTest {
     private MockMvc mockMvc;
     @Resource
     private MinioService minioService;
+    @Resource
+    private MerchantService merchantService;
     @Test
     void getMerchants() throws Exception {
         String url = "/api/v1/admin/merchant/all";
@@ -52,7 +56,9 @@ class AdminControllerTest {
     void getMerchantById() throws Exception {
         String              url         = "/api/v1/admin/merchant/id";
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("id", 1);
+        Merchant merchant = merchantService.getByPhone("1000000001");
+        Assertions.assertNotNull(merchant);
+        requestBody.put("id", merchant.getId());
         RequestBuilder request = MockMvcRequestBuilders.post(url)
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .accept(MediaType.APPLICATION_JSON)
@@ -86,9 +92,10 @@ class AdminControllerTest {
                 .andReturn();
         mvcResult.getResponse().setCharacterEncoding("UTF-8");
         System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
-
+        Merchant merchant = merchantService.getByPhone("1000000999");
+        Assertions.assertNotNull(merchant);
         String bucket = "food-ordering-app-merchants";
-        String filename = "4.jpg";
+        String filename = merchant.getId() + ".jpg";
         Assertions.assertTrue(minioService.existObject(bucket, filename));
         // restore
         minioService.removeObject(bucket, filename);
