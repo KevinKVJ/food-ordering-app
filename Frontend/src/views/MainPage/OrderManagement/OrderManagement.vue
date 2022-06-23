@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { apiGetAllOrders } from './OdManagementAPIs';
 import { ref, onMounted, watchEffect } from 'vue';
+import type {orderData} from './OdDataTypes'
 
 const tableData = ref([]);
 // const siderWidth = ref<string>('40%');
-const siderCollapsed = ref<boolean>(false);
+
 onMounted(() => {
     apiGetAllOrders
         .then(res => {
@@ -16,10 +17,20 @@ onMounted(() => {
         });
 });
 
+const siderCollapsed = ref<boolean>(true);
+
 const handleCloseSider = () => {
     console.log('lalalalal');
-    siderCollapsed.value = !siderCollapsed.value;
+    siderCollapsed.value = true;
 };
+
+const currOdData = ref<orderData|undefined>();
+
+const handleOrderDetailSider = (orderDetail:orderData) => {
+    currOdData.value = orderDetail;
+    console.log(currOdData.value);
+    siderCollapsed.value = false
+}
 </script>
 
 <template>
@@ -29,14 +40,14 @@ const handleCloseSider = () => {
             <n-layout embedded class="contents-style" :content-style="{ display: 'flex', flexFlow: 'column nowrap' }">
                 <n-layout-header :style="{ backgroundColor: 'transparent' }">
                     <h2>Orders Management</h2>
-                    <n-space>
+                    <!-- <n-space>
                         <n-button type="info">Add</n-button>
                         <n-button type="error">{{ `Delete` }}</n-button>
-                    </n-space>
+                    </n-space> -->
                 </n-layout-header>
                 <n-layout-content :style="{ backgroundColor: 'transparent', flex: 1 }">
                     <!-- <ProdDataTable :tableData="tableData" @delete-data-row="handleDelete" v-model:checked-rows="checkedRowKeysRef" /> -->
-                    <OdDataTable :tableData="tableData" />
+                    <OdDataTable :tableData="tableData" @display-order-detail="handleOrderDetailSider"/>
                 </n-layout-content>
             </n-layout>
 
@@ -55,7 +66,7 @@ const handleCloseSider = () => {
                     @get-prods-by-category="handleGetProdsByCategory"
                     @get-all-prods="handleGetAllProds" -->
                 <!-- <ProdCategoriesSider /> -->
-                <OdSider @close-sider="handleCloseSider" />
+                <OdSider @close-sider="handleCloseSider" :OrderDetail="currOdData"/>
             </n-layout-sider>
         </n-layout>
     </div>

@@ -1,11 +1,16 @@
 <script setup lang="tsx">
 import { DataTableColumns, DataTableCreateRowKey, NButton, PaginationProps, NSpace } from 'naive-ui';
 import type { orderData } from '../OdDataTypes';
+import { ref } from 'vue';
 
 const { tableData } = defineProps<{
     tableData: any[];
     // checkedRows: any[],
 }>();
+
+const emits = defineEmits<{
+    (e:'displayOrderDetail',orderDetail:orderData):void
+}>()
 
 const columns: DataTableColumns<orderData> = [
     {
@@ -45,8 +50,8 @@ const columns: DataTableColumns<orderData> = [
             /* <NSpace type='info' vertical={false}> </NSpace> onClick={() => emits('deleteDataRow', [rowData.id])}*/
             return (
                 <NSpace vertical={false} size={8} justify={'space-around'}>
-                    <NButton size='small'>
-                        <span style={{ fontSize: '13px', fontWeight: 600 }}>Details</span>
+                    <NButton type="info" size='small' onClick={() => handleOrderDetailsDisplay(rowData)}>
+                        <span>Details</span>
                     </NButton>
                 </NSpace>
             );
@@ -59,6 +64,12 @@ const columns: DataTableColumns<orderData> = [
         align: 'center',
     },
 ];
+
+
+
+const handleOrderDetailsDisplay = (rowData:orderData) => {
+    emits('displayOrderDetail',rowData);
+}
 </script>
 <template>
     <div class="wrapper">
