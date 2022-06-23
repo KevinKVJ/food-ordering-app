@@ -9,8 +9,8 @@ const { tableData } = defineProps<{
 }>();
 
 const emits = defineEmits<{
-    (e:'displayOrderDetail',orderDetail:orderData):void
-}>()
+    (e: 'displayOrderDetail', orderDetail: orderData): void;
+}>();
 
 const columns: DataTableColumns<orderData> = [
     {
@@ -50,7 +50,7 @@ const columns: DataTableColumns<orderData> = [
             /* <NSpace type='info' vertical={false}> </NSpace> onClick={() => emits('deleteDataRow', [rowData.id])}*/
             return (
                 <NSpace vertical={false} size={8} justify={'space-around'}>
-                    <NButton type="info" size='small' onClick={() => handleOrderDetailsDisplay(rowData)}>
+                    <NButton type='info' size='small' onClick={() => handleOrderDetailsDisplay(rowData)}>
                         <span>Details</span>
                     </NButton>
                 </NSpace>
@@ -65,11 +65,9 @@ const columns: DataTableColumns<orderData> = [
     },
 ];
 
-
-
-const handleOrderDetailsDisplay = (rowData:orderData) => {
-    emits('displayOrderDetail',rowData);
-}
+const handleOrderDetailsDisplay = (rowData: orderData) => {
+    emits('displayOrderDetail', rowData);
+};
 </script>
 <template>
     <div class="wrapper">
@@ -83,7 +81,7 @@ const handleOrderDetailsDisplay = (rowData:orderData) => {
         <!-- :style="{ height: '100%' }" -->
         <!-- :bordered="false" -->
         <!-- :single-line="false" -->
-        <n-data-table :columns="columns" :row-key="(obj:orderData) => obj.id" :data="tableData" :scroll-x="800" />
+        <n-data-table :columns="columns" :row-key="(obj:orderData) => obj.id" :data="tableData" :scroll-x="800"  :style="{ height: `800px` }" flex-height/>
     </div>
 </template>
 

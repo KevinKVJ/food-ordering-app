@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { apiGetAllOrders } from './OdManagementAPIs';
-import { ref, onMounted, watchEffect } from 'vue';
+import { ref, onMounted, watchEffect,toRefs } from 'vue';
 import type {orderData} from './OdDataTypes'
 
 const tableData = ref([]);
@@ -9,7 +9,7 @@ const tableData = ref([]);
 onMounted(() => {
     apiGetAllOrders
         .then(res => {
-            console.log(res.data.data);
+            // console.log(res.data.data);
             tableData.value = res.data.data;
         })
         .catch(err => {
@@ -24,11 +24,11 @@ const handleCloseSider = () => {
     siderCollapsed.value = true;
 };
 
-const currOdData = ref<orderData|undefined>();
+const currOdData = ref<orderData>({} as orderData);
 
 const handleOrderDetailSider = (orderDetail:orderData) => {
     currOdData.value = orderDetail;
-    console.log(currOdData.value);
+    // console.log(currOdData.value);
     siderCollapsed.value = false
 }
 </script>
@@ -45,7 +45,7 @@ const handleOrderDetailSider = (orderDetail:orderData) => {
                         <n-button type="error">{{ `Delete` }}</n-button>
                     </n-space> -->
                 </n-layout-header>
-                <n-layout-content :style="{ backgroundColor: 'transparent', flex: 1 }">
+                <n-layout-content :style="{ backgroundColor: 'transparent', flex: 1 }" >
                     <!-- <ProdDataTable :tableData="tableData" @delete-data-row="handleDelete" v-model:checked-rows="checkedRowKeysRef" /> -->
                     <OdDataTable :tableData="tableData" @display-order-detail="handleOrderDetailSider"/>
                 </n-layout-content>

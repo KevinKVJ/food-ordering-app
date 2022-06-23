@@ -5,7 +5,7 @@
             <template #header> <h2 :style="{ fontWeight: 600, margin: '0' }">Order No: 0001</h2> </template>
 
             <template #header-extra>
-                <h3 :style="{ fontWeight: 600, margin: '0', marginRight: '20px' }">Status: {{ statusDescription }}</h3>
+                <h3 :style="{ fontWeight: 600, margin: '0', marginRight: '20px' }">Status: {{od.statusDescription}}</h3>
             </template>
             <template #default>
                 <n-divider />
@@ -15,54 +15,36 @@
                         <template #label> 早餐 </template>
                         苹果
                     </n-descriptions-item> -->
-                    <n-descriptions-item label="Client Name">{{clientName}}</n-descriptions-item>
-                    <n-descriptions-item label="Address">{{address}} </n-descriptions-item>
-                    <n-descriptions-item label="Phone">{{phone}}</n-descriptions-item>
-                    <n-descriptions-item label="Due Time"> {{due}} </n-descriptions-item>
-                    <n-descriptions-item label="Delivery Method"> {{deliveryMethod}} </n-descriptions-item>
-                    <n-descriptions-item label="Comment">{{comment}}</n-descriptions-item>
+                    <n-descriptions-item label="Client Name">{{ od.clientName }}</n-descriptions-item>
+                    <n-descriptions-item label="Address">{{ od.address }} </n-descriptions-item>
+                    <n-descriptions-item label="Phone">{{ od.phone }}</n-descriptions-item>
+                    <n-descriptions-item label="Due Time"> {{ od.due }} </n-descriptions-item>
+                    <n-descriptions-item label="Delivery Method"> {{ od.deliveryMethod }} </n-descriptions-item>
+                    <n-descriptions-item label="Comment">{{ od.comment }}</n-descriptions-item>
+                    
                 </n-descriptions>
                 <!-- <n-descriptions label-placement="top" :column="4">
                     <n-descriptions-item></n-descriptions-item>
                 </n-descriptions> -->
                 <n-divider />
-                <n-data-table :columns="columns" :data="props.OrderDetail?.products" :pagination="{ pageSize: 15 }" :bordered="false" />
+                <n-data-table :columns="columns" :data="props.OrderDetail.products" :pagination="{ pageSize: 15 }" :bordered="false" />
             </template>
         </n-card>
     </div>
 </template>
 
+
+
 <script setup lang="tsx">
 import type { orderData, orderProductData } from '../OdDataTypes';
 import { DataTableColumns } from 'naive-ui';
-import {unref,reactive, toRefs, toRef, watchEffect ,onMounted, PropType, ToRefs,Ref} from 'vue';
-import { computed} from '@vue/reactivity';
+import { toRefs, computed, reactive, watchEffect, unref,ref,Ref, ToRefs } from 'vue';
+
 
 const props = defineProps<{
-    OrderDetail?: orderData;
+    OrderDetail: orderData;
 }>();
-const {OrderDetail}= toRefs(props);
-
-// const {id, address, clientName, phone, comment, due, statusDescription, totalPrice, products, deliveryMethod} = {...OrderDetail} as orderData
-//     const { id, address, clientName, phone, comment, due, statusDescription, totalPrice, products, deliveryMethod} = OrderDetail || {};
-// const {id, address, clientName, phone, comment, due, statusDescription, totalPrice, products, deliveryMethod} = computed(() => {
-//     if(typeof OrderDetail !== 'undefined'){
-//         const decon = unref(OrderDetail)
-//         if(typeof decon !== 'undefined'){
-//             return decon;
-//         }
-//         return {} as orderData;
-//     }
-//     return {} as any;
-// })
-
-const {id, address, clientName, phone, comment, due, statusDescription, totalPrice, products, deliveryMethod} = OrderDetail ? (OrderDetail.value ? reactive(OrderDetail) : reactive({} as orderData)) : reactive({} as orderData);
-
-onMounted(() => {
-    console.log(props.OrderDetail);
-})
-
-
+const { OrderDetail: od } = toRefs(props);
 
 const emits = defineEmits<{
     (e: 'closeSider'): void;
