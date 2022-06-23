@@ -3,10 +3,13 @@ package app.ordering.food.controller;
 import app.ordering.food.common.Result;
 import app.ordering.food.entity.Merchant;
 import app.ordering.food.entity.Product;
+import app.ordering.food.entity.ProductToCategory;
 import app.ordering.food.service.MerchantService;
 import app.ordering.food.service.MinioService;
 import app.ordering.food.service.ProductService;
+import app.ordering.food.service.ProductToCategoryService;
 import cn.hutool.core.io.IoUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +27,7 @@ import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +46,9 @@ public class ProductController {
 
     @Resource
     private ProductService productService;
+
+    @Resource
+    private ProductToCategoryService productToCategoryService;
 
     @ApiOperation("Get all products")
     @GetMapping("api/v1/product/all")
@@ -368,5 +375,41 @@ public class ProductController {
             return Result.error("002P041", "product更新失败");
         }
         return Result.success(product, "product更新成功");
+    }
+
+    @ApiOperation("Delete products by product IDs")
+    @PostMapping("api/v1/product/delete")
+    public Result<Void> deleteProducts(@RequestBody @NotNull Map<String, Object> requestBody) {
+        if (requestBody == null) {
+            return Result.error("", "参数体为null");
+        }
+        if (!requestBody.containsKey("ids")) {
+            return Result.error("", "参数体不包含ids");
+        }
+        if (requestBody.get("ids") == null) {
+            return Result.error("", "ids为null");
+        }
+        if (!(requestBody.get("ids") instanceof List<?>)) {
+            return Result.error("", "ids类型不匹配");
+        }
+        List<?>      ids  = (List<?>) requestBody.get("ids");
+        List<String> list = new ArrayList<>();
+        for (Object object : ids) {
+            if (object == null) {
+                return Result.error("", "元素为null");
+            }
+            if (!(object instanceof String)) {
+                return Result.error("", "元素类型不匹配");
+            }
+            String id = (String) object;
+            list.add(id);
+        }
+        if (!productToCategoryService.remove(new QueryWrapper<ProductToCategory>().in("product_id", list))) {
+            return Result.error("", "id批量删除失败");
+        }
+        if (!productService.removeBatchByIds(list)) {
+            return Result.error("", "id批量删除失败");
+        }
+        return Result.success("id批量删除成功");
     }
 }

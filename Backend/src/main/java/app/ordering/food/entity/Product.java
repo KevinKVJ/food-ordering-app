@@ -37,4 +37,6 @@ public class Product implements Serializable {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private              LocalDateTime updateAt;
+    @TableLogic
+    private              Integer       deleted;
 }

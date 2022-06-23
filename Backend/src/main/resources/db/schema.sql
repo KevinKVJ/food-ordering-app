@@ -24,15 +24,16 @@ CREATE TABLE t_merchant
 DROP TABLE IF EXISTS t_product;
 CREATE TABLE t_product
 (
-    `id`    VARCHAR(64)        NOT NULL COMMENT '主键ID',
-    `name` VARCHAR(512) NULL COMMENT '商品名称',
-    `monthly` INT DEFAULT 0 NOT NULL COMMENT '月售量',
-    `inventory` INT NULL COMMENT '库存量',
-    `discount`  INT DEFAULT 0 COMMENT '折扣百分比(0-100间整数)',
-    `price` INT NULL COMMENT '商品原价(以分为单位)',
+    `id`          VARCHAR(64)   NOT NULL COMMENT '主键ID',
+    `name`        VARCHAR(512) NULL COMMENT '商品名称',
+    `monthly`     INT DEFAULT 0 NOT NULL COMMENT '月售量',
+    `inventory`   INT NULL COMMENT '库存量',
+    `discount`    INT DEFAULT 0 COMMENT '折扣百分比(0-100间整数)',
+    `price`       INT NULL COMMENT '商品原价(以分为单位)',
     `merchant_id` VARCHAR(64) NULL COMMENT '商家ID',
-    `create_at`   DATETIME           NULL COMMENT '创建时间',
-    `update_at`   DATETIME           NULL COMMENT '修改时间',
+    `create_at`   DATETIME NULL COMMENT '创建时间',
+    `update_at`   DATETIME NULL COMMENT '修改时间',
+    `deleted`     INT DEFAULT 0 NULL COMMENT '逻辑删除',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
