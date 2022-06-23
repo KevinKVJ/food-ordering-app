@@ -1,19 +1,25 @@
 <script setup lang="ts">
 import { apiGetAllOrders } from './OdManagementAPIs';
-import { ref,onMounted, watchEffect } from 'vue';
+import { ref, onMounted, watchEffect } from 'vue';
 
-const tableData = ref([])
-
+const tableData = ref([]);
+// const siderWidth = ref<string>('40%');
+const siderCollapsed = ref<boolean>(false);
 onMounted(() => {
     apiGetAllOrders
-        .then((res) => {
+        .then(res => {
             console.log(res.data.data);
             tableData.value = res.data.data;
         })
-        .catch((err) => {
+        .catch(err => {
             console.error(err);
-        })
-})
+        });
+});
+
+const handleCloseSider = () => {
+    console.log('lalalalal');
+    siderCollapsed.value = !siderCollapsed.value;
+};
 </script>
 
 <template>
@@ -30,22 +36,26 @@ onMounted(() => {
                 </n-layout-header>
                 <n-layout-content :style="{ backgroundColor: 'transparent', flex: 1 }">
                     <!-- <ProdDataTable :tableData="tableData" @delete-data-row="handleDelete" v-model:checked-rows="checkedRowKeysRef" /> -->
-                    <OdDataTable :tableData="tableData"/>
+                    <OdDataTable :tableData="tableData" />
                 </n-layout-content>
             </n-layout>
 
             <!-- class="category-sider" -->
-                <!-- show-trigger -->
+            <!-- :content-style="{ height:'100%' }" -->
+                <!-- show-trigger="bar" -->
             <n-layout-sider
-                :content-style="{ padding: '0 18px' }"
+                :collapsed="siderCollapsed"
                 :style="{ backgroundColor: 'transparent' }"
-                width="40%"
-                :native-scrollbar="false"
+                :width="420"
+                collapse-mode="transform"
+                :collapsed-width="0"
             >
+                <!-- :show-collapsed-content="false" -->
                 <!-- v-model:category-data="categories"
                     @get-prods-by-category="handleGetProdsByCategory"
                     @get-all-prods="handleGetAllProds" -->
                 <!-- <ProdCategoriesSider /> -->
+                <OdSider @close-sider="handleCloseSider" />
             </n-layout-sider>
         </n-layout>
     </div>

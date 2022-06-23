@@ -3,7 +3,8 @@ export interface orderData {
     /**
      * 买家ID
      */
-    clientId: number;
+    clientId:   string;
+    clientName: string;
     /**
      * 商品评价
      */
@@ -12,20 +13,25 @@ export interface orderData {
     /**
      * 配送费
      */
-    deliveryFee: number;
+    deliveryFee:    number;
+    deliveryMethod: string;
     /**
      * 配送方式ID外键
      */
-    deliveryMethodId: number;
+    deliveryMethodId: string;
     /**
      * 送达时间
      */
     deliveryTime: string;
-    id:           number;
+    /**
+     * 过期时间
+     */
+    due: string;
+    id:  string;
     /**
      * 商家ID
      */
-    merchantId: number;
+    merchantId: string;
     /**
      * 支付方式 整数枚举值
      */
@@ -35,11 +41,12 @@ export interface orderData {
     /**
      * 配送员开始送货的时间
      */
-    shipmentTime: string;
+    shipmentTime:      string;
+    statusDescription: string;
     /**
      * 订单状态
      */
-    statusId: number;
+    statusId: string;
     /**
      * 总价格
      */
@@ -47,7 +54,7 @@ export interface orderData {
     updateAt:   string;
 }
 
-interface orderProductData {
+export interface orderProductData {
     name?: string,
     options?: string,
     price?: string,
