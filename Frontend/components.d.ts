@@ -5,12 +5,16 @@ import '@vue/runtime-core'
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BaseInfos: typeof import('./src/views/MainPage/MerchantManagement/BaseInfos.vue')['default']
     CategoriesList: typeof import('./src/components/Presentational/CategoriesList.vue')['default']
     Container: typeof import('./src/components/Layout/Container.vue')['default']
     GridContainer: typeof import('./src/components/Layout/GridContainer.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Login: typeof import('./src/views/LoginAndSignup/Login.vue')['default']
     MainPage: typeof import('./src/views/MainPage/MainPage.vue')['default']
+    MBaseInfos: typeof import('./src/views/MainPage/MerchantManagement/MBaseInfos.vue')['default']
+    MCategories: typeof import('./src/views/MainPage/MerchantManagement/MCategories.vue')['default']
+    MerchantManagement: typeof import('./src/views/MainPage/MerchantManagement/MerchantManagement.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
@@ -47,6 +51,7 @@ declare module '@vue/runtime-core' {
     ProductManagement: typeof import('./src/views/MainPage/ProductManagement/ProductManagement.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ShoppingCartManagement: typeof import('./src/views/MainPage/MerchantManagement/ShoppingCartManagement.vue')['default']
     Signup: typeof import('./src/views/LoginAndSignup/Signup.vue')['default']
   }
 }

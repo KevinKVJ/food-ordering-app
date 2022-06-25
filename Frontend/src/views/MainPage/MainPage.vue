@@ -18,32 +18,52 @@ function renderIcon(icon: Component) {
     return () => <NIcon component={icon}></NIcon>;
 }
 
-const getLabel = (label: string, to: string |{ name: string; params?: object }) => () =>
-    (
-        <router-link to={to}>
-            <span style={{ fontSize: '15px', letterSpacing: '0.3px' }}>{label}</span>
-        </router-link>
-    );
+const getLabel =
+    (label: string, fontSize: number = 15, to?: string | { name: string; params?: object }) =>
+    () => {
+        if (!!to) {
+            return (
+                <router-link to={to}>
+                    <span style={{ fontSize: `${fontSize}px`, letterSpacing: '0.3px' }}>{label}</span>
+                </router-link>
+            );
+        } else {
+            return <span style={{ fontSize: `${fontSize}px`, letterSpacing: '0.3px' }}>{label}</span>;
+        }
+    };
+
 const menuOptions: MenuOption[] = [
     {
-        label: getLabel('Products','/prodm'),
+        label: getLabel('Products', undefined, '/prodm'),
         key: 'products',
         icon: renderIcon(BookIcon),
     },
     {
-        label: getLabel('Orders','/odm'),
+        label: getLabel('Orders',undefined, '/odm'),
         key: 'orders',
         icon: renderIcon(BookIcon),
     },
+
     {
-        label: getLabel('Shopping Cart','/login'),
-        key: 'shopping-cart',
+        label: getLabel('Discounts',undefined, '/signup'),
+        key: 'discounts',
         icon: renderIcon(BookIcon),
     },
     {
-        label: getLabel('Discounts','/signup'),
-        key: 'discounts',
+        /* getLabel('Merchant','/mm') */
+        label: getLabel('Merchant'),
+        key: 'merchant',
         icon: renderIcon(BookIcon),
+        children: [
+            {
+                label: getLabel('Basic Infos',undefined, '/mbi'),
+                key: 'mBasicInfos',
+            },
+            {
+                label: getLabel('Categories',undefined,'/mcate'),
+                key: 'mCategories',
+            },
+        ],
     },
     // {
     //     label: getLabel('Customer Reviews'),
@@ -68,55 +88,56 @@ const menuOptions: MenuOption[] = [
     //     disabled: true,
     //     icon: renderIcon(BookIcon),
     // },
-    {
-        label: '舞，舞，舞',
-        key: 'dance-dance-dance',
-        icon: renderIcon(BookIcon),
-        children: [
-            {
-                type: 'group',
-                label: '人物',
-                key: 'people',
-                children: [
-                    {
-                        label: '叙事者',
-                        key: 'narrator',
-                        icon: renderIcon(PersonIcon),
-                    },
-                    {
-                        label: '羊男',
-                        key: 'sheep-man',
-                        icon: renderIcon(PersonIcon),
-                    },
-                ],
-            },
-            {
-                label: '饮品',
-                key: 'beverage',
-                icon: renderIcon(WineIcon),
-                children: [
-                    {
-                        label: '威士忌',
-                        key: 'whisky',
-                    },
-                ],
-            },
-            {
-                label: '食物',
-                key: 'food',
-                children: [
-                    {
-                        label: '三明治',
-                        key: 'sandwich',
-                    },
-                ],
-            },
-            {
-                label: '过去增多，未来减少',
-                key: 'the-past-increases-the-future-recedes',
-            },
-        ],
-    },
+
+    // {
+    //     label: '舞，舞，舞',
+    //     key: 'dance-dance-dance',
+    //     icon: renderIcon(BookIcon),
+    //     children: [
+    //         {
+    //             type: 'group',
+    //             label: '人物',
+    //             key: 'people',
+    //             children: [
+    //                 {
+    //                     label: '叙事者',
+    //                     key: 'narrator',
+    //                     icon: renderIcon(PersonIcon),
+    //                 },
+    //                 {
+    //                     label: '羊男',
+    //                     key: 'sheep-man',
+    //                     icon: renderIcon(PersonIcon),
+    //                 },
+    //             ],
+    //         },
+    //         {
+    //             label: '饮品',
+    //             key: 'beverage',
+    //             icon: renderIcon(WineIcon),
+    //             children: [
+    //                 {
+    //                     label: '威士忌',
+    //                     key: 'whisky',
+    //                 },
+    //             ],
+    //         },
+    //         {
+    //             label: '食物',
+    //             key: 'food',
+    //             children: [
+    //                 {
+    //                     label: '三明治',
+    //                     key: 'sandwich',
+    //                 },
+    //             ],
+    //         },
+    //         {
+    //             label: '过去增多，未来减少',
+    //             key: 'the-past-increases-the-future-recedes',
+    //         },
+    //     ],
+    // },
 ];
 const activeKey = ref<string | null>(null);
 </script>

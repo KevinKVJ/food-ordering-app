@@ -5,6 +5,8 @@ import Login from '@/views/LoginAndSignup/Login.vue';
 import Signup from '@/views/LoginAndSignup/Signup.vue';
 import ProdManagement from '@/views/MainPage/ProductManagement/ProductManagement.vue';
 import ODManagement from '@/views/MainPage/OrderManagement/OrderManagement.vue';
+import MBaseInfos from '@/views/MainPage/MerchantManagement/MBaseInfos.vue'
+import MCategoies from '@/views/MainPage/MerchantManagement/MCategories.vue'
 
 const routes: RouteRecordRaw[] = [
     {
@@ -19,6 +21,14 @@ const routes: RouteRecordRaw[] = [
             {
                 path: '/prodm',
                 component: ProdManagement,
+            },
+            {
+                path: '/mbi',
+                component: MBaseInfos,
+            },
+            {
+                path: '/mcate',
+                component: MCategoies,
             },
         ],
     },

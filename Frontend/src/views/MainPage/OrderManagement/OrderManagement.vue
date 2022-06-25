@@ -20,7 +20,6 @@ onMounted(() => {
 const siderCollapsed = ref<boolean>(true);
 
 const handleCloseSider = () => {
-    console.log('lalalalal');
     siderCollapsed.value = true;
 };
 
@@ -60,6 +59,7 @@ const handleOrderDetailSider = (orderDetail:orderData) => {
                 :width="420"
                 collapse-mode="transform"
                 :collapsed-width="0"
+                :native-scrollbar="false"
             >
                 <!-- :show-collapsed-content="false" -->
                 <!-- v-model:category-data="categories"

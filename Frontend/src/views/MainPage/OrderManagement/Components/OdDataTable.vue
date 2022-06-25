@@ -81,7 +81,7 @@ const handleOrderDetailsDisplay = (rowData: orderData) => {
         <!-- :style="{ height: '100%' }" -->
         <!-- :bordered="false" -->
         <!-- :single-line="false" -->
-        <n-data-table :columns="columns" :row-key="(obj:orderData) => obj.id" :data="tableData" :scroll-x="800"  :style="{ height: `800px` }" flex-height/>
+        <n-data-table :columns="columns" :row-key="(obj:orderData) => obj.id" :data="tableData" :scroll-x="800"  :style="{ height: `100%` }" flex-height/>
     </div>
 </template>
 
