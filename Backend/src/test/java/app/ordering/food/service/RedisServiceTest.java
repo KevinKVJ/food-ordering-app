@@ -2,7 +2,6 @@ package app.ordering.food.service;
 
 import app.ordering.food.entity.Client;
 import app.ordering.food.entity.Merchant;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,14 +1,87 @@
+spring:
+  datasource:
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    # driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:p6spy:mysql://177.77.0.3:3306/food_ordering_app?useSSL=true&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=America/Edmonton&useLegacyDatetimeCode=false
+    # url: jdbc:mysql://177.77.0.3:3306/food_ordering_app?useSSL=true&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=America/Edmonton&useLegacyDatetimeCode=false
+    username: root
+    password: 2O0JciiKsCFJf0ztv
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      validation-timeout: 1500
+      connection-timeout: 2000
+      max-lifetime: 300000
+      maximum-pool-size: 50
+  sql:
+    init:
+      data-locations: classpath:db/data.sql
+      schema-locations: classpath:db/schema.sql
+      mode: always
+  application:
+    name: food-ordering-app-backend
+  redis:
+    port: 6379
+    database: 0
+    timeout: 60000
+    jwtTimeout: 86400  # 缓存1天
+  servlet:
+    multipart:
+      # 文件请求及大小限制
+      max-request-size: 100MB
+      max-file-size: 100MB
+  # 缓存设置
+  cache:
+    redis:
+      time-to-live: 600000 # 存活10分钟
+      cache-null-values: false
+    type: redis
+    cache-names: merchantServiceCache,productServiceCache,minioServiceCache
+  data:
+    # mongodb设置
+    mongodb:
+      username: mongoadmin
+      password: secret
+      database: orderDetails
+      port: 27017 # 不要使用27017 会和本地mongodb端口冲突
+      host: 177.77.0.4
+      authentication-database: admin
+mybatis-plus:
+  configuration:
+    # mp日志管理
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/*.xml
+  global-config:
+    db-config:
+      # 逻辑删除
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
 
-logging:
-  file:
-    path: /log
-    name: app.log
-  logback:
-    rollingpolicy:
-      clean-history-on-start: true
-  level:
-    # 只记录sql的参数和返回结果数
-    app:
-      ordering:
-        food:
-          mapper: debug
+minio:
+  endpoint: http://177.77.0.5:9000
+  accessKey: x6YNVgdyugY
+  secretKey: 4Kl41vUHOad/Luzs4+HvgGaadw
+  bucketForMerchants: food-ordering-app-merchants
+  bucketForProducts: food-ordering-app-products
+
+server:
+  # 文件压缩
+  compression:
+    enabled: true
+    mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain
+  # undertow调优
+  undertow:
+    threads:
+      io: 16
+      worker: 256
+    direct-buffers: true
+management:
+  # endpoint管理
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

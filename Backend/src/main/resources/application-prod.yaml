@@ -1,0 +1,13 @@
+logging:
+  file:
+    path: /log
+    name: app.log
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+  level:
+    # 只记录sql的参数和返回结果数
+    app:
+      ordering:
+        food:
+          mapper: debug
