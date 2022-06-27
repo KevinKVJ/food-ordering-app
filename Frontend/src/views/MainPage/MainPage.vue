@@ -44,11 +44,11 @@ const menuOptions: MenuOption[] = [
         icon: renderIcon(BookIcon),
     },
 
-    {
-        label: getLabel('Discounts',undefined, '/signup'),
-        key: 'discounts',
-        icon: renderIcon(BookIcon),
-    },
+   // {
+    //     label: getLabel('Discounts',undefined, '/signup'),
+    //     key: 'discounts',
+    //     icon: renderIcon(BookIcon),
+    // },
     {
         /* getLabel('Merchant','/mm') */
         label: getLabel('Merchant'),
