@@ -21,7 +21,7 @@ public interface OrderMapper extends BaseMapper<Order> {
             "     t_client\n" +
             "where t_order.client_id = t_client.id\n" +
             "  and t_order.delivery_method_id = t_order_delivery_method.id\n" +
-            "  and t_order.status_id = t_order_status.id;")
+            "  and t_order.status_id = t_order_status.id and t_order.deleted = 0;")
     List<Map<String, Object>> getOrders();
 
     @Select("select t_order.*,\n" +
@@ -35,6 +35,6 @@ public interface OrderMapper extends BaseMapper<Order> {
             "where t_order.client_id = t_client.id\n" +
             "  and t_order.delivery_method_id = t_order_delivery_method.id\n" +
             "  and t_order.status_id = t_order_status.id\n" +
-            "  and t_order.merchant_id = #{merchantId};")
+            "  and t_order.merchant_id = #{merchantId} and t_order.deleted = 0;")
     List<Map<String, Object>> getOrdersOfMerchant(String merchantId);
 }

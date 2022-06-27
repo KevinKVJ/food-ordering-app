@@ -54,4 +54,6 @@ public class Order implements Serializable {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime due;
+    @TableLogic
+    private Integer deleted;
 }

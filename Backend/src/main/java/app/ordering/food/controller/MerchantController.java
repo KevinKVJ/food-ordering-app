@@ -2,6 +2,7 @@ package app.ordering.food.controller;
 
 import app.ordering.food.common.JwtUtils;
 import app.ordering.food.common.Result;
+import app.ordering.food.common.Utils;
 import app.ordering.food.entity.*;
 import app.ordering.food.repository.OrderDetailsRepository;
 import app.ordering.food.service.*;
@@ -28,9 +29,7 @@ import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @Api(tags = "Merchant Controller")
@@ -62,6 +61,12 @@ public class MerchantController {
 
     @Resource
     private ProductService productService;
+
+    @Resource
+    private TagService tagService;
+
+    @Resource
+    private MerchantToTagService merchantToTagService;
 
     @Value("${minio.bucketForMerchants}")
     private String bucketForMerchants;
@@ -187,11 +192,8 @@ public class MerchantController {
         List<?> names = (List<?>) requestBody.get("names");
         List<Category> categories = new ArrayList<>();
         for (Object name : names) {
-            if (name == null) {
-                return Result.error("", "names列表包含为null的元素");
-            }
             if (!(name instanceof String)) {
-                return Result.error("", "names列表包含类型不匹配的元素");
+                return Result.error("", "names列表包含null或者类型不匹配的元素");
             }
             Category category = new Category();
             category.setName((String)name);
@@ -673,5 +675,97 @@ public class MerchantController {
             return Result.error("001B007", "merchant更新失败");
         }
         return Result.success(merchant, "merchant更新成功");
+    }
+
+    @ApiOperation("Get all global tags")
+    @GetMapping("api/v1/merchant/globaltags")
+    public Result<List<Tag>> getGlobalTags() {
+        List<Tag> tags = tagService.list();
+        if (tags == null) {
+            return Result.error("", "获取tags列表失败");
+        }
+        return Result.success(tags, "获取tags列表成功");
+    }
+
+    @ApiOperation("Get all tags of the merchant")
+    @GetMapping("api/v1/merchant/tags")
+    public Result<List<Tag>> getTags(HttpServletRequest request) {
+        String   token    = request.getHeader("Authorization").substring(7);
+        String   id       = redisService.getString(token);
+        Merchant merchant = merchantService.getById(id);
+        if (merchant == null) {
+            return Result.error("", "merchant id不存在");
+        }
+        List<Tag> tags = tagService.getTags(id);
+        if (tags == null) {
+            return Result.error("", "获取tags列表失败");
+        }
+        return Result.success(tags, "获取tags列表成功");
+    }
+
+    @ApiOperation("Update tags of the merchant")
+    @PostMapping("api/v1/merchant/tags/update")
+    public Result<List<Tag>> updateTags(HttpServletRequest request,
+                                        @RequestBody @NotNull Map<String, Object> requestBody) {
+        String   token      = request.getHeader("Authorization").substring(7);
+        String   merchantId = redisService.getString(token);
+        Merchant merchant   = merchantService.getById(merchantId);
+        if (merchant == null) {
+            return Result.error("", "merchant id不存在");
+        }
+        if (requestBody == null) {
+            return Result.error("", "参数体为null");
+        }
+        if (!requestBody.containsKey("ids")) {
+            return Result.error("", "参数体不包含tag id列表");
+        }
+        if (requestBody.get("ids") == null) {
+            return Result.error("", "tag id列表为null");
+        }
+        if (!(requestBody.get("ids") instanceof List<?>)) {
+            return Result.error("", "tag id列表类型不匹配");
+        }
+        List<Tag>   allTag       = tagService.list(new QueryWrapper<Tag>().select("id"));
+        Set<String> uniqueTagIds = new HashSet<>();
+        for (Tag tag : allTag) {
+            uniqueTagIds.add(tag.getId());
+        }
+        List<?>           ids    = (List<?>) requestBody.get("ids");
+        ArrayList<String> newIds = new ArrayList<>();
+        for (Object object : ids) {
+            if (!(object instanceof String)) {
+                return Result.error("", "ids包含null或类型不匹配的元素");
+            }
+            String idValue = (String) object;
+            if (!uniqueTagIds.contains(idValue)) {
+                return Result.error("", "ids包含的tag id不存在");
+            }
+            newIds.add(idValue);
+        }
+        // Get all current tag IDs of the merchant
+        List<MerchantToTag> currentTagIds = merchantToTagService.list(new QueryWrapper<MerchantToTag>().eq("merchant_id", merchantId));
+        ArrayList<String>   oldIds        = new ArrayList<>();
+        for (MerchantToTag i : currentTagIds) {
+            oldIds.add(i.getTagId());
+        }
+        // Get all tag IDs added and all tag IDs removed
+        ArrayList<ArrayList<String>> updated = Utils.getDifference(oldIds, newIds);
+        // add new tag IDs
+        List<MerchantToTag> tagsAdded = new ArrayList<>();
+        for (String tagId : updated.get(0)) {
+            MerchantToTag merchantToTag = new MerchantToTag();
+            merchantToTag.setMerchantId(merchantId);
+            merchantToTag.setTagId(tagId);
+            tagsAdded.add(merchantToTag);
+        }
+        if (!merchantToTagService.saveBatch(tagsAdded)) {
+            return Result.error("", "增加新tag id失败");
+        }
+        // remove old tag IDs
+        if (!merchantToTagService.remove(new QueryWrapper<MerchantToTag>().eq("merchant_id", merchantId).in("tag_id",
+                updated.get(1)))) {
+            return Result.error("", "删除旧tag id失败");
+        }
+        return Result.success();
     }
 }

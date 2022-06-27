@@ -46,11 +46,25 @@ public class DataInitializer implements ApplicationRunner {
     @Resource
     private OrderDeliveryMethodService orderDeliveryMethodService;
 
+    @Resource
+    private TagService tagService;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        // initialize tables in mysql db
+        int numberOfMerchants  = 3;
+        int numberOfClients    = 3;
+        int numberOfProducts   = 3;
+        int numberOfCategories = 3;
+        int numberOfTags       = 3;
+        /* initialize tables in mysql db */
+        // t_tag
+        for (int i = 1; i <= numberOfTags; ++i) {
+            Tag tag = new Tag();
+            tag.setName("tagName" + i);
+            tagService.save(tag);
+        }
         // t_merchant
-        for (int i = 1; i <= 3; ++i) {
+        for (int i = 1; i <= numberOfMerchants; ++i) {
             Merchant merchant = new Merchant();
             merchant.setPhone("100000000" + i);
             merchant.setPassword(bCryptPasswordEncoder.encode("password" + i));
@@ -63,18 +77,18 @@ public class DataInitializer implements ApplicationRunner {
             merchantService.save(merchant);
         }
         // t_order
-        for (int i = 1; i <= 3; ++i) {
+        for (int i = 1; i <= numberOfProducts; ++i) {
             Product product = new Product();
             product.setName("product" + i);
-            product.setMonthly(i*10+5);
-            product.setInventory(i*1000);
+            product.setMonthly(i * 10 + 5);
+            product.setInventory(i * 1000);
             product.setDiscount(0);
-            product.setPrice(i*1000+500);
+            product.setPrice(i * 1000 + 500);
             product.setMerchantId(String.valueOf(i));
             productService.save(product);
         }
         // t_client
-        for (int i = 1; i <= 3; ++i) {
+        for (int i = 1; i <= numberOfClients; ++i) {
             Client client = new Client();
             client.setPhone("200000000" + i);
             client.setPassword(bCryptPasswordEncoder.encode("password" + i));
@@ -82,8 +96,8 @@ public class DataInitializer implements ApplicationRunner {
             clientService.save(client);
         }
         // t_category
-        for (int i = 1; i <= 3; ++i) {
-            for (int j = 1; j <= 3; ++j) {
+        for (int i = 1; i <= numberOfCategories; ++i) {
+            for (int j = 1; j <= numberOfMerchants; ++j) {
                 Category category = new Category();
                 category.setName("category_" + i + "_" + j);
                 category.setMerchantId(String.valueOf(j));
@@ -117,11 +131,9 @@ public class DataInitializer implements ApplicationRunner {
             orderDeliveryMethod.setDescription(deliveryMethod);
             orderDeliveryMethodService.save(orderDeliveryMethod);
         }
-
-
-        // clear redis cache
+        /* clear redis cache */
         redisService.flushDb();
-        // add default images for default products and default merchants in minio
+        /* add default images for default products and default merchants in minio */
         File file;
         FileInputStream fileInputStream;
         String filename;
@@ -130,7 +142,7 @@ public class DataInitializer implements ApplicationRunner {
         try {
             file = ResourceUtils.getFile("classpath:static/product.jpg");
             bucket = "food-ordering-app-products";
-            for (int i = 1; i <= 3; ++i) {
+            for (int i = 1; i <= numberOfProducts; ++i) {
                 filename = i + ".jpg";
                 try {
                     fileInputStream = new FileInputStream(file);
@@ -153,7 +165,7 @@ public class DataInitializer implements ApplicationRunner {
         try {
             file = ResourceUtils.getFile("classpath:static/merchant.jpg");
             bucket = "food-ordering-app-merchants";
-            for (int i = 1; i <= 3; ++i) {
+            for (int i = 1; i <= numberOfMerchants; ++i) {
                 filename = i + ".jpg";
                 try {
                     fileInputStream = new FileInputStream(file);

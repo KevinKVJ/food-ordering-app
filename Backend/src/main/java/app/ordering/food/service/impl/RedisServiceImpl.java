@@ -42,7 +42,10 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public boolean updateStringWithTtl(String key, String val, long ttl) {
-        if (key == null || val == null) {
+        if (key == null) {
+            return false;
+        }
+        if (val == null) {
             return false;
         }
         if (ttl < 0) {
