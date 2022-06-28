@@ -73,13 +73,10 @@ services:
       food_ordering_app_backend_network:
         ipv4_address: 177.77.0.5
 
-  spring-boot-admin:
-    container_name: food-ordering-app-springboot-admin
-
   spring-boot:
     container_name: food-ordering-app-springboot
     build:
-      context: .
+      context: ""
       dockerfile: springboot_dockerfile
     depends_on:
       - "minio"
