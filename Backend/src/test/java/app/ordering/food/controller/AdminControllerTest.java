@@ -100,6 +100,4 @@ class AdminControllerTest {
         // restore
         minioService.removeObject(bucket, filename);
     }
-
-
 }

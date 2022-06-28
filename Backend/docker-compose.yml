@@ -9,7 +9,7 @@ services:
       - "16379:6379"
     networks:
       food_ordering_app_backend_network:
-        - ipv4_address: 177.77.0.2
+        ipv4_address: 177.77.0.2
 
   mysql:
     image: mysql:8.0
@@ -21,11 +21,13 @@ services:
     environment:
       - "MYSQL_ROOT_PASSWORD=2O0JciiKsCFJf0ztv"
       - "MYSQL_DATABASE=food_ordering_app"
+    volumes:
+      - ${HOME}/volumes_mapping/mysql:/var/lib/mysql
     depends_on:
       - "redis"
     networks:
       food_ordering_app_backend_network:
-        - ipv4_address: 177.77.0.3
+        ipv4_address: 177.77.0.3
 
   mongodb:
     image: mongo:4.2.21-bionic
@@ -37,14 +39,16 @@ services:
       - "MONGO_INITDB_ROOT_PASSWORD=secret"
     ports:
       - "17017:27017"
+    volumes:
+      - ${HOME}/volumes_mapping/mongodb:/data/db
     depends_on:
       - "mysql"
     networks:
       food_ordering_app_backend_network:
-        - ipv4_address: 177.77.0.4
+        ipv4_address: 177.77.0.4
 
   minio:
-    image: minio:latest
+    image: quay.io/minio/minio:latest
     container_name: food-ordering-app-minio01
     restart: always
     environment:
@@ -55,19 +59,22 @@ services:
       - "9000:9000"
       - "9001:9001"
     volumes:
-      - "${HOME}/minio/data1:/data1"
-      - "${HOME}/minio/data2:/data2"
-      - "${HOME}/minio/data3:/data3"
-      - "${HOME}/minio/data4:/data4"
-      - "${HOME}/minio/data5:/data5"
-      - "${HOME}/minio/data6:/data6"
-      - "${HOME}/minio/data7:/data7"
-      - "${HOME}/minio/data8:/data8"
+      - ${HOME}/volumes_mapping/minio/data1:/data1
+      - ${HOME}/volumes_mapping/minio/data2:/data2
+      - ${HOME}/volumes_mapping/minio/data3:/data3
+      - ${HOME}/volumes_mapping/minio/data4:/data4
+      - ${HOME}/volumes_mapping/minio/data5:/data5
+      - ${HOME}/volumes_mapping/minio/data6:/data6
+      - ${HOME}/volumes_mapping/minio/data7:/data7
+      - ${HOME}/volumes_mapping/minio/data8:/data8
     depends_on:
       - "mongodb"
     networks:
       food_ordering_app_backend_network:
-        - ipv4_address: 177.77.0.5
+        ipv4_address: 177.77.0.5
+
+  spring-boot-admin:
+    container_name: food-ordering-app-springboot-admin
 
   spring-boot:
     container_name: food-ordering-app-springboot
@@ -80,7 +87,7 @@ services:
       - "18080:8080"
     networks:
       food_ordering_app_backend_network:
-        - ipv4_address: 177.77.0.6
+        ipv4_address: 177.77.0.6
     tty: true
 
 networks:

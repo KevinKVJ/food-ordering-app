@@ -24,6 +24,7 @@ spring:
     database: 0
     timeout: 60000
     jwtTimeout: 86400  # 缓存1天
+    host: 177.77.0.2
   servlet:
     multipart:
       # 文件请求及大小限制
@@ -76,12 +77,3 @@ server:
       io: 16
       worker: 256
     direct-buffers: true
-management:
-  # endpoint管理
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    health:
-      show-details: always

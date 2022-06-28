@@ -7,8 +7,6 @@ docker system prune --all --force
 docker-compose build --no-cache
 # to run:
 docker-compose up -d
-
-
 # to quit and clean
 docker-compose down --rmi all
 ```

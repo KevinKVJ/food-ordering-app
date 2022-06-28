@@ -1,4 +1,4 @@
 FROM openjdk:8
-ADD ./food_ordering_app_backend
+ADD . /food_ordering_app_backend
 WORKDIR /food_ordering_app_backend
-ENTRYPOINT ["/bin/sh", "-c", "chmod +x ./mvnw && chmod +x ./wait-for-it.sh && ./wait-for-it.sh 177.77.0.3:3306 -t 120 &&./mvnw spring-boot:run -Dspring-boot.run.profiles=test"]
+ENTRYPOINT ["/bin/sh", "-c", "chmod +x ./mvnw && chmod +x ./wait-for-it.sh && ./wait-for-it.sh -s 177.77.0.3:3306 -s 177.77.0.2:6379 -s 177.77.0.4:27017 -s 177.77.0.5:9000 -s 177.77.0.5:9001 -t 120 && ./mvnw spring-boot:run -Dspring-boot.run.profiles=test"]
