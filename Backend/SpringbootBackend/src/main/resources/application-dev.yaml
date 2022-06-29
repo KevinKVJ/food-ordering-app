@@ -24,6 +24,7 @@ spring:
     database: 0
     timeout: 60000
     jwtTimeout: 86400  # 缓存1天
+    host: localhost
   servlet:
     multipart:
       # 文件请求及大小限制
@@ -45,11 +46,11 @@ spring:
       port: 17017 # 不要使用27017 会和本地mongodb端口冲突
       host: 127.0.0.1
       authentication-database: admin
-  boot:
+  #boot:
     # Springboot Admin设置
-    admin:
-      client:
-        url: http://127.0.0.1:8085
+    #admin:
+      #client:
+        #url: http://127.0.0.1:8085
 mybatis-plus:
   configuration:
     # mp日志管理
