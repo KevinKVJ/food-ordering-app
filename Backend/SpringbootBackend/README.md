@@ -9,4 +9,6 @@ docker-compose build --no-cache
 docker-compose up -d
 # to quit and clean
 docker-compose down --rmi all
+# to remove local volumes mapping
+rm -rfv ${HOME}/volumes_mapping
 ```
