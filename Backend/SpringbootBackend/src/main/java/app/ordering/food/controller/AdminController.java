@@ -92,7 +92,7 @@ public class AdminController {
     }
 
     @ApiOperation("Insert an empty order")
-    @PostMapping("api/v1/admin/order/insertEmpty")
+    @GetMapping("api/v1/admin/order/insertEmpty")
     public Result<Map<String, Object>> insertEmptyOrder() {
         Order order = new Order();
         List<Map<String, Object>> products = new ArrayList<>();

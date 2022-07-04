@@ -4,6 +4,8 @@
 # to deploy all services and the app in docker containers
 # to clean all cache before building images (optional)
 docker system prune --all --force
+# to clean all unused volumes (optional)
+docker volume prune --force
 # to build:
 docker-compose build --no-cache
 # to run:

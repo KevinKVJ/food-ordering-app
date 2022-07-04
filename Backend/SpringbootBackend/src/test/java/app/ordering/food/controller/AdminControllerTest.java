@@ -39,6 +39,65 @@ class AdminControllerTest {
     private MinioService minioService;
     @Resource
     private MerchantService merchantService;
+
+    @Test
+    void getOrders() throws Exception {
+        String url = "/api/v1/admin/order/all";
+        RequestBuilder request = MockMvcRequestBuilders.get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("0000000"))
+                .andReturn();
+        mvcResult.getResponse().setCharacterEncoding("UTF-8");
+        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
+    }
+
+    @Test
+    void insertEmptyOrder() throws Exception {
+        String url = "/api/v1/admin/order/insertEmpty";
+        RequestBuilder request = MockMvcRequestBuilders.get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("0000000"))
+                .andReturn();
+        mvcResult.getResponse().setCharacterEncoding("UTF-8");
+        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
+    }
+
+    @Test
+    void getCategories() throws Exception {
+        String url = "/api/v1/admin/category/all";
+        RequestBuilder request = MockMvcRequestBuilders.get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("0000000"))
+                .andReturn();
+        mvcResult.getResponse().setCharacterEncoding("UTF-8");
+        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
+    }
+
+    @Test
+    void getCategoriesByMerchantId() throws Exception {
+        String url = "/api/v1/admin/category/merchant";
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("merchantId", "1");
+        RequestBuilder request = MockMvcRequestBuilders.post(url)
+                .content(new ObjectMapper().writeValueAsString(requestBody))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+        mvcResult.getResponse().setCharacterEncoding("UTF-8");
+        System.out.print(JSONUtil.toJsonPrettyStr(mvcResult.getResponse().getContentAsString()));
+    }
+
     @Test
     void getMerchants() throws Exception {
         String url = "/api/v1/admin/merchant/all";
