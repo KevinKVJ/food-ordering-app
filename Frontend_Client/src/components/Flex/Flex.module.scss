@@ -1,24 +1,19 @@
-
-
-.flexBox{
+.flexBox {
     display: flex;
+    // flex-direction: column;
+    // gap: 10px 20px
 }
 
-.mg-small{
-    margin-right: 5px;
+.mg-small {
+    gap: 5px;
 }
-.mg-medium{
-    margin-right: 10px;
+.mg-medium {
+    gap: 10px;
 }
-.mg-large{
-    margin-right: 15px;
+.mg-large {
+    gap: 15px;
 }
-.vert-mg-small{
-    margin-bottom: 5px;
-}
-.vert-mg-medium{
-    margin-bottom: 10px;
-}
-.vert-mg-large{
-    margin-bottom: 15px;
+
+.wrap {
+    flex-wrap: wrap;
 }

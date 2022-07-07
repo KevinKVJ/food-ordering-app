@@ -39,7 +39,7 @@ class ClassExample extends React.Component {
 export default function App() {
     return (
         <div className='App'>
-            <Flex spacing={13} itemStyle={{marginTop:'50px'}}>
+            <Flex spacing={20}>
                 <FuncExample />
                 <ClassExample />
             </Flex>
