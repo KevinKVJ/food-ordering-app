@@ -3,8 +3,9 @@ interface SvgProps extends React.SVGProps<SVGSVGElement>{
     prefix:string,
     color:string,
 }
+
 /* {name,prefix,color,...props}:{name:string,prefix:string,color:string} & React.SVGProps<SVGSVGElement>  */
-export default ({name,prefix,color,...props}:SvgProps) => {
+export default ({name,prefix,color,...props}:SvgProps)  => {
     const symbolId = `#${prefix}-${name}`;
     return (
         <svg {...props} aria-hidden='true'>
@@ -12,8 +13,3 @@ export default ({name,prefix,color,...props}:SvgProps) => {
         </svg>
     );
 }
-
-
-
-
-

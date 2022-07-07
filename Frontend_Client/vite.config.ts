@@ -26,18 +26,20 @@ export default defineConfig({
             customDomId: '__svg__icons__dom__',
         })],
     css: {
+        // modules:{
+        //     localsConvention: "camelCaseOnly",
+        // },
         postcss: {
             plugins: [
                 autoprefixer({
                     grid: "no-autoplace",
                 }),
-
             ]
         }
     },
     resolve: {
         alias: [
-            { find: "@", replacement: path.resolve(__dirname, "src") }
+            { find: "@", replacement: path.resolve(__dirname, "src") },
         ]
     }
 })

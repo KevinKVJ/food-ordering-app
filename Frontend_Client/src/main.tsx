@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import './index.css'
+import './index.scss'
 import 'virtual:svg-icons-register'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
