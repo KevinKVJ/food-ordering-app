@@ -7,7 +7,12 @@ import parseStyles from '@/utils/parseStyles';
 interface FlexProps extends PropsWithChildren {
     spacing?: 'small' | 'medium' | 'large' | number;
     itemStyle?: string | CSSProperties;
+    vertical?:boolean
 }
+
+// const itemClasses:string = [
+
+// ].join(' ');
 
 const Flex = ({ children, spacing = 'medium', itemStyle }: FlexProps) => {
     const flexSpacing = useMemo(() => {
@@ -44,6 +49,7 @@ const Flex = ({ children, spacing = 'medium', itemStyle }: FlexProps) => {
                         return (
                             <div
                                 key={index}
+                                className={`666`}
                                 style={{
                                     marginRight:
                                         index !== oriChilds.length - 1
