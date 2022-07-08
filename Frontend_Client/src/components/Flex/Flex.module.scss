@@ -1,19 +1,14 @@
 .flexBox {
     display: flex;
-    // flex-direction: column;
-    // gap: 10px 20px
+    > div {
+        flex: 0 0 auto;
+    }
 }
 
-.mg-small {
-    gap: 5px;
-}
-.mg-medium {
-    gap: 10px;
-}
-.mg-large {
-    gap: 15px;
-}
+// .verti{
+//     flex-direction: column;
+// }
 
-.wrap {
-    flex-wrap: wrap;
-}
+// .wrap {
+//     flex-wrap: wrap;
+// }

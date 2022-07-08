@@ -38,8 +38,8 @@ class ClassExample extends React.Component {
 
 export default function App() {
     return (
-        <div className='App'>
-            <Flex spacing={20}>
+        <div className='555'>
+            <Flex vertical wrap>
                 <FuncExample />
                 <ClassExample />
             </Flex>

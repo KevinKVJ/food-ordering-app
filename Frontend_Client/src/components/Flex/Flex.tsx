@@ -2,8 +2,7 @@ import { useMemo } from 'react';
 import type { CSSProperties, PropsWithChildren, FC } from 'react';
 import React from 'react';
 import styles from './Flex.module.scss';
-import useParseStyles from '@/utils/parseStyles';
-import { useClassNameStr } from './customHooks';
+import { useClassNameStr, useFlexSpacings, useItemStyle } from './customHooks';
 
 interface FlexProps extends PropsWithChildren {
     spacing?: 'small' | 'medium' | 'large' | number | [number, number];
@@ -12,57 +11,41 @@ interface FlexProps extends PropsWithChildren {
     wrap?: boolean;
 }
 
-const Flex: FC<FlexProps> = ({ children, spacing = 'medium', itemStyle }) => {
-    const flexSpacing = useMemo(() => {
-        if (spacing instanceof Number) return String(spacing);
-        else if (spacing instanceof Array)
-            return spacing.map(val => `${val}px`).join(' ');
-        else return spacing;
-    }, [spacing]);
+const Flex: FC<FlexProps> = ({ children, spacing = 'medium', itemStyle,vertical,wrap }) => {
+    const flexSpacing = useFlexSpacings(spacing);
+    const childStyle = useItemStyle(itemStyle);
 
-    const childStyle = useMemo(
-        () =>
-            typeof itemStyle === 'string'
-                ? useParseStyles(itemStyle)
-                : itemStyle,
-        [itemStyle]
-    );
+    const wrapperClass: string = useMemo(() => {
+        return useClassNameStr([
+            `flex`,
+            vertical ? `flex-col` : '',
+            wrap ? `flex-wrap` : '',
+            // `gap-y-${flexSpacingY}px`,
+        ]);
+    }, [vertical,wrap]);
 
-    const wrapperClass: string = useMemo(
-        () =>
-            useClassNameStr([
-                styles.flexBox,
-                flexSpacing === 'small' ||
-                flexSpacing === 'medium' ||
-                flexSpacing === 'large'
-                    ? styles[`mg-${flexSpacing}`]
-                    : '',
-            ]),
-        [flexSpacing, styles.flexBox]
-    );
+    const wrapperStyle: CSSProperties = useMemo(() => {
+        const [flexSpacingX, flexSpacingY] = flexSpacing;
+        return {
+            gap: `${flexSpacingX}px ${flexSpacingY}px`,
+        };
+    }, [flexSpacing]);
 
-    const wrapperStyle: CSSProperties = useMemo(
-        () => ({
-            gap:
-                flexSpacing === 'small' ||
-                flexSpacing === 'medium' ||
-                flexSpacing === 'large'
-                    ? undefined
-                    : flexSpacing,
-        }),
-        [flexSpacing]
-    );
+    const childClass : string = useMemo(() => {
+        return useClassNameStr([
+            `flex-[0_0_auto]`
+        ]);
+    },[]);
 
     return (
         <>
-            {/* {console.log(flexSpacing, styles[`mg-${flexSpacing}`])} */}
             <div className={wrapperClass} style={wrapperStyle}>
                 {React.Children.toArray(children).map(
                     (child, index, oriChilds) => {
                         return (
                             <div
                                 key={index}
-                                className={`666`}
+                                className={childClass}
                                 style={childStyle}>
                                 {child}
                             </div>
