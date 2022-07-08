@@ -1,8 +1,9 @@
 import { CSSProperties, useMemo } from "react";
 import useParseStyles from '@/utils/parseStyles';
+import {FlexProps} from './Flex_Types'
 
-export const useClassNameStr = (classStringArray: string[]) => {
-    return classStringArray.join(' ').trim();
+export const useClassNameStr = (classStringArray: (string|undefined)[]) => {
+    return classStringArray.filter(value => value !== undefined).join(' ').trim();
 }
 
 // const flexSpacingStrategies = {
@@ -10,9 +11,8 @@ export const useClassNameStr = (classStringArray: string[]) => {
 //     Row_Col:(spacing:[number,number]) => spacing.map(val => `${val}px`).join(' '),
 //     [/[abc]/]:(spacing:string) => spacing
 // }
-
-export const useFlexSpacings = (spacing: 'small' | 'medium' | 'large' | number | [number, number]) => useMemo(() => {
-    // const spacingVal = String(spacing).split(",").join(" ").trim();
+type Spacing = FlexProps['spacing']
+export const useFlexSpacings = (spacing: Spacing) => useMemo(() => {
     let retVal: [string, string];
     switch (spacing) {
         case 'small':
@@ -32,7 +32,9 @@ export const useFlexSpacings = (spacing: 'small' | 'medium' | 'large' | number |
     return retVal;
 }, [spacing])
 
-export const useItemStyle = (itemStyle: string | CSSProperties | undefined) => useMemo(
+
+type ItemStyle = FlexProps['itemStyle']
+export const useItemStyle = (itemStyle: ItemStyle) => useMemo(
     () =>
         typeof itemStyle === 'string'
             ? useParseStyles(itemStyle)

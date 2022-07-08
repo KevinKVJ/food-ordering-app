@@ -39,7 +39,7 @@ class ClassExample extends React.Component {
 export default function App() {
     return (
         <div className='555'>
-            <Flex vertical wrap>
+            <Flex wrap>
                 <FuncExample />
                 <ClassExample />
             </Flex>

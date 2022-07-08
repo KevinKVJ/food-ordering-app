@@ -1,9 +1,13 @@
-.flexBox {
-    display: flex;
-    > div {
-        flex: 0 0 auto;
-    }
+*{
+    box-sizing: border-box;
 }
+
+// .flexBox {
+//     display: flex;
+//     > div {
+//         flex: 0 0 auto;
+//     }
+// }
 
 // .verti{
 //     flex-direction: column;
