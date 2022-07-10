@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import logo from './logo.svg';
 import './App.scss';
-import Test from "./Test1"
+// import Test from "./Test1"
+import Swiper from '@/components/MySwiper/Swiper1';
 
 function App() {
     const [count, setCount] = useState(0);
 
     return (
         <div className='App'>
-            <div className="lalala">
-                <Test/>
-            </div>
-            <header className='App-header'>
+            {/* <div className="lalala"> */}
+            {/* <Test/> */}
+            <Swiper />
+            {/* </div> */}
+            {/* <header className='App-header'>
                 <img src={logo} className='App-logo' alt='logo' />
                 <p>Hello Vite + React!</p>
                 <p>
@@ -31,7 +33,7 @@ function App() {
                         Vite Docs
                     </a>
                 </p>
-            </header>
+            </header> */}
         </div>
     );
 }
