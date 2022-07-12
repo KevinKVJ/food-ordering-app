@@ -1,6 +1,6 @@
 import { CSSProperties, useMemo } from "react";
 import useParseStyles from '@/utils/parseStyles';
-import {FlexProps} from './Flex_Types'
+import {FlexProps} from './FlexLayout_Types'
 
 export const useClassNameStr = (classStringArray: (string|undefined)[]) => {
     return classStringArray.filter(value => value !== undefined).join(' ').trim();

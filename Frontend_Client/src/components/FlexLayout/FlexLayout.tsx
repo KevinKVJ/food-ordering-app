@@ -1,9 +1,7 @@
 import { useMemo } from 'react';
 import type { CSSProperties, FC } from 'react';
-import type { FlexProps } from './Flex_Types';
+import type { FlexProps } from './FlexLayout_Types';
 import React from 'react';
-import './Flex.module.scss';
-// import styles from './Flex.module.scss';
 import { useClassNameStr, useFlexSpacings, useItemStyle } from './customHooks';
 
 const Flex: FC<FlexProps> = ({ children, spacing = 'medium', itemStyle, vertical, wrap }) => {

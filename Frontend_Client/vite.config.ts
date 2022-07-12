@@ -4,11 +4,19 @@ import path from 'path';
 import WindiCSS from 'vite-plugin-windicss'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import autoprefixer from "autoprefixer"
+import type { Options } from '@vitejs/plugin-react'
+
+const reactSetting: Options = {
+    jsxImportSource: "@emotion/react",
+    babel: {
+        plugins: ["@emotion/babel-plugin"],
+    },
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
-        react(),
+        react(reactSetting),
         WindiCSS(),
         createSvgIconsPlugin({
             // 指定需要缓存的图标文件夹
@@ -43,5 +51,10 @@ export default defineConfig({
         alias: [
             { find: "@", replacement: path.resolve(__dirname, "src") },
         ]
+    },
+    esbuild: {
+        define: {
+            this: 'window'
+        }
     }
 })

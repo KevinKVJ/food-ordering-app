@@ -1,7 +1,9 @@
-interface SvgProps extends React.SVGProps<SVGSVGElement>{
+import { PropsWithChildren } from "react";
+
+interface SvgProps extends PropsWithChildren<React.SVGProps<SVGSVGElement>>{
     name:string,
     prefix:string,
-    color:string,
+    color?:string,
 }
 
 /* {name,prefix,color,...props}:{name:string,prefix:string,color:string} & React.SVGProps<SVGSVGElement>  */

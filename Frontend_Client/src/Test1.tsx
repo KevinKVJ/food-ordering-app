@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Flex from './components/Flex/Flex';
+import Flex from './components/FlexLayout/FlexLayout';
 
 function FuncExample() {
     const [count, setCount] = useState(0);
