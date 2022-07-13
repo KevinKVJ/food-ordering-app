@@ -1,19 +1,18 @@
-import { useState } from 'react';
-import logo from './logo.svg';
 import './App.scss';
-// import Test from "./Test1"
-import Swiper from '@/components/MySwiper/Swiper1';
-import NavBar from '@/views/common/NavBar/NavBar';
+import { Routes, Route } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
+import routeInfo from './router/router';
 
-function App() {
-    const [count, setCount] = useState(0);
-
+const App = () => {
     return (
-        <div className='App'>
-            <NavBar></NavBar>
-            <Swiper></Swiper>
-        </div>
+        <BrowserRouter>
+            <Routes>
+                {routeInfo.map(({ path, element }, index) => (
+                    <Route path={path!} element={element} key={index} />
+                ))}
+            </Routes>
+        </BrowserRouter>
     );
-}
+};
 
 export default App;
