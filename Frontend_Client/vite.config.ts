@@ -9,7 +9,7 @@ import type { Options } from '@vitejs/plugin-react'
 const reactSetting: Options = {
     jsxImportSource: "@emotion/react",
     babel: {
-        plugins: ["@emotion/babel-plugin"],
+        plugins: ["@emotion"]
     },
 }
 

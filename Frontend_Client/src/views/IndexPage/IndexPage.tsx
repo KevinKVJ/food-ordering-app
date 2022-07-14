@@ -11,7 +11,7 @@ export default () => {
                 <MainContent />
             </div>
             <div className='footer'>
-                <Footer></Footer>
+                <Footer />
             </div>
         </>
     );
