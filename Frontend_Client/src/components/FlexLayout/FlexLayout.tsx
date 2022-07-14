@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import type { CSSProperties, FC } from 'react';
 import type { FlexProps } from './FlexLayout_Types';
 import React from 'react';
-import { useClassNameStr, useFlexSpacings, useItemStyle } from './FlexLayout_CustomHooks';
+import { useFlexSpacings, useItemStyle } from './FlexLayout_CustomHooks';
 import { css } from '@emotion/react';
 
 const Flex: FC<FlexProps> = ({
@@ -12,41 +12,38 @@ const Flex: FC<FlexProps> = ({
     itemStyle,
     vertical,
     wrap,
-    justifyContent = 'center',
+    justifyContent = 'flex-start',
     alignItems = 'center',
 }) => {
     const flexSpacing = useFlexSpacings(spacing);
     const childStyle = useItemStyle(itemStyle);
 
-    const wrapperClass: string = useMemo(() => {
-        return useClassNameStr([className, `flex`, vertical ? `flex-col` : undefined, wrap ? `flex-wrap` : undefined]);
-    }, [vertical, wrap]);
-
-    const wrapperCss = useMemo(
-        () => css`
+    const wrapper_css = useMemo(() => {
+        const [flexSpacingX, flexSpacingY] = flexSpacing;
+        return css`
+            /* width:fit-content; */
+            display: flex;
+            flex-direction: ${vertical ? 'column' : 'row'};
+            flex-wrap: ${wrap ? 'wrap' : 'nowrap'};
             justify-content: ${justifyContent};
             align-items: ${alignItems};
+            gap: ${flexSpacingX}px ${flexSpacingY}px;
+        `;
+    }, [vertical, wrap, justifyContent, alignItems, flexSpacing]);
+
+    const child_css = useMemo(
+        () => css`
+            flex: 0 0 auto;
         `,
         []
     );
 
-    const wrapperStyle: CSSProperties = useMemo(() => {
-        const [flexSpacingX, flexSpacingY] = flexSpacing;
-        return {
-            gap: `${flexSpacingX}px ${flexSpacingY}px`,
-        };
-    }, [flexSpacing]);
-
-    const childClass: string = useMemo(() => {
-        return useClassNameStr([`flexLayout_Child`, `flex-[0_0_auto]`]);
-    }, []);
-
     return (
         <>
-            <div className={wrapperClass} style={wrapperStyle} css={wrapperCss}>
+            <div className={className} css={wrapper_css}>
                 {React.Children.toArray(children).map((child, index, oriChilds) => {
                     return (
-                        <div key={index} className={childClass} style={childStyle}>
+                        <div key={index} css={child_css} className='flexLayout_Child' style={childStyle}>
                             {child}
                         </div>
                     );

@@ -1,7 +1,6 @@
 import SvgIcon from '@/components/SvgIcon';
 import { css } from '@emotion/react';
-import { Fragment, PropsWithChildren, useMemo } from 'react';
-import FlexLayout from '@/components/FlexLayout/FlexLayout';
+import { PropsWithChildren, useMemo } from 'react';
 
 interface searchBarProps extends PropsWithChildren {
     placeholder?: string;
@@ -22,7 +21,7 @@ const SearchBar = ({ placeholder = `Try "Burger King"` }: searchBarProps) => {
             border-radius: 36px;
             background: #eceef2;
             overflow: hidden;
-            .search-icon{
+            .search-icon {
                 font-weight: 600;
                 transform: translateY(1.5px);
             }
@@ -37,7 +36,9 @@ const SearchBar = ({ placeholder = `Try "Burger King"` }: searchBarProps) => {
                 /* width: 100%; */
                 padding: 16px 10px;
 
-                &:focus{outline:none;}
+                &:focus {
+                    outline: none;
+                }
 
                 &::placeholder {
                     font-style: normal;
