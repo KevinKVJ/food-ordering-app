@@ -2,34 +2,69 @@ import { css } from '@emotion/react';
 import { useMemo } from 'react';
 import FlexLayout from '@/components/FlexLayout/FlexLayout';
 import SvgIcon from '@/components/SvgIcon';
-import Swiper from '@/components/Swiper/Swiper';
+import Swiper1 from '@/views/common/Swiper1/Swiper1';
+import image2 from '@/assets/mockPages/image2.jpg';
 
 const MainContent = () => {
     const styles = useMemo(() => css``, []);
+    const img_style = useMemo(
+        () => css`
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            object-position: center;
+        `,
+        []
+    );
     return (
         <>
             <div css={styles}>
-                MainContent
-                <Swiper>
+                <Swiper1 title='LALALA'>
                     <div>
-                        <h3>1</h3>
+                        0
+                        <img src={image2} alt='' css={img_style} />
                     </div>
                     <div>
-                        <h3>2</h3>
+                        1
+                        <img src={image2} alt='' css={img_style} />
                     </div>
                     <div>
-                        <h3>3</h3>
+                        2
+                        <img src={image2} alt='' css={img_style} />
                     </div>
                     <div>
-                        <h3>4</h3>
+                        3
+                        <img src={image2} alt='' css={img_style} />
                     </div>
                     <div>
-                        <h3>5</h3>
+                        4
+                        <img src={image2} alt='' css={img_style} />
                     </div>
                     <div>
-                        <h3>6</h3>
+                        5
+                        <img src={image2} alt='' css={img_style} />
                     </div>
-                </Swiper>
+                    <div>
+                        6
+                        <img src={image2} alt='' css={img_style} />
+                    </div>
+                    <div>
+                        7
+                        <img src={image2} alt='' css={img_style} />
+                    </div>
+                    <div>
+                        8
+                        <img src={image2} alt='' css={img_style} />
+                    </div>
+                    <div>
+                        9
+                        <img src={image2} alt='' css={img_style} />
+                    </div>
+                    <div>
+                        10
+                        <img src={image2} alt='' css={img_style} />
+                    </div>
+                </Swiper1>
             </div>
         </>
     );
