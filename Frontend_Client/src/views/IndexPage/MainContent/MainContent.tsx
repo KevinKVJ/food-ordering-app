@@ -52,18 +52,18 @@ const MainContent = () => {
                         7
                         <img src={image2} alt='' css={img_style} />
                     </div>
-                    <div>
+                    {/* <div>
                         8
                         <img src={image2} alt='' css={img_style} />
-                    </div>
-                    <div>
+                    </div> */}
+                    {/* <div>
                         9
                         <img src={image2} alt='' css={img_style} />
                     </div>
                     <div>
                         10
                         <img src={image2} alt='' css={img_style} />
-                    </div>
+                    </div> */}
                 </Swiper1>
             </div>
         </>

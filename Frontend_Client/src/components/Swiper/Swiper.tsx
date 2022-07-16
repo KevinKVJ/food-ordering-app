@@ -13,7 +13,11 @@ const Swiper = ({ currentSlide, children, ...swiperSettings }: SwiperProps) => {
     const swiper_ref = useRef<Slider>(null);
 
     useEffect(() => {
+        console.log("子组件执行");
         swiper_ref.current?.slickGoTo(currentSlide);
+        return () => {
+            console.log("lalala");
+        }
     }, [currentSlide]);
 
     const settings = useMemo<Settings>(

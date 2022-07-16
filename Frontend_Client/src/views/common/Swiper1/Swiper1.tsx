@@ -12,14 +12,19 @@ interface swiperProps extends PropsWithChildren {
     showSpeed?: number;
 }
 
-const Swiper1 = ({ title, children, showSlides = 3, showSpeed = 500 }: swiperProps) => {
+const Swiper1 = ({ title, children, showSlides = 6, showSpeed = 500 }: swiperProps) => {
+    const [prevValid, setPrevValid] = useState(true);
+    const [nextValid, setNextValid] = useState(true);
     const [currentSlide, setCurrentSlide] = useState(0);
     const setting: Settings = {
+        initialSlide: currentSlide,
         slidesToShow: showSlides,
         slidesToScroll: showSlides,
         infinite: false,
         dots: false,
         speed: 500,
+        swipe: false,
+        // centerMode: true,
     };
 
     const swiper1_button = useMemo(
@@ -48,12 +53,23 @@ const Swiper1 = ({ title, children, showSlides = 3, showSpeed = 500 }: swiperPro
 
     const swiper_next = useMemo(() => css``, []);
 
+    const childrenLength = useMemo(() => Children.toArray(children).length, [children]);
+
     useEffect(() => {
-        console.log(Children.toArray(children).length);
-    });
+        // console.log(Children.toArray(children).length);
+        console.log('父组件init');
+    }, []);
+
+    useEffect(() => {
+        console.log('父组件currentSlide变化');
+        if (currentSlide - showSlides < 0) setPrevValid(false);
+        else setPrevValid(true);
+        if (currentSlide + showSlides > childrenLength - 1) setNextValid(false);
+        else setNextValid(true);
+    }, [currentSlide]);
 
     const SlideChange = useCallback(
-        lodash.debounce(setCurrentSlide, showSpeed + 100, {
+        lodash.debounce(setCurrentSlide, showSpeed + 10, {
             leading: true,
             trailing: false,
         }),
