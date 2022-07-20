@@ -8,9 +8,10 @@ import type { Options } from '@vitejs/plugin-react'
 
 const reactSetting: Options = {
     jsxImportSource: "@emotion/react",
-    babel: {
-        plugins: ["@emotion"]
-    },
+    jsxRuntime: "automatic",
+    // babel: {
+    //     plugins: ["@emotion/babel-plugin"]
+    // },
 }
 
 // https://vitejs.dev/config/
@@ -53,8 +54,12 @@ export default defineConfig({
         ]
     },
     esbuild: {
+        // jsxFactory:"jsx",
+        // // jsxFactory:"",
+
+        // jsxInject:`/** @jsx jsx */\n import { jsx } from '@emotion/react'`,
         define: {
             this: 'window'
-        }
+        },
     }
 })

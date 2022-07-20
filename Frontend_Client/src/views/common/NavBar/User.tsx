@@ -1,6 +1,7 @@
-import SvgIcon from '@/components/SvgIcon';
 import { css } from '@emotion/react';
 import { useMemo } from 'react';
+
+import SvgIcon from '@/components/SvgIcon';
 
 const User = () => {
     const userStyles = useMemo(
@@ -15,8 +16,8 @@ const User = () => {
             align-items: center;
             justify-content: center;
 
-            .user_icon{
-                margin-left:0.5px;
+            .user_icon {
+                margin-left: 0.5px;
             }
         `,
         []

@@ -1,10 +1,11 @@
-import Swiper from '@/components/Swiper/Swiper';
-import type { Settings } from 'react-slick';
-import { PropsWithChildren, useCallback, useEffect, useMemo, useState, Children } from 'react';
 import { css } from '@emotion/react';
+import lodash from 'lodash';
+import { Children, PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
+import type { Settings } from 'react-slick';
+
 import FlexLayout from '@/components/FlexLayout/FlexLayout';
 import SvgIcon from '@/components/SvgIcon';
-import lodash from 'lodash';
+import Swiper from '@/components/Swiper/Swiper';
 
 interface swiperProps extends PropsWithChildren {
     title?: string;
@@ -29,7 +30,7 @@ const Swiper1 = ({ title, children, showSlides = 3, showSpeed = 500, ...props }:
         // centerMode: true,
     };
 
-    const swiper1_button = useMemo(
+    const swiper1Button = useMemo(
         () => css`
             width: 34px;
             height: 34px;
@@ -46,13 +47,16 @@ const Swiper1 = ({ title, children, showSlides = 3, showSpeed = 500, ...props }:
         `,
         []
     );
-    const swiper1_wrapper = useMemo(() => css``, []);
-    const swiper1_title_button = useMemo(() => css`
-        padding: 0 20px;
-        /* border-bottom: 2px solid #e9e9ea; */
-    `, []);
+    const swiper1Wrapper = useMemo(() => css``, []);
+    const swiper1TitleButton = useMemo(
+        () => css`
+            padding: 0 20px;
+            /* border-bottom: 2px solid #e9e9ea; */
+        `,
+        []
+    );
 
-    const swiper_button_prev = useMemo(
+    const swiperButtonPrev = useMemo(
         () =>
             !prevValid
                 ? css`
@@ -65,7 +69,7 @@ const Swiper1 = ({ title, children, showSlides = 3, showSpeed = 500, ...props }:
                 : css``,
         [prevValid]
     );
-    const swiper_button_next = useMemo(
+    const swiperButtonNext = useMemo(
         () =>
             !nextValid
                 ? css`
@@ -106,20 +110,20 @@ const Swiper1 = ({ title, children, showSlides = 3, showSpeed = 500, ...props }:
     );
 
     return (
-        <div css={swiper1_wrapper}>
-            <div className='swiper1_title_button' css={swiper1_title_button}>
+        <div css={swiper1Wrapper}>
+            <div className='swiper1_title_button' css={swiper1TitleButton}>
                 <FlexLayout justifyContent='space-between'>
                     <h2>{title}</h2>
                     <FlexLayout className='swiper1_buttons' spacing='small'>
                         <div
                             className='swiper1_prev'
-                            css={[swiper1_button, swiper_button_prev]}
+                            css={[swiper1Button, swiperButtonPrev]}
                             onClick={() => slideChange(currentSlide - showSlides)}>
                             <SvgIcon name='previous' width={15} height={15}></SvgIcon>
                         </div>
                         <div
                             className='swiper1_next'
-                            css={[swiper1_button, swiper_button_next]}
+                            css={[swiper1Button, swiperButtonNext]}
                             onClick={() => slideChange(currentSlide + showSlides)}>
                             <SvgIcon name='next' width={15} height={15}></SvgIcon>
                         </div>

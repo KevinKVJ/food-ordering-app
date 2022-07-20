@@ -1,8 +1,10 @@
-import { Component, forwardRef, PropsWithChildren, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
-import Slider from 'react-slick';
-import type { Settings } from 'react-slick';
 import 'slick-carousel/slick/slick-theme.scss';
 import 'slick-carousel/slick/slick.scss';
+
+import { PropsWithChildren, useEffect, useMemo, useRef } from 'react';
+import type { Settings } from 'react-slick';
+/* Component, forwardRef, useImperativeHandle */
+import Slider from 'react-slick';
 
 /* Really appreciate the react-slick dev group */
 interface SwiperProps extends PropsWithChildren<Settings> {
@@ -10,14 +12,14 @@ interface SwiperProps extends PropsWithChildren<Settings> {
 }
 
 const Swiper = ({ currentSlide, children, ...swiperSettings }: SwiperProps) => {
-    const swiper_ref = useRef<Slider>(null);
+    const swiperRef = useRef<Slider>(null);
 
     useEffect(() => {
-        console.log("子组件执行");
-        swiper_ref.current?.slickGoTo(currentSlide);
+        console.log('子组件执行');
+        swiperRef.current?.slickGoTo(currentSlide);
         return () => {
-            console.log("lalala");
-        }
+            console.log('lalala');
+        };
     }, [currentSlide]);
 
     const settings = useMemo<Settings>(
@@ -36,7 +38,7 @@ const Swiper = ({ currentSlide, children, ...swiperSettings }: SwiperProps) => {
     );
     return (
         <div>
-            <Slider {...settings} ref={swiper_ref}>
+            <Slider {...settings} ref={swiperRef}>
                 {children}
             </Slider>
         </div>
