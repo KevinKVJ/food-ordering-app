@@ -1,6 +1,6 @@
 import Swiper from '@/components/Swiper/Swiper';
 import type { Settings } from 'react-slick';
-import { ElementRef, PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState, Children } from 'react';
+import { PropsWithChildren, useCallback, useEffect, useMemo, useState, Children } from 'react';
 import { css } from '@emotion/react';
 import FlexLayout from '@/components/FlexLayout/FlexLayout';
 import SvgIcon from '@/components/SvgIcon';
@@ -12,10 +12,11 @@ interface swiperProps extends PropsWithChildren {
     showSpeed?: number;
 }
 
-const Swiper1 = ({ title, children, showSlides = 6, showSpeed = 500 }: swiperProps) => {
+const Swiper1 = ({ title, children, showSlides = 3, showSpeed = 500, ...props }: swiperProps) => {
     const [prevValid, setPrevValid] = useState(true);
     const [nextValid, setNextValid] = useState(true);
     const [currentSlide, setCurrentSlide] = useState(0);
+
     const setting: Settings = {
         initialSlide: currentSlide,
         slidesToShow: showSlides,
@@ -24,14 +25,12 @@ const Swiper1 = ({ title, children, showSlides = 6, showSpeed = 500 }: swiperPro
         dots: false,
         speed: 500,
         swipe: false,
+        ...props,
         // centerMode: true,
     };
 
     const swiper1_button = useMemo(
         () => css`
-            /* display: flex;
-            gap: 0 20px;
-            .swiper1_prev,.swiper1_next { */
             width: 34px;
             height: 34px;
             border: 1px solid #e9e9ea;
@@ -44,14 +43,40 @@ const Swiper1 = ({ title, children, showSlides = 6, showSpeed = 500 }: swiperPro
 
             cursor: pointer;
             user-select: none;
-            /* } */
         `,
         []
     );
     const swiper1_wrapper = useMemo(() => css``, []);
-    const swiper1_title_button = useMemo(() => css``, []);
+    const swiper1_title_button = useMemo(() => css`
+        padding: 0 20px;
+        /* border-bottom: 2px solid #e9e9ea; */
+    `, []);
 
-    const swiper_next = useMemo(() => css``, []);
+    const swiper_button_prev = useMemo(
+        () =>
+            !prevValid
+                ? css`
+                      background-color: rgb(247, 247, 247);
+                      cursor: not-allowed;
+                      > svg {
+                          fill: rgb(178, 178, 178);
+                      }
+                  `
+                : css``,
+        [prevValid]
+    );
+    const swiper_button_next = useMemo(
+        () =>
+            !nextValid
+                ? css`
+                      background-color: rgb(247, 247, 247);
+                      > svg {
+                          fill: rgb(178, 178, 178);
+                      }
+                  `
+                : css``,
+        [nextValid]
+    );
 
     const childrenLength = useMemo(() => Children.toArray(children).length, [children]);
 
@@ -62,17 +87,21 @@ const Swiper1 = ({ title, children, showSlides = 6, showSpeed = 500 }: swiperPro
 
     useEffect(() => {
         console.log('父组件currentSlide变化');
-        if (currentSlide - showSlides < 0) setPrevValid(false);
-        else setPrevValid(true);
-        if (currentSlide + showSlides > childrenLength - 1) setNextValid(false);
-        else setNextValid(true);
+        currentSlide - showSlides < 0 ? setPrevValid(false) : setPrevValid(true);
+        currentSlide + showSlides > childrenLength - 1 ? setNextValid(false) : setNextValid(true);
     }, [currentSlide]);
 
-    const SlideChange = useCallback(
-        lodash.debounce(setCurrentSlide, showSpeed + 10, {
-            leading: true,
-            trailing: false,
-        }),
+    const slideChange = useCallback(
+        lodash.debounce(
+            (setValue: typeof currentSlide) => {
+                setValue >= 0 && setValue <= childrenLength - 1 && setCurrentSlide(setValue);
+            },
+            showSpeed + 10,
+            {
+                leading: true,
+                trailing: false,
+            }
+        ),
         [showSpeed]
     );
 
@@ -84,14 +113,14 @@ const Swiper1 = ({ title, children, showSlides = 6, showSpeed = 500 }: swiperPro
                     <FlexLayout className='swiper1_buttons' spacing='small'>
                         <div
                             className='swiper1_prev'
-                            css={swiper1_button}
-                            onClick={() => SlideChange(currentSlide - showSlides)}>
+                            css={[swiper1_button, swiper_button_prev]}
+                            onClick={() => slideChange(currentSlide - showSlides)}>
                             <SvgIcon name='previous' width={15} height={15}></SvgIcon>
                         </div>
                         <div
                             className='swiper1_next'
-                            css={swiper1_button}
-                            onClick={() => SlideChange(currentSlide + showSlides)}>
+                            css={[swiper1_button, swiper_button_next]}
+                            onClick={() => slideChange(currentSlide + showSlides)}>
                             <SvgIcon name='next' width={15} height={15}></SvgIcon>
                         </div>
                     </FlexLayout>
