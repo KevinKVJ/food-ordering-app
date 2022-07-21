@@ -1,6 +1,25 @@
+import { css } from '@emotion/react';
+import { PropsWithChildren, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-const Mask = () => {
-    return createPortal(<div></div>, document.body);
+
+interface maskProps extends PropsWithChildren {
+    color?: string;
+}
+
+const Mask = ({ color = 'rgb(233, 233, 234, 0.5)' }: maskProps) => {
+    const maskStyle = useMemo(
+        () => css`
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: ${color};
+        `,
+        [color]
+    );
+
+    return createPortal(<div css={maskStyle}>666</div>, document.body);
 };
 
 export default Mask;

@@ -1,6 +1,7 @@
-import SvgIcon from '@/components/SvgIcon';
 import { css } from '@emotion/react';
 import { PropsWithChildren, useMemo } from 'react';
+
+import SvgIcon from '@/components/SvgIcon';
 
 interface searchBarProps extends PropsWithChildren {
     placeholder?: string;

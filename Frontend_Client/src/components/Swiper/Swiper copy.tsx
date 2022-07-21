@@ -1,16 +1,10 @@
-import {
-    Component,
-    forwardRef,
-    PropsWithChildren,
-    useEffect,
-    useImperativeHandle,
-    useMemo,
-    useRef,
-} from 'react';
-import Slider from 'react-slick';
-import type { Settings } from 'react-slick';
 import 'slick-carousel/slick/slick-theme.scss';
 import 'slick-carousel/slick/slick.scss';
+
+import type { ForwardRefRenderFunction } from 'react';
+import { forwardRef, PropsWithChildren, useImperativeHandle, useMemo, useRef } from 'react';
+import type { Settings } from 'react-slick';
+import Slider from 'react-slick';
 
 /* Really appreciate the react-slick dev group */
 interface SwiperProps extends PropsWithChildren<Settings> {
@@ -51,31 +45,25 @@ interface refObjectTypes {
 //         </div>
 //     );
 // });
-const Swiper: React.ForwardRefRenderFunction<refObjectTypes, SwiperProps> = (
-    { currentSlide, children, ...swiperSettings },
-    onRef
-) => {
-    const swiper_ref = useRef<Slider>(null);
+const Swiper: ForwardRefRenderFunction<refObjectTypes, SwiperProps> = ({ currentSlide, children, ...swiperSettings }, onRef) => {
+    const swiperRef = useRef<Slider>(null);
 
-    useImperativeHandle(
-        onRef,
-        () => ({
-            prevSlide() {
-                swiper_ref.current?.slickPrev();
-            },
-            nextSlide() {
-                swiper_ref.current?.slickNext();
-            },
-        })
-    );
+    useImperativeHandle(onRef, () => ({
+        prevSlide() {
+            swiperRef.current?.slickPrev();
+        },
+        nextSlide() {
+            swiperRef.current?.slickNext();
+        },
+    }));
 
     const settings = useMemo<Settings>(
         () => ({
             dots: true,
             speed: 500,
-            afterChange:(curr) => {
-                console.log(`Current Slide`,Math.ceil(curr/3));
-                console.log(`CurrentIndex`,curr);
+            afterChange: curr => {
+                console.log(`Current Slide`, Math.ceil(curr / 3));
+                console.log(`CurrentIndex`, curr);
             },
             ...swiperSettings,
             // infinite: true,
@@ -86,7 +74,7 @@ const Swiper: React.ForwardRefRenderFunction<refObjectTypes, SwiperProps> = (
     );
     return (
         <div>
-            <Slider {...settings} ref={swiper_ref}>
+            <Slider {...settings} ref={swiperRef}>
                 {children}
             </Slider>
         </div>

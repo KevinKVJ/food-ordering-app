@@ -1,7 +1,9 @@
-import NavBar from '@/views/common/NavBar/NavBar';
-import MainContent from './MainContent/MainContent'
 import Footer from '@/views/common/Footer/Footer';
-export default () => {
+import Mask from '@/views/common/Mask/Mask';
+import NavBar from '@/views/common/NavBar/NavBar';
+
+import MainContent from './MainContent/MainContent';
+const IndexPage = () => {
     return (
         <>
             <div className='navbar'>
@@ -13,6 +15,8 @@ export default () => {
             <div className='footer'>
                 <Footer />
             </div>
+            <Mask></Mask>
         </>
     );
 };
+export default IndexPage;
