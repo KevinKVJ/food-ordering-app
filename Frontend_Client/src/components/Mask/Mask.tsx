@@ -1,12 +1,14 @@
 import { css } from '@emotion/react';
 import { PropsWithChildren, useMemo } from 'react';
-import { createPortal } from 'react-dom';
+// import { createPortal } from 'react-dom';
 
 interface maskProps extends PropsWithChildren {
     color?: string;
+    zIndex?: string | number;
+    onClick?: () => void;
 }
 
-const Mask = ({ color = 'rgb(233, 233, 234, 0.5)' }: maskProps) => {
+const Mask = ({ color = 'rgb(233, 233, 234, 0.5)', zIndex = 500, onClick }: maskProps) => {
     const maskStyle = useMemo(
         () => css`
             position: absolute;
@@ -14,12 +16,13 @@ const Mask = ({ color = 'rgb(233, 233, 234, 0.5)' }: maskProps) => {
             bottom: 0;
             left: 0;
             right: 0;
+            z-index: ${zIndex};
             background-color: ${color};
         `,
         [color]
     );
 
-    return createPortal(<div css={maskStyle}>666</div>, document.body);
+    return <div css={maskStyle} onClick={onClick}></div>;
 };
 
 export default Mask;

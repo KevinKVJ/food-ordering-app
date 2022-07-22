@@ -1,5 +1,5 @@
+import Drawer from '@/components/Drawer/Drawer';
 import Footer from '@/views/common/Footer/Footer';
-import Mask from '@/views/common/Mask/Mask';
 import NavBar from '@/views/common/NavBar/NavBar';
 
 import MainContent from './MainContent/MainContent';
@@ -15,7 +15,7 @@ const IndexPage = () => {
             <div className='footer'>
                 <Footer />
             </div>
-            <Mask></Mask>
+            <Drawer></Drawer>
         </>
     );
 };
