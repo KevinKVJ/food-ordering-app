@@ -1,104 +1,85 @@
-import './drawerStyle.scss';
-
 import { css } from '@emotion/react';
-import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import { PropsWithChildren, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { CSSTransition } from 'react-transition-group';
 
 import Mask from '@/components/Mask/Mask';
 
+type activeSwitchUseStateType =
+    | ReturnType<typeof useState<boolean>>
+    | [boolean, ((arg0: boolean) => void) | Dispatch<SetStateAction<boolean>>];
+// eslint-disable-next-line prettier/prettier
+
 interface drawerProps extends PropsWithChildren {
-    activeSwitch?: boolean;
+    activeSwitch: activeSwitchUseStateType;
     drawerWidth?: number;
     onClose?: () => void;
+    transitionDuration?: number;
+    withMask?: boolean;
+    clickMaskToClose?: boolean;
 }
 
-const Drawer = ({ activeSwitch = true, drawerWidth = 500 }: drawerProps) => {
-    const [drawerActive, setDrawerActive] = useState<boolean>(activeSwitch);
-    // const [variableWrapperWidth, setVariableWrapperWidth] = useState<string>('100%');
+const Drawer = ({
+    children,
+    activeSwitch,
+    drawerWidth = 500,
+    transitionDuration = 0.5,
+    withMask = true,
+    clickMaskToClose = true,
+}: drawerProps) => {
+    /* -----------------States------------------ */
+    const [drawerActive, setDrawerActive] = activeSwitch;
 
-    // const drawerWrapperStyle = useMemo(
-    //     () => css`
-    //         position: absolute;
-    //         top: 0;
-    //         /* width: 0; */
-    //         bottom: 0;
-    //         overflow: hidden;
-    //     `,
-    //     []
-    // );
-    // const drawerStyle = useMemo(
-    //     () => css`
-    //         position: absolute;
-    //         top: 0;
-    //         bottom: 0;
-    //         right: ${-drawerWidth}px;
-    //         /* right: ${drawerActive ? 0 : -drawerWidth}px; */
-    //         z-index: 1000;
-    //         width: ${drawerWidth}px;
-    //         background-color: #fff;
-    //     `,
-    //     [drawerActive]
-    // );
+    /* -----------------Styles------------------ */
+    const drawerWrapperStyle = useMemo(
+        () => css`
+            position: absolute;
+            top: 0;
+            width: ${drawerActive ? '100%' : 0};
+            bottom: 0;
+            overflow: hidden;
+            transition: ${drawerActive ? 'unset' : `width linear 0s ${transitionDuration + 0.05}s`};
+        `,
+        [drawerActive]
+    );
+    const drawerStyle = useMemo(
+        () => css`
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: ${drawerActive ? 0 : -drawerWidth}px;
+            z-index: 1000;
+            width: ${drawerWidth}px;
+            background-color: #fff;
+            transition: right linear ${transitionDuration}s;
+        `,
+        [drawerActive]
+    );
+
     // useEffect(() => {
-    //     setDrawerActive(true);
-    // }, []);
-    // useEffect(() => {
-    //     drawerActive ? setVariableWrapperWidth('100%') : setTimeout(() => setVariableWrapperWidth('0'), 250);
-    //     // console.log(drawerActive);
-    // }, [drawerActive]);
+    //     setDrawerActive(activeSwitch);
 
-    /* css={drawerWrapperStyle} */
-    const transitionComp = css`
-        .ccc-enter {
-            // .drawer-wrapper {
-            //     width: 100%;
-            //     position: absolute;
-            //     top: 0;
-            //     bottom: 0;
-            //     overflow: hidden;
-            // }
+    //     // return () => {
+    //     //     second;
+    //     // };
+    // }, [activeSwitch]);
 
-            .drawer {
-                // position: absolute;
-                // top: 0;
-                // bottom: 0;
-                // z-index: 1000;
-                // width: 500px;
-                // background-color: #fff;
-                right: -500px;
-            }
-        }
-
-        .ccc-enter-active {
-            .drawer {
-                // position: absolute;
-                // top: 0;
-                // bottom: 0;
-                right: 0px;
-                // z-index: 1000;
-                // width: 500px;
-                // background-color: #fff;
-                transition: right linear 0.25s;
-            }
-        }
-    `;
-
-    const nodeRef = useRef(null);
-
-    /* css={drawerWrapperStyle} css={drawerStyle}*/
     return createPortal(
-        <CSSTransition nodeRef={nodeRef} classNames='ccc' unmountOnExit in={drawerActive} timeout={250} css={transitionComp}>
-            <div ref={nodeRef} className='drawer-wrapper'>
+        <div className='drawer-wrapper' css={drawerWrapperStyle}>
+            {withMask && drawerActive && (
                 <Mask
                     onClick={() => {
-                        setDrawerActive(false);
+                        clickMaskToClose && setDrawerActive(false);
                     }}
                 />
-
-                <div className='drawer'>666666</div>
+            )}
+            <div className='drawer' css={drawerStyle}>
+                <div className='drawer-children' style={{ width: '100%' }}>
+                    666666
+                    {children}
+                </div>
             </div>
-        </CSSTransition>,
+        </div>,
         document.body
     );
 };
