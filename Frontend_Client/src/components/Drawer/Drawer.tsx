@@ -1,85 +1,119 @@
 import { css } from '@emotion/react';
-import type { Dispatch, SetStateAction } from 'react';
-import { PropsWithChildren, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { animated, config, useTransition } from 'react-spring';
 
 import Mask from '@/components/Mask/Mask';
 
-type activeSwitchUseStateType =
-    | ReturnType<typeof useState<boolean>>
-    | [boolean, ((arg0: boolean) => void) | Dispatch<SetStateAction<boolean>>];
-// eslint-disable-next-line prettier/prettier
-
-interface drawerProps extends PropsWithChildren {
-    activeSwitch: activeSwitchUseStateType;
-    drawerWidth?: number;
-    onClose?: () => void;
-    transitionDuration?: number;
-    withMask?: boolean;
-    clickMaskToClose?: boolean;
-}
+import type { drawerProps } from './DrawerType';
 
 const Drawer = ({
     children,
     activeSwitch,
-    drawerWidth = 500,
-    transitionDuration = 0.5,
+    drawerWidth = 200,
+    transitionDuration = 0.25,
     withMask = true,
     clickMaskToClose = true,
-}: drawerProps) => {
+    onClose,
+}: // keepMounted = false,
+drawerProps) => {
     /* -----------------States------------------ */
     const [drawerActive, setDrawerActive] = activeSwitch;
+    const [drawerMountState, setDrawerMountState] = useState(false);
+    const transitions = useTransition(drawerActive, {
+        from: { right: `${-drawerWidth}px` },
+        enter: () => {
+            setDrawerMountState(true);
+            return { right: '0px' };
+        },
+        leave: () => {
+            setTimeout(() => setDrawerMountState(false), 1050);
+            return { right: `${-drawerWidth}px` };
+        },
+        // reverse: drawerActive,
+        config: { duration: 1000 },
+        // onStart: () => setDrawerMountState(!drawerMountState),
+        // onRest: () => setDrawerMountState(false),
+        // config: config.molasses,
+        // onRest: () => setDrawerMountState(!drawerMountState),
+    });
 
     /* -----------------Styles------------------ */
     const drawerWrapperStyle = useMemo(
         () => css`
             position: absolute;
             top: 0;
-            width: ${drawerActive ? '100%' : 0};
             bottom: 0;
             overflow: hidden;
-            transition: ${drawerActive ? 'unset' : `width linear 0s ${transitionDuration + 0.05}s`};
+            background-color: skyblue;
+            width: 100%;
+            /* transition: ${drawerActive
+                ? 'unset'
+                : `width linear 0s ${transitionDuration + 0.05}s`}; */
         `,
-        [drawerActive]
+        []
+        /* drawerActive */
     );
+    // eslint-disable-next-line prettier/prettier
+
     const drawerStyle = useMemo(
         () => css`
             position: absolute;
             top: 0;
             bottom: 0;
-            right: ${drawerActive ? 0 : -drawerWidth}px;
+            /* right: ${drawerActive ? 0 : -drawerWidth}px; */
             z-index: 1000;
             width: ${drawerWidth}px;
             background-color: #fff;
-            transition: right linear ${transitionDuration}s;
+            /* transition: all linear ${transitionDuration}s 0.1s; */
         `,
         [drawerActive]
     );
 
-    // useEffect(() => {
-    //     setDrawerActive(activeSwitch);
-
-    //     // return () => {
-    //     //     second;
-    //     // };
-    // }, [activeSwitch]);
+    useEffect(() => {
+        // if (!keepMounted) {
+        //     if (drawerActive) setDrawerMountState(true);
+        //     else {
+        //         setTimeout(
+        //             () => setDrawerMountState(false),
+        //             (transitionDuration + 0.08) * 1000
+        //         );
+        //     }
+        // }
+        !drawerActive && onClose && onClose();
+        // return () => {
+        //     second;
+        // };
+    }, [drawerActive]);
 
     return createPortal(
-        <div className='drawer-wrapper' css={drawerWrapperStyle}>
-            {withMask && drawerActive && (
-                <Mask
-                    onClick={() => {
-                        clickMaskToClose && setDrawerActive(false);
-                    }}
-                />
-            )}
-            <div className='drawer' css={drawerStyle}>
-                <div className='drawer-children' style={{ width: '100%' }}>
-                    666666
-                    {children}
-                </div>
+        drawerMountState ? (
+            <div className='drawer-wrapper' css={drawerWrapperStyle}>
+                {withMask && (
+                    <Mask
+                        onClick={() => {
+                            clickMaskToClose && setDrawerActive(false);
+                        }}
+                    />
+                )}
+                {transitions(
+                    (styles, item) =>
+                        item && (
+                            <animated.div
+                                className='drawer'
+                                css={drawerStyle}
+                                style={styles}>
+                                <div
+                                    className='drawer-children'
+                                    style={{ width: '100%' }}>
+                                    666666
+                                    {children}
+                                </div>
+                            </animated.div>
+                        )
+                )}
             </div>
-        </div>,
+        ) : null,
         document.body
     );
 };

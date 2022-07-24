@@ -8,7 +8,11 @@ interface maskProps extends PropsWithChildren {
     onClick?: () => void;
 }
 
-const Mask = ({ color = 'rgb(233, 233, 234, 0.5)', zIndex = 500, onClick }: maskProps) => {
+const Mask = ({
+    color = 'rgb(233, 233, 234, 0.5)',
+    zIndex = 500,
+    onClick,
+}: maskProps) => {
     const maskStyle = useMemo(
         () => css`
             position: absolute;
