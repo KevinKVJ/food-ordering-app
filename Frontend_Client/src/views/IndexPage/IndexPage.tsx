@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import Drawer from '@/components/Drawer/Drawer_copy';
+import Drawer from '@/components/Drawer/Drawer_copy222';
 import Footer from '@/views/common/Footer/Footer';
 import NavBar from '@/views/common/NavBar/NavBar';
 
@@ -23,7 +23,10 @@ const IndexPage = () => {
             <button onClick={() => setDrawerSwitch(true)}>
                 open drawer
             </button>
-            <Drawer activeSwitch={[drawerSwitch, setDrawerSwitch]} />
+            <Drawer
+                activeSwitch={[drawerSwitch, setDrawerSwitch]}
+                onClose={() => console.log('lululala')}
+            />
         </>
     );
 };
