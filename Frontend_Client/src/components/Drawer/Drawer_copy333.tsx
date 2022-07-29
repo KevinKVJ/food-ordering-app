@@ -6,17 +6,23 @@ import Mask from '@/components/Mask/Mask';
 
 import type { drawerProps } from './DrawerType';
 
-const Drawer = ({
-    children,
-    activeSwitch: MountSwitch, // alias name
-    drawerWidth = 500,
-    transitionDuration = 0.5,
-    withMask = true,
-    clickMaskToClose = true,
-    onClose,
-}: drawerProps) => {
-    /* -----------------States------------------ */
+const DrawerRenderingPart = ({}: // children,
+// activeSwitch: MountSwitch, // alias name
+// drawerWidth = 500,
+// transitionDuration = 0.5,
+// withMask = true,
+// clickMaskToClose = true,
+// onClose,
+drawerProps) => {
     const [drawerMount, setDrawerMount] = MountSwitch;
+    return (
+        <>
+            drawerMount && <Drawer />
+        </>
+    );
+};
+
+const Drawer = () => {
     const [drawerInternalActiveState, setDrawerInternalActiveState] =
         useState(false);
 
