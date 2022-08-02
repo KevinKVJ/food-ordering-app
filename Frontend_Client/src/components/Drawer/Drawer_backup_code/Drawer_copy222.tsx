@@ -1,6 +1,12 @@
 import { css } from '@emotion/react';
-import { Dispatch, SetStateAction, useEffect } from 'react';
-import { PropsWithChildren, useMemo, useState } from 'react';
+import {
+    Dispatch,
+    PropsWithChildren,
+    SetStateAction,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react';
 import { createPortal } from 'react-dom';
 
 import Mask from '@/components/Mask/Mask';

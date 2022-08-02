@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 
 import Mask from '@/components/Mask/Mask';
 
-import type { drawerProps } from './DrawerType';
+import type { drawerProps } from '../DrawerType';
 
 const DrawerInternal = ({
     children,
@@ -17,16 +17,20 @@ const DrawerInternal = ({
 }: drawerProps) => {
     /* -----------------States------------------ */
     const [, setDrawerMount] = MountSwitch;
-    const [drawerInternalActiveState, setDrawerInternalActiveState] = useState(false);
+    const [drawerInternalActiveState, setDrawerInternalActiveState] =
+        useState(false);
 
     /* -----------------Styles------------------ */
-    const drawerWrapperStyle = () => css`
-        position: absolute;
-        top: 0;
-        width: 100%;
-        bottom: 0;
-        overflow: hidden;
-    `;
+    const drawerWrapperStyle = useMemo(
+        () => css`
+            position: absolute;
+            top: 0;
+            width: 100%;
+            bottom: 0;
+            overflow: hidden;
+        `,
+        [drawerInternalActiveState]
+    );
     const drawerStyle = useMemo(
         () => css`
             position: absolute;
@@ -36,8 +40,7 @@ const DrawerInternal = ({
             z-index: 1000;
             width: ${drawerWidth}px;
             background-color: #fff;
-            /* transition: right linear ${transitionDuration}s; */
-            transition: right ease-in-out ${transitionDuration}s;
+            transition: right linear ${transitionDuration}s;
         `,
         [drawerInternalActiveState]
     );
@@ -58,11 +61,15 @@ const DrawerInternal = ({
             {withMask && drawerInternalActiveState && (
                 <Mask
                     onClick={() =>
-                        clickMaskToClose && setDrawerInternalActiveState(false)
+                        clickMaskToClose &&
+                        setDrawerInternalActiveState(false)
                     }
                 />
             )}
-            <div className='drawer' css={drawerStyle} onTransitionEnd={transitionEnd}>
+            <div
+                className='drawer'
+                css={drawerStyle}
+                onTransitionEnd={transitionEnd}>
                 <div className='drawer-children' style={{ width: '100%' }}>
                     {children}
                 </div>
@@ -75,7 +82,9 @@ const DrawerInternal = ({
 const Drawer = ({ activeSwitch: MountSwitch, ...props }: drawerProps) => {
     const [drawerMount] = MountSwitch;
 
-    return drawerMount ? <DrawerInternal activeSwitch={MountSwitch} {...props} /> : null;
+    return drawerMount ? (
+        <DrawerInternal activeSwitch={MountSwitch} {...props} />
+    ) : null;
 };
 
 export default Drawer;
