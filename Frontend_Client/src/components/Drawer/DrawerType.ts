@@ -1,13 +1,9 @@
-import type { Dispatch, SetStateAction } from 'react';
+import type { CSSProperties, Dispatch, SetStateAction } from 'react';
 import { PropsWithChildren, useState } from 'react';
 
 type activeSwitchUseStateType =
     | ReturnType<typeof useState<boolean>>
-    | [
-          boolean,
-          ((arg0: boolean) => void) | Dispatch<SetStateAction<boolean>>
-      ];
-// eslint-disable-next-line prettier/prettier
+    | [boolean, Dispatch<SetStateAction<boolean>>];
 
 export interface drawerProps extends PropsWithChildren {
     activeSwitch: activeSwitchUseStateType;
@@ -17,4 +13,6 @@ export interface drawerProps extends PropsWithChildren {
     withMask?: boolean;
     clickMaskToClose?: boolean;
     keepMounted?: boolean;
+    drawerContentStyle?: CSSProperties;
+    destroyOnClose?: boolean;
 }

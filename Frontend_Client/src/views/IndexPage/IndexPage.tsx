@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-import Drawer from '@/components/Drawer/Drawer';
+import Drawer from '@/components/Drawer/Drawer_copy';
 import Footer from '@/views/common/Footer/Footer';
 import NavBar from '@/views/common/NavBar/NavBar';
 
 import MainContent from './MainContent/MainContent';
 
 const IndexPage = () => {
-    const dSwitch = useState<boolean | undefined>(false);
+    const dSwitch = useState<boolean>(false);
     const [, setDrawerSwitch] = dSwitch;
     return (
         <>
@@ -21,10 +21,7 @@ const IndexPage = () => {
                 <Footer />
             </div>
             <button onClick={() => setDrawerSwitch(true)}>open drawer</button>
-            <Drawer
-                activeSwitch={dSwitch}
-                // onClose={() => console.log('lululala')}
-            >
+            <Drawer activeSwitch={dSwitch} onClose={() => console.log('lululala')}>
                 666666
             </Drawer>
         </>

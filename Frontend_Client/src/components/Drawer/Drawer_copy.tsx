@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import Mask from '@/components/Mask/Mask';
@@ -22,7 +22,7 @@ import type { drawerProps } from './DrawerType';
 
 const DrawerInternal = ({
     children,
-    activeSwitch: MountSwitch,
+    activeSwitch,
     drawerWidth = 300,
     transitionDuration = 0.25,
     withMask = true,
@@ -32,15 +32,14 @@ const DrawerInternal = ({
     destroyOnClose = false,
 }: drawerProps) => {
     /* -----------------States------------------ */
-    const [, setDrawerMount] = MountSwitch;
+    const [drawerActive, setDrawerActive] = activeSwitch;
     const [drawerInternalActiveState, setDrawerInternalActiveState] = useState(false);
-    const [drawerContentDisplay, setDrawerContentDisplay] = useState(false);
-
+    // const [drawerContentDisplay, setDrawerContentDisplay] = useState(false);
     /* -----------------Styles------------------ */
     const drawerWrapperStyle = () => css`
         position: absolute;
         top: 0;
-        width: 100%;
+        width: ${drawerActive ? '100%' : '0'};
         bottom: 0;
         overflow: hidden;
     `;
@@ -53,21 +52,24 @@ const DrawerInternal = ({
             z-index: 1000;
             width: ${drawerWidth}px;
             background-color: #fff;
-            /* transition: right linear ${transitionDuration}s; */
             transition: right ease-in-out ${transitionDuration}s;
         `,
         [drawerInternalActiveState]
     );
 
     useEffect(() => {
-        setDrawerInternalActiveState(true);
-        return () => {
-            !!onClose && onClose();
-        };
-    }, []);
+        drawerActive && setDrawerInternalActiveState(true);
+    }, [drawerActive]);
 
-    const transitionEnd = () => {
-        !drawerInternalActiveState && setDrawerMount(false);
+    useLayoutEffect(() => {
+        console.log('1');
+    }, [drawerActive]);
+
+    const handleClose = () => {
+        if (!drawerInternalActiveState) {
+            setDrawerActive(false);
+            !!onClose && onClose();
+        }
     };
 
     return createPortal(
@@ -79,7 +81,7 @@ const DrawerInternal = ({
                     }
                 />
             )}
-            <div className='drawer' css={drawerStyle} onTransitionEnd={transitionEnd}>
+            <div className='drawer' css={drawerStyle} onTransitionEnd={handleClose}>
                 <div
                     className='drawer-children'
                     style={{ width: '100%', ...drawerContentStyle }}>
@@ -91,8 +93,24 @@ const DrawerInternal = ({
     );
 };
 
-const Drawer = ({ activeSwitch: MountSwitch, ...props }: drawerProps) => {
-    const [drawerMount] = MountSwitch;
+const Drawer = ({
+    activeSwitch: MountSwitch,
+    keepMounted = false,
+    ...props
+}: drawerProps) => {
+    const [drawerState] = MountSwitch;
+    const [drawerMount, setDrawerMount] = useState(false);
+
+    useLayoutEffect(() => {
+        console.log('2');
+        if (drawerState) {
+            // 已经是挂载状态了
+            !drawerMount && setDrawerMount(true);
+        } else {
+            // drawer没打开的时候，看看keepmounted是不是false，如果是，则直接消掉Drawer
+            !keepMounted && setDrawerMount(false);
+        }
+    }, [drawerState]);
 
     return drawerMount ? <DrawerInternal activeSwitch={MountSwitch} {...props} /> : null;
 };
