@@ -1,7 +1,8 @@
-import SvgIcon from '@/components/SvgIcon';
 import { css } from '@emotion/react';
 import { useMemo } from 'react';
+
 import FlexLayout from '@/components/FlexLayout/FlexLayout';
+import SvgIcon from '@/components/SvgIcon';
 
 const DeliveryDD = () => {
     return (
