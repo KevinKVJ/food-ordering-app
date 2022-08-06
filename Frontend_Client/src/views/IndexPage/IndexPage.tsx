@@ -14,9 +14,7 @@ const IndexPage = () => {
             <div className='navbar'>
                 <NavBar />
             </div>
-            <div className='main-content'>
-                <MainContent />
-            </div>
+            <div className='main-content'>{/* <MainContent /> */}</div>
             <div className='footer'>
                 <Footer />
             </div>
