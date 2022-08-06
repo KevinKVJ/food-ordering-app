@@ -33,7 +33,8 @@ const DrawerInternal = ({
 }: drawerProps) => {
     /* -----------------States------------------ */
     const [drawerActive, setDrawerActive] = activeSwitch;
-    const [drawerInternalActiveState, setDrawerInternalActiveState] = useState(false);
+    const [drawerInternalActiveState, setDrawerInternalActiveState] =
+        useState(false);
     // const [drawerContentDisplay, setDrawerContentDisplay] = useState(false);
     /* -----------------Styles------------------ */
     const drawerWrapperStyle = () => css`
@@ -78,11 +79,15 @@ const DrawerInternal = ({
             {withMask && drawerInternalActiveState && (
                 <Mask
                     onClick={() =>
-                        clickMaskToClose && setDrawerInternalActiveState(false)
+                        clickMaskToClose &&
+                        setDrawerInternalActiveState(false)
                     }
                 />
             )}
-            <div className='drawer' css={drawerStyle} onTransitionEnd={handleClose}>
+            <div
+                className='drawer'
+                css={drawerStyle}
+                onTransitionEnd={handleClose}>
                 <div
                     className='drawer-children'
                     style={{ width: '100%', ...drawerContentStyle }}>
@@ -121,7 +126,9 @@ const Drawer = ({
         };
     }, [drawerState]);
 
-    return drawerMount ? <DrawerInternal activeSwitch={MountSwitch} {...props} /> : null;
+    return drawerMount ? (
+        <DrawerInternal activeSwitch={MountSwitch} {...props} />
+    ) : null;
 };
 
 export default Drawer;

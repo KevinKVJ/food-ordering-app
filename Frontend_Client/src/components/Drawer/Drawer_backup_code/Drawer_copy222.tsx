@@ -11,22 +11,7 @@ import { createPortal } from 'react-dom';
 
 import Mask from '@/components/Mask/Mask';
 
-type activeSwitchUseStateType =
-    | ReturnType<typeof useState<boolean>>
-    | [
-          boolean,
-          ((arg0: boolean) => void) | Dispatch<SetStateAction<boolean>>
-      ];
-// eslint-disable-next-line prettier/prettier
-
-interface drawerProps extends PropsWithChildren {
-    activeSwitch: activeSwitchUseStateType;
-    drawerWidth?: number;
-    onClose?: () => void;
-    transitionDuration?: number;
-    withMask?: boolean;
-    clickMaskToClose?: boolean;
-}
+import type { drawerProps } from './DrawerType';
 
 const Drawer = ({
     children,

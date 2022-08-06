@@ -1,15 +1,17 @@
 import { css } from '@emotion/react';
-import SvgIcon from '@/components/SvgIcon';
-import FlexLayout from '@/components/FlexLayout/FlexLayout';
 import { useMemo } from 'react';
-import Logo from '@/views/common/Logo';
-import DeliveryDropDown from './Delivery_Dropdown';
-import AddressDType_DropDown from './Address_DeliveryType_Dropdown';
-import ShoppingCart_Button from './ShoppingCart_Button';
-import User from './User';
-import SearchBar from './SearchBar';
 
-export default () => {
+import FlexLayout from '@/components/FlexLayout/FlexLayout';
+import SvgIcon from '@/components/SvgIcon';
+import Logo from '@/views/common/Logo';
+
+import AddressDTypeDropDown from './Address_DeliveryType_Dropdown';
+import DeliveryDropDown from './Delivery_Dropdown';
+import SearchBar from './SearchBar';
+import ShoppingCartButton from './ShoppingCart_Button';
+import User from './User';
+
+const NavBar = () => {
     const wrapper = useMemo(
         () =>
             css`
@@ -40,11 +42,11 @@ export default () => {
                 <FlexLayout className='navbar-left'>
                     <Logo></Logo>
                     <DeliveryDropDown />
-                    <AddressDType_DropDown />
+                    <AddressDTypeDropDown />
                 </FlexLayout>
                 <SearchBar></SearchBar>
                 <FlexLayout className='navbar-right'>
-                    <ShoppingCart_Button />
+                    <ShoppingCartButton />
                     <User />
                     <SvgIcon name='menu' width={23} height={23} />
                 </FlexLayout>
@@ -52,3 +54,5 @@ export default () => {
         </div>
     );
 };
+
+export default NavBar;
