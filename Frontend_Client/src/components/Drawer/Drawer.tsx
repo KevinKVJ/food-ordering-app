@@ -86,7 +86,7 @@ const DrawerInternal = ({
 
     return createPortal(
         <div className='drawer-wrapper' css={drawerWrapperStyle}>
-            {withMask && InternalActiveSwitch && (
+            {withMask && (
                 <Mask
                     onClick={() =>
                         clickMaskToClose && setDrawerInternalActiveState(false)
