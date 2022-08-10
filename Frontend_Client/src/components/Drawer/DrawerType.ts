@@ -1,14 +1,26 @@
-import type { CSSProperties, Dispatch, SetStateAction } from 'react';
-import { PropsWithChildren, useState } from 'react';
+import type { CSSProperties } from 'react';
+import { PropsWithChildren } from 'react';
 
-type activeSwitchUseStateType =
-    | ReturnType<typeof useState<boolean>>
-    | [boolean, Dispatch<SetStateAction<boolean>>];
+// type activeSwitchUseStateType =
+//     | ReturnType<typeof useState<boolean>>
+//     | [boolean, Dispatch<SetStateAction<boolean>>];
 
 export interface drawerProps extends PropsWithChildren {
-    activeSwitch: activeSwitchUseStateType;
+    activeSwitch: boolean;
     drawerWidth?: number;
     onClose?: () => void;
+    transitionDuration?: number;
+    withMask?: boolean;
+    clickMaskToClose?: boolean;
+    keepMounted?: boolean;
+    drawerContentStyle?: CSSProperties;
+    destroyOnClose?: boolean;
+}
+
+export interface drawerInternalProps extends PropsWithChildren {
+    InternalActiveSwitch: boolean;
+    drawerWidth?: number;
+    InternalOnClose?: () => void;
     transitionDuration?: number;
     withMask?: boolean;
     clickMaskToClose?: boolean;

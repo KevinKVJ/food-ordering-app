@@ -21,30 +21,14 @@ const MainContent = () => {
         `,
         []
     );
+    const arr = new Array(20).fill(<img src={image2} alt='' css={imgStyle} />, 0, 20);
     return (
         <>
             <div css={styles}>
                 <Swiper1 title='LALALA'>
-                    <div>
-                        {/* 0 */}
-                        <img src={image2} alt='' css={imgStyle} />
-                    </div>
-                    <div>
-                        {/* 1 */}
-                        <img src={image2} alt='' css={imgStyle} />
-                    </div>
-                    <div>
-                        {/* 2 */}
-                        <img src={image2} alt='' css={imgStyle} />
-                    </div>
-                    <div>
-                        {/* 3 */}
-                        <img src={image2} alt='' css={imgStyle} />
-                    </div>
-                    <div>
-                        {/* 4 */}
-                        <img src={image2} alt='' css={imgStyle} />
-                    </div>
+                    {arr.map((item, key) => (
+                        <div key={key}>{item}</div>
+                    ))}
                 </Swiper1>
             </div>
         </>
