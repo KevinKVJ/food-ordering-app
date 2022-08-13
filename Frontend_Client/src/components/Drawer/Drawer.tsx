@@ -106,8 +106,8 @@ const DrawerInternal = ({
 };
 
 const Drawer = ({ activeSwitch, keepMounted = true, onClose, ...props }: drawerProps) => {
-    const [drawerMount, setDrawerMount] = useState(keepMounted);
-    const [drawerState, setDrawerState] = useState(false);
+    const [drawerMount, setDrawerMount] = useState<boolean>(keepMounted);
+    const [drawerState, setDrawerState] = useState<boolean>(false);
     useEffect(() => {
         if (activeSwitch) {
             setDrawerState(true);

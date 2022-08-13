@@ -18,12 +18,15 @@ const A_D_DD = () => {
     return (
         <div css={ADDDWrapperStyle}>
             <button
-                onClick={() => {
-                    setDropdownActive(!dropdownActive);
+                onClick={e => {
+                    e.nativeEvent.stopImmediatePropagation();
+                    setDropdownActive(true);
                 }}>
                 open Dropdown Menu
             </button>
-            <Dropdown activeSwitch={dropdownActive}></Dropdown>
+            <Dropdown
+                activeSwitch={dropdownActive}
+                onClose={() => setDropdownActive(false)}></Dropdown>
             <FlexLayout className='Delivery_Type DD' spacing={5}>
                 <div>Manhattan, NY</div>
                 <div>
