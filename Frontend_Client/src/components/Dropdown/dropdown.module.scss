@@ -1,0 +1,15 @@
+.dropdownWrapper {
+    position: relative;
+    opacity: var(--ddWOpacity);
+    transition: opacity 0.2s ease-in-out;
+    .dropdown {
+        position: absolute;
+        top: 30px;
+        border-radius: 3px;
+        box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.24), 0 6px 12px 0 rgba(0, 0, 0, 0.16),
+            0 9px 18px 8px rgba(0, 0, 0, 0.1);
+        width: var(--ddWidth);
+        height: var(--ddHeight);
+        background-color: red;
+    }
+}

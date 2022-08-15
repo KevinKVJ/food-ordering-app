@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { Fragment, useMemo, useState } from 'react';
 
-import Dropdown from '@/components/Dropdown/Dropdown';
+import Dropdown from '@/components/Dropdown/Dropdown_CM';
 import FlexLayout from '@/components/FlexLayout/FlexLayout';
 import SvgIcon from '@/components/SvgIcon';
 
@@ -20,7 +20,7 @@ const A_D_DD = () => {
             <button
                 onClick={e => {
                     e.nativeEvent.stopImmediatePropagation();
-                    setDropdownActive(true);
+                    setDropdownActive(prev => !prev);
                 }}>
                 open Dropdown Menu
             </button>
