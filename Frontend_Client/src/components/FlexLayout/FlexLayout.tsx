@@ -28,6 +28,7 @@ const Flex: FC<FlexProps> = ({
             justify-content: ${justifyContent};
             align-items: ${alignItems};
             gap: ${flexSpacingX}px ${flexSpacingY}px;
+            flex: 0 0 auto;
         `;
     }, [vertical, wrap, justifyContent, alignItems, flexSpacing]);
 

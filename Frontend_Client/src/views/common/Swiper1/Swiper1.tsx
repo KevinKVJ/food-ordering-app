@@ -1,25 +1,41 @@
 import { css } from '@emotion/react';
-import lodash from 'lodash';
-import { Children, PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
+// import lodash from 'lodash';
+/* Children,
+Ref,
+useCallback,
+ */
+import { Children, PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
 import type { Settings } from 'react-slick';
 
 import FlexLayout from '@/components/FlexLayout/FlexLayout';
 import SvgIcon from '@/components/SvgIcon';
 import Swiper from '@/components/Swiper/Swiper';
+import { SwiperRefTypes } from '@/components/Swiper/SwiperType';
 
 interface swiperProps extends PropsWithChildren {
     title?: string;
     showSlides?: number;
-    showSpeed?: number;
+    // showSpeed?: number;
+    initialSlide?: number;
 }
 
-const Swiper1 = ({ title, children, showSlides = 3, showSpeed = 500, ...props }: swiperProps) => {
+const Swiper1 = ({
+    title,
+    children,
+    showSlides = 3,
+    initialSlide = 0,
+    ...props
+}: swiperProps) => {
     const [prevValid, setPrevValid] = useState(true);
     const [nextValid, setNextValid] = useState(true);
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const swiper1Ref = useRef<SwiperRefTypes>(null);
+    const [currentSlide, setCurrentSlide] = useState(initialSlide);
+    const [currentPage, setCurrentPage] = useState(
+        Math.floor(initialSlide / (showSlides as number) + 1)
+    );
 
     const setting: Settings = {
-        initialSlide: currentSlide,
+        // initialSlide: 0,
         slidesToShow: showSlides,
         slidesToScroll: showSlides,
         infinite: false,
@@ -56,58 +72,53 @@ const Swiper1 = ({ title, children, showSlides = 3, showSpeed = 500, ...props }:
         []
     );
 
-    const swiperButtonPrev = useMemo(
-        () =>
-            !prevValid
-                ? css`
-                      background-color: rgb(247, 247, 247);
-                      cursor: not-allowed;
-                      > svg {
-                          fill: rgb(178, 178, 178);
-                      }
-                  `
-                : css``,
-        [prevValid]
-    );
-    const swiperButtonNext = useMemo(
-        () =>
-            !nextValid
-                ? css`
-                      background-color: rgb(247, 247, 247);
-                      > svg {
-                          fill: rgb(178, 178, 178);
-                      }
-                  `
-                : css``,
-        [nextValid]
-    );
+    const swiperButtonBanned = css`
+        background-color: rgb(247, 247, 247);
+        cursor: not-allowed;
+        > svg {
+            fill: rgb(178, 178, 178);
+        }
+    `;
 
     const childrenLength = useMemo(() => Children.toArray(children).length, [children]);
 
-    useEffect(() => {
-        // console.log(Children.toArray(children).length);
-        console.log('父组件init');
-    }, []);
+    // useEffect(() => {
+    //     // console.log(Children.toArray(children).length);
+    //     console.log('父组件init');
+    // }, []);
 
     useEffect(() => {
-        console.log('父组件currentSlide变化');
-        currentSlide - showSlides < 0 ? setPrevValid(false) : setPrevValid(true);
-        currentSlide + showSlides > childrenLength - 1 ? setNextValid(false) : setNextValid(true);
+        console.log(`currSlide : ${currentSlide}`);
+        currentSlide <= 0 ? setPrevValid(false) : setPrevValid(true);
+        currentSlide + showSlides >= childrenLength - 1
+            ? setNextValid(false)
+            : setNextValid(true);
     }, [currentSlide]);
 
-    const slideChange = useCallback(
-        lodash.debounce(
-            (setValue: typeof currentSlide) => {
-                setValue >= 0 && setValue <= childrenLength - 1 && setCurrentSlide(setValue);
-            },
-            showSpeed + 10,
-            {
-                leading: true,
-                trailing: false,
-            }
-        ),
-        [showSpeed]
-    );
+    // const slideChange = useCallback(
+    //     lodash.debounce(
+    //         (setValue: typeof currentSlide) => {
+    //             setValue >= 0 &&
+    //                 setValue <= childrenLength - 1 &&
+    //                 setCurrentSlide(setValue);
+    //         },
+    //         showSpeed + 10,
+    //         {
+    //             leading: true,
+    //             trailing: false,
+    //         }
+    //     ),
+    //     [showSpeed]
+    // );
+    // const slideChange = useCallback(
+    //     (setValue: typeof currentSlide) =>
+    //         setValue >= 0 && setValue <= childrenLength - 1 && setCurrentSlide(setValue),
+    //     [showSpeed]
+    // );
+
+    useEffect(() => {
+        console.log(currentPage);
+    }, [currentPage]);
 
     return (
         <div css={swiper1Wrapper}>
@@ -117,20 +128,24 @@ const Swiper1 = ({ title, children, showSlides = 3, showSpeed = 500, ...props }:
                     <FlexLayout className='swiper1_buttons' spacing='small'>
                         <div
                             className='swiper1_prev'
-                            css={[swiper1Button, swiperButtonPrev]}
-                            onClick={() => slideChange(currentSlide - showSlides)}>
+                            css={[swiper1Button, prevValid ? null : swiperButtonBanned]}
+                            onClick={() => swiper1Ref.current?.prevSlide?.()}>
                             <SvgIcon name='previous' width={15} height={15}></SvgIcon>
                         </div>
                         <div
                             className='swiper1_next'
-                            css={[swiper1Button, swiperButtonNext]}
-                            onClick={() => slideChange(currentSlide + showSlides)}>
+                            css={[swiper1Button, nextValid ? null : swiperButtonBanned]}
+                            onClick={() => swiper1Ref.current?.nextSlide?.()}>
                             <SvgIcon name='next' width={15} height={15}></SvgIcon>
                         </div>
                     </FlexLayout>
                 </FlexLayout>
             </div>
-            <Swiper currentSlide={currentSlide} {...setting}>
+            <Swiper
+                ref={swiper1Ref}
+                {...setting}
+                setCurrentPage={(pageVal: number) => setCurrentPage(pageVal)}
+                setCurrentSlide={(slideVal: number) => setCurrentSlide(slideVal)}>
                 {children}
             </Swiper>
         </div>

@@ -23,7 +23,7 @@ import type { drawerInternalProps, drawerProps } from './DrawerType';
 const DrawerInternal = ({
     InternalActiveSwitch,
     children,
-    drawerWidth = 300,
+    drawerWidth = 400,
     transitionDuration = 0.25,
     withMask = true,
     clickMaskToClose = true,

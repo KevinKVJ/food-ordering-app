@@ -18,10 +18,11 @@ interface IDropdown extends PropsWithChildren {
 
 const Dropdown: FC<IDropdown> = ({ activeSwitch, children, onClose = () => null }) => {
     const [dropdownActive, setDropdownActive] = useState(false);
-
+    const [dynamicZIndex, setDynamicZIndex] = useState(0);
     const ddwrapper = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
+        activeSwitch && setDynamicZIndex(1000);
         setDropdownActive(activeSwitch);
     }, [activeSwitch]);
 
@@ -31,8 +32,9 @@ const Dropdown: FC<IDropdown> = ({ activeSwitch, children, onClose = () => null 
                 '--ddWOpacity': dropdownActive ? 1 : 0,
                 '--ddWidth': `${300}px`,
                 '--ddHeight': `${300}px`,
+                '--ddWZIndex': dynamicZIndex,
             } as CSSProperties),
-        [dropdownActive]
+        [dropdownActive, dynamicZIndex]
     );
 
     useEffect(() => {
@@ -52,12 +54,19 @@ const Dropdown: FC<IDropdown> = ({ activeSwitch, children, onClose = () => null 
         };
     }, [activeSwitch]);
 
+    const handleClose = () => {
+        if (!dropdownActive) {
+            onClose();
+            setDynamicZIndex(0);
+        }
+    };
+
     return (
         <div
             ref={ddwrapper}
             className={dStyle.dropdownWrapper}
             style={dropdownWrapperStyle}
-            onTransitionEnd={() => !dropdownActive && onClose()}>
+            onTransitionEnd={handleClose}>
             <div className={dStyle.dropdown}>{children}</div>
         </div>
     );

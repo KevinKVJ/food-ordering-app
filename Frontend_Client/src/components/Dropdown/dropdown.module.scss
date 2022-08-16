@@ -1,7 +1,8 @@
 .dropdownWrapper {
     position: relative;
     opacity: var(--ddWOpacity);
-    transition: opacity 0.2s ease-in-out;
+    z-index: var(--ddWZIndex);
+    transition: all 0.2s ease-in-out;
     .dropdown {
         position: absolute;
         top: 30px;
