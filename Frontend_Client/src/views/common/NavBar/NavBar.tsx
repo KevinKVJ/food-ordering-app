@@ -8,8 +8,8 @@ import Logo from '@/views/common/Logo';
 import AddressDTypeDropDown from './Address_DeliveryType_Dropdown';
 import DeliveryDropDown from './Delivery_Dropdown';
 import SearchBar from './SearchBar';
-import ShoppingCartButton from './ShoppingCartButton';
-import SideMenu from './SideMenu/SideMenu';
+import ShoppingCart from './shoppingCart/ShoppingCart';
+import SideMenu from './sideMenu/SideMenu';
 import User from './User';
 
 const NavBar = () => {
@@ -53,7 +53,7 @@ const NavBar = () => {
                 </FlexLayout>
                 <SearchBar></SearchBar>
                 <FlexLayout className='navbar-right'>
-                    <ShoppingCartButton />
+                    <ShoppingCart />
                     <User />
                     <SvgIcon
                         name='menu'

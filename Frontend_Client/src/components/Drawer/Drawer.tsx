@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import Mask from '@/components/Mask/Mask';
@@ -33,15 +33,33 @@ const DrawerInternal = ({
 }: drawerInternalProps) => {
     /* -----------------States------------------ */
     const [drawerInternalActiveState, setDrawerInternalActiveState] = useState(false);
+    const [wrapperState, setWrapperState] = useState(false);
     // const [drawerContentDisplay, setDrawerContentDisplay] = useState(false);
     /* -----------------Styles------------------ */
-    const drawerWrapperStyle = () => css`
-        position: absolute;
-        top: 0;
-        width: ${InternalActiveSwitch ? '100%' : '0'};
-        bottom: 0;
-        overflow: hidden;
-    `;
+    useLayoutEffect(() => {
+        // console.log('lililil');
+
+        if (InternalActiveSwitch) {
+            setDrawerInternalActiveState(true);
+            setWrapperState(true);
+        } else {
+            drawerInternalActiveState && setDrawerInternalActiveState(false);
+        }
+        // console.log('LayoutEffect Internal');
+        // console.log('Effect Internal');
+    }, [InternalActiveSwitch]);
+
+    const drawerWrapperStyle = useMemo(
+        () => css`
+            position: absolute;
+            top: 0;
+            width: ${wrapperState ? '100%' : '0'};
+            bottom: 0;
+            overflow: hidden;
+        `,
+        [wrapperState]
+    );
+
     const drawerStyle = useMemo(
         () => css`
             position: absolute;
@@ -56,12 +74,6 @@ const DrawerInternal = ({
         [drawerInternalActiveState]
     );
 
-    useLayoutEffect(() => {
-        InternalActiveSwitch && setDrawerInternalActiveState(true);
-        // console.log('LayoutEffect Internal');
-        // console.log('Effect Internal');
-    }, [InternalActiveSwitch]);
-
     // useEffect(() => {
     //     console.log('Effect Internal');
     //     /* return () => {
@@ -73,7 +85,8 @@ const DrawerInternal = ({
 
     const handleClose = () => {
         if (!drawerInternalActiveState) {
-            !!onClose && onClose();
+            setWrapperState(false);
+            onClose?.();
         }
     };
 
@@ -96,7 +109,8 @@ const DrawerInternal = ({
             <div className='drawer' css={drawerStyle} onTransitionEnd={handleClose}>
                 <div
                     className='drawer-children'
-                    style={{ width: '100%', ...drawerContentStyle }}>
+                    style={{ width: '100%', ...drawerContentStyle }}
+                >
                     {childrenDestroyedOnClose}
                 </div>
             </div>
@@ -107,20 +121,24 @@ const DrawerInternal = ({
 
 const Drawer = ({ activeSwitch, keepMounted = true, onClose, ...props }: drawerProps) => {
     const [drawerMount, setDrawerMount] = useState<boolean>(keepMounted);
-    const [drawerState, setDrawerState] = useState<boolean>(false);
-    useEffect(() => {
-        if (activeSwitch) {
-            setDrawerState(true);
-        }
-        // console.log('Effect External');
-    }, [activeSwitch]);
-
+    // const [drawerState, setDrawerState] = useState<boolean>(false);
     useLayoutEffect(() => {
         if (activeSwitch) {
             setDrawerMount(true);
         }
         // console.log('LayoutEffect External');
     }, [activeSwitch]);
+
+    // useEffect(() => {
+    //     if (activeSwitch) {
+    //         setDrawerState(true);
+    //     } else {
+    //         if (drawerState) {
+    //             setDrawerState(false);
+    //         }
+    //     }
+    //     // console.log('Effect External');
+    // }, [activeSwitch]);
 
     // useLayoutEffect(() => {
     //     if (activeSwitch) {
@@ -132,13 +150,13 @@ const Drawer = ({ activeSwitch, keepMounted = true, onClose, ...props }: drawerP
 
     const unmountAndOnClose = () => {
         !keepMounted && setDrawerMount(false);
-        setDrawerState(false);
+        // setDrawerState(false);
         !!onClose && onClose();
     };
 
     return drawerMount ? (
         <DrawerInternal
-            InternalActiveSwitch={drawerState}
+            InternalActiveSwitch={activeSwitch}
             InternalOnClose={unmountAndOnClose}
             {...props}
         />

@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
-import { FC, PropsWithChildren, useState } from 'react';
+import { FC } from 'react';
 
+/* , PropsWithChildren, useState */
 import Drawer from '@/components/Drawer/Drawer';
 import SvgIcon from '@/components/SvgIcon';
 
@@ -27,13 +28,15 @@ const SideMenu: FC<ISideMenuProps> = ({ sideMenuSwitch, sideMenuOnClose, ...prop
                 activeSwitch={sideMenuSwitch}
                 onClose={() => {
                     sideMenuOnClose();
-                    console.log('lululala');
-                }}>
+                    // console.log('lululala');
+                }}
+            >
                 <div className='side-menu-content-wrapper'>
                     <div className='side-menu-content'>
                         <div
                             className='side-menu-content-header'
-                            css={sideMenuContentHeader}>
+                            css={sideMenuContentHeader}
+                        >
                             <div
                                 style={{
                                     marginRight: 0,
@@ -41,7 +44,8 @@ const SideMenu: FC<ISideMenuProps> = ({ sideMenuSwitch, sideMenuOnClose, ...prop
                                     width: 'fit-content',
                                 }}
                                 onClick={() => sideMenuOnClose()}
-                                className='smc-cross-icon'>
+                                className='smc-cross-icon'
+                            >
                                 <SvgIcon
                                     name='cross'
                                     width={30}
@@ -52,7 +56,8 @@ const SideMenu: FC<ISideMenuProps> = ({ sideMenuSwitch, sideMenuOnClose, ...prop
                         </div>
                         <div
                             className='side-menu-content-main'
-                            css={sideMenuContentMain}></div>
+                            css={sideMenuContentMain}
+                        ></div>
                         <div className='side-menu-content-footer'></div>
                     </div>
                 </div>

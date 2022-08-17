@@ -1,14 +1,17 @@
-import { css } from "@emotion/react"
-import { useMemo } from "react"
+import { css } from '@emotion/react';
+import { useMemo } from 'react';
 
 const Logo = () => {
-    const logoStyle = useMemo(() => css`
-        width: 150px;
-        height: 50px;
-        background-color: skyblue;
-        border-radius: 5px
-    `, [])
-    return <div css={logoStyle}></div>
-}
+    const logoStyle = useMemo(
+        () => css`
+            width: 150px;
+            height: 50px;
+            background-color: skyblue;
+            border-radius: 5px;
+        `,
+        []
+    );
+    return <div css={logoStyle}></div>;
+};
 
-export default Logo
+export default Logo;

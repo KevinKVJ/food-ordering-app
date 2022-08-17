@@ -129,13 +129,15 @@ const Swiper1 = ({
                         <div
                             className='swiper1_prev'
                             css={[swiper1Button, prevValid ? null : swiperButtonBanned]}
-                            onClick={() => swiper1Ref.current?.prevSlide?.()}>
+                            onClick={() => swiper1Ref.current?.prevSlide?.()}
+                        >
                             <SvgIcon name='previous' width={15} height={15}></SvgIcon>
                         </div>
                         <div
                             className='swiper1_next'
                             css={[swiper1Button, nextValid ? null : swiperButtonBanned]}
-                            onClick={() => swiper1Ref.current?.nextSlide?.()}>
+                            onClick={() => swiper1Ref.current?.nextSlide?.()}
+                        >
                             <SvgIcon name='next' width={15} height={15}></SvgIcon>
                         </div>
                     </FlexLayout>
@@ -145,7 +147,8 @@ const Swiper1 = ({
                 ref={swiper1Ref}
                 {...setting}
                 setCurrentPage={(pageVal: number) => setCurrentPage(pageVal)}
-                setCurrentSlide={(slideVal: number) => setCurrentSlide(slideVal)}>
+                setCurrentSlide={(slideVal: number) => setCurrentSlide(slideVal)}
+            >
                 {children}
             </Swiper>
         </div>

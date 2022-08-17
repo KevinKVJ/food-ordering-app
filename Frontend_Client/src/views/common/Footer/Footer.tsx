@@ -2,7 +2,12 @@ import { css } from '@emotion/react';
 import { useMemo } from 'react';
 
 const Footer = () => {
-    const styles = useMemo(() => css``, []);
-    return <div css={styles}>Footer</div>;
+    const footerStyles = useMemo(
+        () => css`
+            text-align: center;
+        `,
+        []
+    );
+    return <div css={footerStyles}>Food Ordering System</div>;
 };
 export default Footer;
