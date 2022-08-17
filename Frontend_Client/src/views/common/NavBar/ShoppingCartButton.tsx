@@ -1,9 +1,10 @@
-import SvgIcon from '@/components/SvgIcon';
 import { css } from '@emotion/react';
 import { useMemo } from 'react';
-import FlexLayout from '@/components/FlexLayout/FlexLayout';
 
-const ShoppingCartButton = () => {
+import SvgIcon from '@/components/SvgIcon';
+// import FlexLayout from '@/components/FlexLayout/FlexLayout';
+
+const ShoppingCartButton = ({ ...props }) => {
     const scButtonStyles = useMemo(
         () => css`
             width: 68px;
@@ -18,12 +19,16 @@ const ShoppingCartButton = () => {
             background: #fe8a8a;
             border: 1px solid #e9e9ea;
             border-radius: 1000px;
+
+            cursor: pointer;
         `,
         []
     );
-    return <div css={scButtonStyles}>
-        <SvgIcon name='shoppingcart' width={20} height={20} fill="#fff"/>
-        <span style={{color:"#fff"}}>1</span>
-    </div>;
+    return (
+        <div css={scButtonStyles} {...props}>
+            <SvgIcon name='shoppingcart' width={20} height={20} fill='#fff' />
+            <span style={{ color: '#fff' }}>1</span>
+        </div>
+    );
 };
 export default ShoppingCartButton;

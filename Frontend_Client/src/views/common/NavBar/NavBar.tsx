@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import FlexLayout from '@/components/FlexLayout/FlexLayout';
 import SvgIcon from '@/components/SvgIcon';
@@ -8,10 +8,13 @@ import Logo from '@/views/common/Logo';
 import AddressDTypeDropDown from './Address_DeliveryType_Dropdown';
 import DeliveryDropDown from './Delivery_Dropdown';
 import SearchBar from './SearchBar';
-import ShoppingCartButton from './ShoppingCart_Button';
+import ShoppingCartButton from './ShoppingCartButton';
+import SideMenu from './SideMenu/SideMenu';
 import User from './User';
 
 const NavBar = () => {
+    const [sideMenuState, setSideMenuState] = useState<boolean>(false);
+
     const wrapper = useMemo(
         () =>
             css`
@@ -36,6 +39,10 @@ const NavBar = () => {
         []
     );
 
+    const menuIconStyle = css`
+        cursor: pointer;
+    `;
+
     return (
         <div css={wrapper}>
             <div css={[navStyles]}>
@@ -48,7 +55,17 @@ const NavBar = () => {
                 <FlexLayout className='navbar-right'>
                     <ShoppingCartButton />
                     <User />
-                    <SvgIcon name='menu' width={23} height={23} />
+                    <SvgIcon
+                        name='menu'
+                        width={23}
+                        height={23}
+                        css={menuIconStyle}
+                        onClick={() => setSideMenuState(true)}
+                    />
+                    <SideMenu
+                        sideMenuSwitch={sideMenuState}
+                        sideMenuOnClose={() => setSideMenuState(false)}
+                    />
                 </FlexLayout>
             </div>
         </div>
