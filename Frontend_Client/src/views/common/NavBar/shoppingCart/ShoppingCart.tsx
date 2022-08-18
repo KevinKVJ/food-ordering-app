@@ -1,9 +1,12 @@
+/* eslint-disable react/display-name */
 import { css } from '@emotion/react';
 import { useMemo, useState } from 'react';
 
-import SvgIcon from '@/components/SvgIcon';
 import Drawer from '@/components/Drawer/Drawer';
+import SvgIcon from '@/components/SvgIcon';
 // import FlexLayout from '@/components/FlexLayout/FlexLayout';
+
+const ShoppingCartContent = () => <div className='sc-content'>6666666</div>;
 
 const ShoppingCart = ({ ...props }) => {
     // eslint-disable-next-line no-unused-vars
@@ -29,10 +32,13 @@ const ShoppingCart = ({ ...props }) => {
         `,
         []
     );
+
     return (
-        <div css={shoppingCartStyles} {...props} onClick={() => setSideSCState(true)}>
-            <SvgIcon name='shoppingcart' width={20} height={20} fill='#fff' />
-            <span style={{ color: '#fff' }}>{amount}</span>
+        <>
+            <div css={shoppingCartStyles} {...props} onClick={() => setSideSCState(true)}>
+                <SvgIcon name='shoppingcart' width={20} height={20} fill='#fff' />
+                <span style={{ color: '#fff' }}>{amount}</span>
+            </div>
             <Drawer
                 activeSwitch={sideSCState}
                 drawerWidth={300}
@@ -40,8 +46,11 @@ const ShoppingCart = ({ ...props }) => {
                     console.log(`lululula`);
                     setSideSCState(false);
                 }}
-            ></Drawer>
-        </div>
+            >
+                <ShoppingCartContent />
+            </Drawer>
+        </>
     );
 };
+
 export default ShoppingCart;

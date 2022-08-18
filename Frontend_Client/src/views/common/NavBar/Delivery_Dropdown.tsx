@@ -1,9 +1,29 @@
 import { css } from '@emotion/react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
+import Dropdown from '@/components/Dropdown/Dropdown_CM';
 import FlexLayout from '@/components/FlexLayout/FlexLayout';
 import SvgIcon from '@/components/SvgIcon';
-import Dropdown from '@/components/Dropdown/Dropdown_CM';
+
+const DeliveryDropdownContent = () => {
+    const DDWrapperStyle = css``;
+    const deliveryDateStyle = css``;
+    const deliveryTimeStyle = css``;
+    return (
+        <div css={DDWrapperStyle}>
+            <div css={deliveryDateStyle}>
+                <div className='ddd-title'>
+                    <span>Delivery Date</span>
+                </div>
+            </div>
+            <div css={deliveryTimeStyle}>
+                <div className='ddt-title'>
+                    <span>Delivery Time</span>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const DeliveryDD = () => {
     const [dropdownActive, setDropdownActive] = useState(false);
@@ -20,7 +40,8 @@ const DeliveryDD = () => {
             <div
                 className='delivery_DD_wrapper'
                 onClick={e => {
-                    e.nativeEvent.stopImmediatePropagation();
+                    e.preventDefault();
+                    e.stopPropagation();
                     setDropdownActive(!dropdownActive);
                 }}
             >
@@ -32,7 +53,9 @@ const DeliveryDD = () => {
             <Dropdown
                 activeSwitch={dropdownActive}
                 onClose={() => setDropdownActive(false)}
-            ></Dropdown>
+            >
+                <DeliveryDropdownContent />
+            </Dropdown>
         </>
     );
 };

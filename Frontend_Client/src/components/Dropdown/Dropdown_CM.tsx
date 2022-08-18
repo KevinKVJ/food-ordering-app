@@ -58,7 +58,7 @@ const Dropdown: FC<IDropdown> = ({
                 setDropdownActive(false);
             }
         };
-        activeSwitch && document.addEventListener('click', closeEventFunc);
+        activeSwitch && document.addEventListener('click', closeEventFunc, true);
         return () => {
             document.removeEventListener('click', closeEventFunc);
         };

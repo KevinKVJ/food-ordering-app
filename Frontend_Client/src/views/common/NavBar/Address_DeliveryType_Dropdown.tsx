@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Fragment, useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import Dropdown from '@/components/Dropdown/Dropdown_CM';
 import FlexLayout from '@/components/FlexLayout/FlexLayout';
@@ -19,8 +19,10 @@ const A_D_DD = () => {
         <>
             <div
                 onClick={e => {
-                    e.nativeEvent.stopImmediatePropagation();
-                    setDropdownActive(!dropdownActive);
+                    // e.nativeEvent.stopImmediatePropagation();
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDropdownActive(prev => !prev);
                 }}
             >
                 <FlexLayout className='Delivery_Type DD' spacing={5} css={ADDDTitleStyle}>
