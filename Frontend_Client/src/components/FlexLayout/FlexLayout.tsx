@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
-import type { CSSProperties, FC } from 'react';
-import type { FlexProps } from './FlexLayout_Types';
-import React from 'react';
-import { useFlexSpacings, useItemStyle } from './FlexLayout_CustomHooks';
 import { css } from '@emotion/react';
+/* CSSProperties, */
+import type { FC } from 'react';
+import React, { useMemo } from 'react';
+
+import { useFlexSpacings, useItemStyle } from './FlexLayout_CustomHooks';
+import type { FlexProps } from './FlexLayout_Types';
 
 const Flex: FC<FlexProps> = ({
     children,
@@ -14,11 +15,12 @@ const Flex: FC<FlexProps> = ({
     wrap,
     justifyContent = 'flex-start',
     alignItems = 'center',
+    ...props
 }) => {
     const flexSpacing = useFlexSpacings(spacing);
     const childStyle = useItemStyle(itemStyle);
 
-    const wrapper_css = useMemo(() => {
+    const wrapperCss = useMemo(() => {
         const [flexSpacingX, flexSpacingY] = flexSpacing;
         return css`
             /* width:fit-content; */
@@ -32,7 +34,7 @@ const Flex: FC<FlexProps> = ({
         `;
     }, [vertical, wrap, justifyContent, alignItems, flexSpacing]);
 
-    const child_css = useMemo(
+    const childCss = useMemo(
         () => css`
             flex: 0 0 auto;
         `,
@@ -41,10 +43,15 @@ const Flex: FC<FlexProps> = ({
 
     return (
         <>
-            <div className={className} css={wrapper_css}>
+            <div className={className} css={wrapperCss} {...props}>
                 {React.Children.toArray(children).map((child, index, oriChilds) => {
                     return (
-                        <div key={index} css={child_css} className='flexLayout_Child' style={childStyle}>
+                        <div
+                            key={index}
+                            css={childCss}
+                            className='flexLayout_Child'
+                            style={childStyle}
+                        >
                             {child}
                         </div>
                     );

@@ -14,28 +14,36 @@ import dStyle from './dropdown.module.scss';
 interface IDropdown extends PropsWithChildren {
     activeSwitch: boolean;
     onClose?: () => void;
+    minHeight?: string | number;
+    minWidth?: string | number;
 }
 
-const Dropdown: FC<IDropdown> = ({ activeSwitch, children, onClose = () => null }) => {
+const Dropdown: FC<IDropdown> = ({
+    activeSwitch,
+    minHeight = 300,
+    minWidth = 300,
+    children,
+    onClose = () => null,
+}) => {
+    const [mountSwitch, setMountSwitch] = useState(false);
     const [dropdownActive, setDropdownActive] = useState(false);
     const [dynamicZIndex, setDynamicZIndex] = useState(0);
     const ddwrapper = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
-        activeSwitch && setDynamicZIndex(1000);
-        setDropdownActive(activeSwitch);
+        if (activeSwitch) {
+            setMountSwitch(true);
+            setDynamicZIndex(1000);
+        }
     }, [activeSwitch]);
 
-    const dropdownWrapperStyle = useMemo(
-        () =>
-            ({
-                '--ddWOpacity': dropdownActive ? 1 : 0,
-                '--ddWidth': `${300}px`,
-                '--ddHeight': `${300}px`,
-                '--ddWZIndex': dynamicZIndex,
-            } as CSSProperties),
-        [dropdownActive, dynamicZIndex]
-    );
+    useEffect(() => {
+        if (activeSwitch) {
+            setDropdownActive(true);
+        } else {
+            dropdownActive && setDropdownActive(false);
+        }
+    }, [activeSwitch]);
 
     useEffect(() => {
         // activeSwitch && setTransitionActive(true);
@@ -46,7 +54,9 @@ const Dropdown: FC<IDropdown> = ({ activeSwitch, children, onClose = () => null 
         }
         const closeEventFunc = (e: MouseEvent) => {
             assertIsNode(e.target);
-            !ddwrapper.current?.contains(e.target) && onClose();
+            if (!ddwrapper.current?.contains(e.target)) {
+                setDropdownActive(false);
+            }
         };
         activeSwitch && document.addEventListener('click', closeEventFunc);
         return () => {
@@ -54,22 +64,35 @@ const Dropdown: FC<IDropdown> = ({ activeSwitch, children, onClose = () => null 
         };
     }, [activeSwitch]);
 
+    const dropdownWrapperStyle = useMemo(
+        () =>
+            ({
+                '--ddWOpacity': dropdownActive ? 1 : 0,
+                '--ddMinWidth': `${minWidth}px`,
+                '--ddMinHeight': `${minHeight}px`,
+                '--ddWZIndex': dynamicZIndex,
+            } as CSSProperties),
+        [dropdownActive, dynamicZIndex]
+    );
+
     const handleClose = () => {
         if (!dropdownActive) {
-            onClose();
+            setMountSwitch(false);
             setDynamicZIndex(0);
+            onClose();
         }
     };
 
-    return (
+    return mountSwitch ? (
         <div
             ref={ddwrapper}
             className={dStyle.dropdownWrapper}
             style={dropdownWrapperStyle}
-            onTransitionEnd={handleClose}>
+            onTransitionEnd={handleClose}
+        >
             <div className={dStyle.dropdown}>{children}</div>
         </div>
-    );
+    ) : null;
 };
 
 // Dropdown.defaultProps = {

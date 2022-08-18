@@ -6,34 +6,35 @@ import FlexLayout from '@/components/FlexLayout/FlexLayout';
 import SvgIcon from '@/components/SvgIcon';
 
 const A_D_DD = () => {
-    // const styles = useMemo(
-    //     () => css`
-    //         display: flex;
-    //         gap: 20px;
-    //     `,
-    //     []
-    // );
-    const ADDDWrapperStyle = () => css``;
     const [dropdownActive, setDropdownActive] = useState(false);
+
+    const ADDDTitleStyle = () => css`
+        font-weight: 600;
+
+        cursor: pointer;
+        user-select: none;
+    `;
+
     return (
-        <div css={ADDDWrapperStyle}>
-            <button
+        <>
+            <div
                 onClick={e => {
                     e.nativeEvent.stopImmediatePropagation();
-                    setDropdownActive(prev => !prev);
-                }}>
-                open Dropdown Menu
-            </button>
+                    setDropdownActive(!dropdownActive);
+                }}
+            >
+                <FlexLayout className='Delivery_Type DD' spacing={5} css={ADDDTitleStyle}>
+                    <div>Manhattan, NY</div>
+                    <div>
+                        ASAP <SvgIcon name='dropdown' width={10} height={10} />
+                    </div>
+                </FlexLayout>
+            </div>
             <Dropdown
                 activeSwitch={dropdownActive}
-                onClose={() => setDropdownActive(false)}></Dropdown>
-            <FlexLayout className='Delivery_Type DD' spacing={5}>
-                <div>Manhattan, NY</div>
-                <div>
-                    ASAP <SvgIcon name='dropdown' width={10} height={10} />
-                </div>
-            </FlexLayout>
-        </div>
+                onClose={() => setDropdownActive(false)}
+            ></Dropdown>
+        </>
     );
 };
 export default A_D_DD;
