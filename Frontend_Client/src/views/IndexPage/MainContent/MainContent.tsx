@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 import { useMemo } from 'react';
 
-import image2 from '@/assets/mockPages/image2.jpg';
-import Swiper1 from '@/views/common/Swiper1/Swiper1';
+import MCFS from '@/views/common/MerchantSwiper/MerchantCardForSwiper';
+import MerchantSwiper from '@/views/common/MerchantSwiper/MerchantSwiper';
 
 const MainContent = () => {
     const styles = useMemo(
@@ -12,24 +12,27 @@ const MainContent = () => {
         `,
         []
     );
-    const imgStyle = useMemo(
-        () => css`
-            width: 100%;
-            height: 170px;
-            object-fit: cover;
-            object-position: center;
-        `,
-        []
-    );
-    const arr = new Array(20).fill(<img src={image2} alt='' css={imgStyle} />, 0, 20);
+
+    const arr = new Array(20).fill(MCFS, 0, 20);
+
     return (
         <>
             <div css={styles}>
-                <Swiper1 title='LALALA'>
-                    {arr.map((item, key) => (
-                        <div key={key}>{item}</div>
+                <MerchantSwiper title='LALALA' showSlides={2}>
+                    {arr.map((Item: typeof MCFS, key) => (
+                        <Item key={key} imgHeight={200} />
                     ))}
-                </Swiper1>
+                </MerchantSwiper>
+                <MerchantSwiper title='LALALA' showSlides={2}>
+                    {arr.map((Item: typeof MCFS, key) => (
+                        <Item key={key} imgHeight={200} />
+                    ))}
+                </MerchantSwiper>
+                <MerchantSwiper title='LALALA' showSlides={2}>
+                    {arr.map((Item: typeof MCFS, key) => (
+                        <Item key={key} imgHeight={200} />
+                    ))}
+                </MerchantSwiper>
             </div>
         </>
     );

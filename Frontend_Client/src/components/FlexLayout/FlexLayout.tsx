@@ -29,13 +29,16 @@ const Flex: FC<FlexProps> = ({
             flex-wrap: ${wrap ? 'wrap' : 'nowrap'};
             justify-content: ${justifyContent};
             align-items: ${alignItems};
-            gap: ${flexSpacingX}px ${flexSpacingY}px;
+            gap: ${flexSpacingX === 'unset'
+                ? flexSpacingX
+                : `${flexSpacingX}px ${flexSpacingY}px`};
             flex: 0 0 auto;
         `;
     }, [vertical, wrap, justifyContent, alignItems, flexSpacing]);
 
     const childCss = useMemo(
         () => css`
+            /* width: 100%; */
             flex: 0 0 auto;
         `,
         []

@@ -2,7 +2,7 @@ import type { CSSProperties, PropsWithChildren } from 'react';
 
 export interface FlexProps extends PropsWithChildren {
     className?: string | undefined;
-    spacing?: 'small' | 'medium' | 'large' | number | [number, number];
+    spacing?: 'small' | 'medium' | 'large' | number | [number, number] | 'unset';
     itemStyle?: string | CSSProperties;
     vertical?: boolean;
     wrap?: boolean;

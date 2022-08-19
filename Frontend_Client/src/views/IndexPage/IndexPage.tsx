@@ -17,7 +17,8 @@ const IndexPage = () => {
 
     const footerWrapperStyle = css`
         min-height: 70px;
-        border: 1px solid;
+        margin-top: 20px;
+        /* border: 1px solid; */
     `;
 
     return (
