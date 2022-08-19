@@ -4,10 +4,12 @@ import { FC, useMemo } from 'react';
 import image2 from '@/assets/mockPages/image2.jpg';
 import Flex from '@/components/FlexLayout/FlexLayout';
 
+/* Merchant PropTypes */
 interface IMCFSProps {
     imgHeight?: number;
 }
 
+/* Merchant Comp */
 const MCFS: FC<IMCFSProps> = ({ imgHeight = 170 }) => {
     const mcfsWrapperStyle = css`
         padding: 0 8px;

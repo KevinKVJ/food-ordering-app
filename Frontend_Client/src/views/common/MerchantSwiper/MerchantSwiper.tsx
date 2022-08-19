@@ -19,7 +19,7 @@ interface swiperProps extends PropsWithChildren {
     initialSlide?: number;
 }
 
-const Swiper1 = ({
+const MerchantInfoSwiper = ({
     title,
     children,
     showSlides = 3,
@@ -46,7 +46,7 @@ const Swiper1 = ({
         // centerMode: true,
     };
 
-    const swiper1Button = useMemo(
+    const swiperButton = useMemo(
         () => css`
             width: 34px;
             height: 34px;
@@ -128,14 +128,14 @@ const Swiper1 = ({
                     <FlexLayout className='swiper1_buttons' spacing='small'>
                         <div
                             className='swiper1_prev'
-                            css={[swiper1Button, prevValid ? null : swiperButtonBanned]}
+                            css={[swiperButton, prevValid ? null : swiperButtonBanned]}
                             onClick={() => swiper1Ref.current?.prevSlide?.()}
                         >
                             <SvgIcon name='previous' width={15} height={15}></SvgIcon>
                         </div>
                         <div
                             className='swiper1_next'
-                            css={[swiper1Button, nextValid ? null : swiperButtonBanned]}
+                            css={[swiperButton, nextValid ? null : swiperButtonBanned]}
                             onClick={() => swiper1Ref.current?.nextSlide?.()}
                         >
                             <SvgIcon name='next' width={15} height={15}></SvgIcon>
@@ -155,4 +155,4 @@ const Swiper1 = ({
     );
 };
 
-export default Swiper1;
+export default MerchantInfoSwiper;

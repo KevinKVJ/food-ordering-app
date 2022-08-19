@@ -55,7 +55,8 @@ const Dropdown = ({ children, activeSwitch, onClose = () => null }: IDropdownPro
         <div
             css={dropdownWrapperStyle}
             ref={ddwrapper}
-            onTransitionEnd={() => !transitionActive && onClose()}>
+            onTransitionEnd={() => !transitionActive && onClose()}
+        >
             <div css={dropdownStyle}>{children}</div>
         </div>
     ) : null;
