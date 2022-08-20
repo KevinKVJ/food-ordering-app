@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 
 import MCFS from '@/views/common/MerchantSwiper/MerchantCardForSwiper';
 import MerchantSwiper from '@/views/common/MerchantSwiper/MerchantSwiper';
+import CategorySwiper from '@/views/common/CategorySwiper/CategorySwiper';
 
 const MainContent = () => {
     const styles = useMemo(
@@ -33,6 +34,11 @@ const MainContent = () => {
                         <Item key={key} imgHeight={200} />
                     ))}
                 </MerchantSwiper>
+                <CategorySwiper showSlides={5}>
+                    {arr.map((Item: typeof MCFS, key) => (
+                        <Item key={key} imgHeight={200} />
+                    ))}
+                </CategorySwiper>
             </div>
         </>
     );

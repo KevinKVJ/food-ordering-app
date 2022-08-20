@@ -24,8 +24,8 @@ const MerchantInfoSwiper = ({
     children,
     showSlides = 3,
     initialSlide = 0,
-    ...props
-}: swiperProps) => {
+}: // ...props
+swiperProps) => {
     const [prevValid, setPrevValid] = useState(true);
     const [nextValid, setNextValid] = useState(true);
     const swiper1Ref = useRef<SwiperRefTypes>(null);
@@ -42,7 +42,7 @@ const MerchantInfoSwiper = ({
         dots: false,
         speed: 500,
         swipe: false,
-        ...props,
+        // ...props,
         // centerMode: true,
     };
 
