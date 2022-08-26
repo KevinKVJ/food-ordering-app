@@ -38,9 +38,9 @@ const MainContent = () => {
         40
     );
 
-    useEffect(() => {
-        console.log(arr2);
-    }, [arr2]);
+    // useEffect(() => {
+    //     console.log(arr2);
+    // }, [arr2]);
 
     return (
         <>

@@ -1,10 +1,19 @@
 import { css } from '@emotion/react';
-import { Children, FC, PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
+import {
+    Children,
+    FC,
+    PropsWithChildren,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import type { Settings } from 'react-slick';
 
 import SVGIcon from '@/components/SvgIcon';
 import Swiper from '@/components/Swiper/Swiper';
 import { SwiperRefTypes } from '@/components/Swiper/SwiperType';
+import { min } from 'lodash';
 
 interface ICSwiperProps extends PropsWithChildren {
     showSlides?: number;
@@ -24,22 +33,14 @@ const CategorySwiper: FC<ICSwiperProps> = ({
     );
     const swiper1Ref = useRef<SwiperRefTypes>(null);
 
-    const swiperButtonBanned = css`
-        background-color: rgb(247, 247, 247);
-        cursor: not-allowed;
-        > svg {
-            fill: rgb(178, 178, 178);
-        }
-    `;
-
     const csWrapper = css`
         /* box-sizing: content-box; */
         position: relative;
         padding: 0 40px;
 
         .cs-button {
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
             border: 1px solid #e9e9ea;
             border-radius: 1000px;
 
@@ -56,14 +57,34 @@ const CategorySwiper: FC<ICSwiperProps> = ({
             align-items: center;
             justify-content: center;
 
-            cursor: pointer;
             user-select: none;
         }
         .icon-left {
+            cursor: pointer;
             left: 0;
+            ${prevValid
+                ? null
+                : `
+                        background-color: rgb(247, 247, 247);
+                        cursor: not-allowed;
+                        > svg {
+                            fill: rgb(178, 178, 178);
+                        }
+                    `};
         }
         .icon-right {
+            cursor: pointer;
             right: 0;
+
+            ${nextValid
+                ? null
+                : `
+                    background-color: rgb(247, 247, 247);
+                    cursor: not-allowed;
+                    > svg {
+                        fill: rgb(178, 178, 178);
+                    }
+                `};
         }
     `;
 
@@ -92,17 +113,16 @@ const CategorySwiper: FC<ICSwiperProps> = ({
         <div className='cate-swiper-wrapper' css={csWrapper}>
             <div
                 className='cs-button icon-left'
-                css={prevValid ? null : swiperButtonBanned}
                 onClick={() => swiper1Ref.current?.prevSlide?.()}
             >
-                <SVGIcon name='previous' width={15} height={15} />
+                {/* <input type="text" onChange={} /> */}
+                <SVGIcon name='previous' width={14} height={14} />
             </div>
             <div
                 className='cs-button icon-right'
-                css={nextValid ? null : swiperButtonBanned}
                 onClick={() => swiper1Ref.current?.nextSlide?.()}
             >
-                <SVGIcon name='next' width={15} height={15} />
+                <SVGIcon name='next' width={14} height={14} />
             </div>
             <Swiper
                 ref={swiper1Ref}
