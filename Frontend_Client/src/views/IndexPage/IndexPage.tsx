@@ -1,5 +1,8 @@
 import { css } from '@emotion/react';
+import { useState } from 'react';
 
+import Radio from '@/components/Radio/Radio';
+import RadioGroup from '@/components/Radio/RadioGroup';
 import Footer from '@/views/common/Footer/Footer';
 import NavBar from '@/views/common/NavBar/NavBar';
 
@@ -21,6 +24,8 @@ const IndexPage = () => {
         /* border: 1px solid; */
     `;
 
+    const [radioState, setRadioState] = useState('');
+
     return (
         <div className='index-page-wrapper' css={indexPageWrapperStyle}>
             <div className='navbar-wrapper'>
@@ -29,6 +34,11 @@ const IndexPage = () => {
             <div className='main-content-wrapper' css={mainContentWrapperStyle}>
                 <MainContent />
             </div>
+            <RadioGroup name='test' onChange={e => setRadioState(e.target.value)}>
+                <Radio value='aaa' />
+                <Radio value='bbb' />
+            </RadioGroup>
+            {`RadioState : ${radioState}`}
             <div className='footer-wrapper' css={footerWrapperStyle}>
                 <Footer />
             </div>
