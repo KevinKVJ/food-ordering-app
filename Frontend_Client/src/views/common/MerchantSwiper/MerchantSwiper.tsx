@@ -42,6 +42,7 @@ swiperProps) => {
         dots: false,
         speed: 500,
         swipe: false,
+        focusOnSelect: false,
         // ...props,
         // centerMode: true,
     };

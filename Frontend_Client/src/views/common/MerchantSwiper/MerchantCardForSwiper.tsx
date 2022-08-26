@@ -72,4 +72,5 @@ const MCFS: FC<IMCFSProps> = ({ imgHeight = 170 }) => {
         </div>
     );
 };
+
 export default MCFS;

@@ -106,6 +106,7 @@ const CategorySwiper: FC<ICSwiperProps> = ({
         dots: false,
         speed: 500,
         swipe: false,
+        focusOnSelect: false,
         // centerMode: true,
     };
 
