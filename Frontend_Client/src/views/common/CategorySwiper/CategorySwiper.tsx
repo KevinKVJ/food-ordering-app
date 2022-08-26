@@ -1,5 +1,13 @@
 import { css } from '@emotion/react';
-import { Children, FC, PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
+import {
+    Children,
+    FC,
+    PropsWithChildren,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import type { Settings } from 'react-slick';
 
 import SVGIcon from '@/components/SvgIcon';
@@ -85,6 +93,7 @@ const CategorySwiper: FC<ICSwiperProps> = ({
         dots: false,
         speed: 500,
         swipe: false,
+        focusOnSelect: false,
         // centerMode: true,
     };
 
