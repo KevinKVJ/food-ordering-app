@@ -1,6 +1,8 @@
+import { css } from '@emotion/react';
 import { ChangeEvent, FC } from 'react';
 
 interface IRadio {
+    label?: string;
     name?: string;
     value: string;
     checked?: boolean;
@@ -8,10 +10,19 @@ interface IRadio {
     onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Radio: FC<IRadio> = ({ name, value, onChange, checked, disabled }) => {
+const Radio = ({ name, value, onChange, checked, disabled, label }: IRadio) => {
+    const radioWrapper = css`
+        display: flex;
+        align-items: center;
+        height: 20px;
+
+        .radio-title {
+            padding-bottom: 1px;
+            margin-left: 5px;
+        }
+    `;
     return (
-        <div className='radio-wrapper'>
-            {value}
+        <div className='radio-wrapper' css={radioWrapper}>
             <input
                 type='radio'
                 name={name}
@@ -20,6 +31,7 @@ const Radio: FC<IRadio> = ({ name, value, onChange, checked, disabled }) => {
                 checked={checked}
                 disabled={disabled}
             />
+            <div className='radio-title'>{label}</div>
         </div>
     );
 };

@@ -24,7 +24,7 @@ const IndexPage = () => {
         /* border: 1px solid; */
     `;
 
-    const [radioState, setRadioState] = useState('');
+    const [radioState, setRadioState] = useState('aaa');
 
     return (
         <div className='index-page-wrapper' css={indexPageWrapperStyle}>
@@ -34,9 +34,13 @@ const IndexPage = () => {
             <div className='main-content-wrapper' css={mainContentWrapperStyle}>
                 <MainContent />
             </div>
-            <RadioGroup name='test' onChange={e => setRadioState(e.target.value)}>
-                <Radio value='aaa' />
-                <Radio value='bbb' />
+            <RadioGroup
+                value={radioState}
+                name='test'
+                onChange={e => setRadioState(e.target.value)}
+            >
+                <Radio value='aaa' label='AAA' />
+                <Radio value='bbb' label='BBB' />
             </RadioGroup>
             {`RadioState : ${radioState}`}
             <div className='footer-wrapper' css={footerWrapperStyle}>
