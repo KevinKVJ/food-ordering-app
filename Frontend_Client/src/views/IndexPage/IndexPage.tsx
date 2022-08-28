@@ -1,6 +1,8 @@
 import { css } from '@emotion/react';
 import { useState } from 'react';
 
+import Button from '@/components/Buttons/Button';
+import Flex from '@/components/FlexLayout/FlexLayout';
 import Radio from '@/components/Radio/Radio';
 import RadioGroup from '@/components/Radio/RadioGroup';
 import Footer from '@/views/common/Footer/Footer';
@@ -43,6 +45,12 @@ const IndexPage = () => {
                 <Radio value='bbb' label='BBB' />
             </RadioGroup>
             {`RadioState : ${radioState}`}
+            <br />
+            <Flex>
+                <Button />
+                <Button />
+                <Button />
+            </Flex>
             <div className='footer-wrapper' css={footerWrapperStyle}>
                 <Footer />
             </div>

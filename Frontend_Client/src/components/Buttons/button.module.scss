@@ -1,0 +1,22 @@
+$font-size: var(--button_font-size);
+$bg-color: var(--button_bkg-color);
+$size-factor: var(--button_size);
+$radius: var(--button_radium);
+/* '--button_bkg-color': 'red',
+                '--button_font-size' */
+.button-wrapper {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    font-size: $font-size;
+    border-radius: $radius;
+    padding: calc($size-factor * $font-size) calc(2 * $size-factor * $font-size);
+    background-color: $bg-color;
+
+    cursor: pointer;
+    user-select: none;
+
+    .button-content {
+        text-align: left;
+    }
+}

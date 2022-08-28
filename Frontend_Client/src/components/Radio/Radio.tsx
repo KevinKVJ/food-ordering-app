@@ -10,7 +10,7 @@ interface IRadio {
     onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Radio = ({ name, value, onChange, checked, disabled, label }: IRadio) => {
+const Radio: FC<IRadio> = ({ name, value, onChange, checked, disabled, label }) => {
     const radioWrapper = css`
         display: flex;
         align-items: center;
