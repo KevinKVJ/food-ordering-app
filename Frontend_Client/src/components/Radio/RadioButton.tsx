@@ -1,9 +1,21 @@
 import { FC } from 'react';
 
-interface RadioButtonProps {}
+import Button from '@/components/Buttons/Button';
 
-const RadioButton: FC<RadioButtonProps> = () => {
-    return <div className='radio-button-wrapper'></div>;
+interface IRadioButtonProps {
+    name?: string;
+    value: string;
+    checked?: boolean;
+    disabled?: boolean;
+    changeValue?: (val: string) => void;
+}
+
+const RadioButton: FC<IRadioButtonProps> = ({ value, changeValue }) => {
+    return (
+        <div className='radio-button-wrapper'>
+            <Button onClick={() => changeValue?.(value)} />
+        </div>
+    );
 };
 
 export default RadioButton;

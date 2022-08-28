@@ -47,7 +47,6 @@ const Button: FC<IButtonProps> = ({
             className={classnames('button-wrapper', styles['button-wrapper'])}
             {...props}
         >
-            <button></button>
             <div className={classnames('button-content', styles['button-content'])}>
                 {label}
             </div>

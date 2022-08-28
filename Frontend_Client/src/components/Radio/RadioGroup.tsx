@@ -9,13 +9,15 @@ import {
 
 // import { ReactElement } from 'react';
 import Radio from './Radio';
-import { IRadio } from './RadioTypes';
+import { IRadioProps } from './RadioTypes';
 
 interface IRadioGroup extends PropsWithChildren {
     name: string;
     value: string;
     onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-    children: ReactElement<IRadio, typeof Radio> | ReactElement<IRadio, typeof Radio>[];
+    children:
+        | ReactElement<IRadioProps, typeof Radio>
+        | ReactElement<IRadioProps, typeof Radio>[];
 }
 
 const RadioGroup: FC<IRadioGroup> = ({ children, name, onChange, value }) => {
@@ -31,7 +33,7 @@ const RadioGroup: FC<IRadioGroup> = ({ children, name, onChange, value }) => {
             onChange,
             onClick: onChange,
             checked: child.props.value === value,
-        } as Partial<ReactElement<IRadio, typeof Radio>>);
+        } as Partial<ReactElement<IRadioProps, typeof Radio>>);
     });
     /* {Children.map(children, (Child, index) => {
                 if (Child.type !== Radio) {

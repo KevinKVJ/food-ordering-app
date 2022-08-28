@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { ChangeEvent, FC } from 'react';
+import { FC, HTMLProps } from 'react';
 
 interface IRadio {
     label?: string;
@@ -7,7 +7,7 @@ interface IRadio {
     value: string;
     checked?: boolean;
     disabled?: boolean;
-    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+    onChange?: HTMLProps<HTMLInputElement>['onChange'];
 }
 
 const Radio: FC<IRadio> = ({ name, value, onChange, checked, disabled, label }) => {
