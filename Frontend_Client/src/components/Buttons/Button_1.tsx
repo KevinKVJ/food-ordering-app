@@ -1,28 +1,17 @@
 import classnames from 'classnames';
-import {
-    CSSProperties,
-    FC,
-    FocusEventHandler,
-    // HTMLProps,
-    MouseEventHandler,
-    PropsWithChildren,
-    useMemo,
-} from 'react';
+import { CSSProperties, FC, HTMLProps, PropsWithChildren, useMemo } from 'react';
 
 import styles from './button.module.scss';
-/* 
-    1. background color
-    2. size
-*/
+
 export interface IButtonProps extends PropsWithChildren {
     size?: 'small' | 'medium' | 'large' | 'x-large';
     type?: 'success' | 'warning' | 'error' | 'info';
     label?: string;
     fontSize?: number;
     radium?: number;
-    onClick?: MouseEventHandler;
-    onFocus?: FocusEventHandler;
-    onBlur?: FocusEventHandler;
+    onClick?: HTMLProps<HTMLDivElement>['onClick'];
+    onFocus?: HTMLProps<HTMLDivElement>['onFocus'];
+    onBlur?: HTMLProps<HTMLDivElement>['onBlur'];
 }
 
 const Button: FC<IButtonProps> = ({
@@ -59,20 +48,19 @@ const Button: FC<IButtonProps> = ({
         } as CSSProperties;
     }, [size, type, radium, fontSize]);
     return (
-        <button
+        <div
             style={buttonStyles}
             className={classnames('button-wrapper', styles['button-wrapper'])}
-            // tabIndex={-1}
+            tabIndex={-1}
             onClick={onClick}
             onFocus={onFocus}
             onBlur={onBlur}
-            onMouseDown={e => e.preventDefault()}
             // {...props}
         >
             <div className={classnames('button-content', styles['button-content'])}>
                 {label}
             </div>
-        </button>
+        </div>
     );
 };
 export default Button;
