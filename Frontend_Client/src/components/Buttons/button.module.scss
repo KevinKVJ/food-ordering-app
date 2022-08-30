@@ -5,6 +5,7 @@ $radius: var(--button_radium);
 /* '--button_bkg-color': 'red',
                 '--button_font-size' */
 .button-wrapper {
+    box-sizing: content-box;
     display: inline-block;
     text-align: center;
     vertical-align: middle;
@@ -15,6 +16,10 @@ $radius: var(--button_radium);
 
     cursor: pointer;
     user-select: none;
+
+    &:focus {
+        outline: 2px solid #000;
+    }
 
     .button-content {
         text-align: left;
