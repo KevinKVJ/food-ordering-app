@@ -13,7 +13,7 @@ export interface FlexProps extends PropsWithChildren {
         | 'space-around'
         | 'space-between'
         | 'space-evenly';
-    alignItems?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
+    alignItems?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | c;
 }
 
 // const wrapperClass: string = useMemo(() => {

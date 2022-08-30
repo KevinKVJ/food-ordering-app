@@ -26,6 +26,16 @@ const IndexPage = () => {
         /* border: 1px solid; */
     `;
 
+    const buttonsStyle = css`
+        display: flex;
+        /* flex-direction: column; */
+        flex: 0 0 auto;
+        /* width: fit-content; */
+        align-items: flex-start;
+        flex-flow: column nowrap;
+        gap: 40px;
+    `;
+
     const [radioState, setRadioState] = useState('aaa');
 
     return (
@@ -46,11 +56,13 @@ const IndexPage = () => {
             </RadioGroup>
             {`RadioState : ${radioState}`}
             <br />
-            <Flex>
+            {/* <Flex vertical style={}>
+            </Flex> */}
+            <div css={buttonsStyle}>
                 <Button />
                 <Button />
                 <Button />
-            </Flex>
+            </div>
             <div className='footer-wrapper' css={footerWrapperStyle}>
                 <Footer />
             </div>
