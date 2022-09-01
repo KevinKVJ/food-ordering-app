@@ -1,10 +1,11 @@
 import classnames from 'classnames';
 import {
+    ButtonHTMLAttributes,
     CSSProperties,
     FC,
-    FocusEventHandler,
+    // FocusEventHandler,
     // HTMLProps,
-    MouseEventHandler,
+    // MouseEventHandler,
     PropsWithChildren,
     useMemo,
 } from 'react';
@@ -13,28 +14,29 @@ import styles from './button.module.scss';
 /* 
     1. background color
     2. size
+    3. Any type of Button styles
 */
-export interface IButtonProps extends PropsWithChildren {
+interface IButtonBaseProps extends PropsWithChildren {
     size?: 'small' | 'medium' | 'large' | 'x-large';
     type?: 'success' | 'warning' | 'error' | 'info';
     label?: string;
     fontSize?: number;
     radium?: number;
-    onClick?: MouseEventHandler;
-    onFocus?: FocusEventHandler;
-    onBlur?: FocusEventHandler;
+    className?: string;
+    // onClick?: MouseEventHandler;
+    // onFocus?: FocusEventHandler;
+    // onBlur?: FocusEventHandler;
 }
 
-const Button: FC<IButtonProps> = ({
+type ButtonType = IButtonBaseProps & ButtonHTMLAttributes<HTMLButtonElement>;
+
+const Button: FC<ButtonType> = ({
     size = 'x-large',
     type = 'default',
     label = 'the button',
     fontSize = 16,
-    radium = 6,
-    onClick,
-    onFocus,
-    onBlur,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // radium = 6,
+    className,
     ...props
 }) => {
     const buttonStyles = useMemo(() => {
@@ -55,23 +57,24 @@ const Button: FC<IButtonProps> = ({
             '--button_bkg-color': typeMap[type],
             '--button_font-size': `${fontSize}px`,
             '--button_size': sizeMap[size],
-            '--button_radium': `${radium}px`,
+            // '--button_radium': `${radium}px`,
         } as CSSProperties;
-    }, [size, type, radium, fontSize]);
+        /* radium, */
+    }, [size, type, fontSize]);
+
+    const baseButtonClasses = classnames(
+        'button-wrapper',
+        className,
+        styles['base-button']
+    );
+    const baseButtonContentClasses = classnames(
+        'button-content',
+        styles['base-button_content']
+    );
+
     return (
-        <button
-            style={buttonStyles}
-            className={classnames('button-wrapper', styles['button-wrapper'])}
-            // tabIndex={-1}
-            onClick={onClick}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            onMouseDown={e => e.preventDefault()}
-            // {...props}
-        >
-            <div className={classnames('button-content', styles['button-content'])}>
-                {label}
-            </div>
+        <button style={buttonStyles} className={baseButtonClasses} {...props}>
+            <span className={baseButtonContentClasses}>{label}</span>
         </button>
     );
 };

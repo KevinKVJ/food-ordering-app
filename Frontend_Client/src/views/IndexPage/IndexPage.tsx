@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Button from '@/components/Buttons/Button';
 import Flex from '@/components/FlexLayout/FlexLayout';
 import Radio from '@/components/Radio/Radio';
+import RadioButton from '@/components/Radio/RadioButton';
 import RadioGroup from '@/components/Radio/RadioGroup';
 import Footer from '@/views/common/Footer/Footer';
 import NavBar from '@/views/common/NavBar/NavBar';
@@ -36,20 +37,20 @@ const IndexPage = () => {
             <div className='main-content-wrapper' css={mainContentWrapperStyle}>
                 <MainContent />
             </div>
-            <RadioGroup
+            {/* <RadioGroup
                 value={radioState}
                 name='test'
                 onChange={e => setRadioState(e.target.value)}
             >
                 <Radio value='aaa' label='AAA' />
                 <Radio value='bbb' label='BBB' />
-            </RadioGroup>
+            </RadioGroup> */}
             {`RadioState : ${radioState}`}
             <br />
             <Flex>
-                <Button />
-                <Button />
-                <Button />
+                <RadioButton value='aaa' />
+                <RadioButton value='bbb' />
+                <RadioButton value='ccc' />
             </Flex>
             <div className='footer-wrapper' css={footerWrapperStyle}>
                 <Footer />
