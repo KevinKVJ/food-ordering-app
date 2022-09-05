@@ -47,14 +47,20 @@ const IndexPage = () => {
             <div className='main-content-wrapper' css={mainContentWrapperStyle}>
                 <MainContent />
             </div>
-            {/* <RadioGroup
+            <RadioGroup
                 value={radioState}
                 name='test'
                 onChange={e => setRadioState(e.target.value)}
             >
-                <Radio value='aaa' label='AAA' />
-                <Radio value='bbb' label='BBB' />
-            </RadioGroup> */}
+                <Flex vertical spacing={0}>
+                    <Radio value='bbb' label='BBB' />
+                    <Radio value='aaa' label='AAA' />
+                </Flex>
+                <div>xixixi</div>
+                lalala
+            </RadioGroup>
+            {/* <Radio value='bbbb' label='BBBB' name='bbbb' />
+            <Radio value='aaaa' label='AAAA' name='bbbb' /> */}
             {`RadioState : ${radioState}`}
             <br />
             <Flex>
