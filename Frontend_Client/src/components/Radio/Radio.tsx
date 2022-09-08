@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { FC, HTMLProps } from 'react';
 
-interface IRadio {
+export interface IRadio {
     label?: string;
     name?: string;
     value: string;

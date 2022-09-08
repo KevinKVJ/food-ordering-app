@@ -10,8 +10,9 @@ import {
 } from 'react';
 
 // import { ReactElement } from 'react';
-import Radio from './Radio';
-import { IRadioProps } from './RadioTypes';
+import Radio, { IRadio } from './Radio';
+// import { IRadioProps } from './RadioTypes';
+// import { IRadioProps } from './RadioTypes';
 
 interface IRadioGroup extends PropsWithChildren {
     name: string;
@@ -27,18 +28,24 @@ function isReactElementType(ele: ReactNode): ele is ReactElement {
         typeof (ele as ReactElement).type !== 'undefined'
     );
 }
+function isRadioType(ele: ReactNode): ele is ReactElement<IRadio, typeof Radio> {
+    return (
+        // typeof (ele as ReactElement).type !== 'string' &&
+        typeof (ele as ReactElement<IRadio, typeof Radio>).type !== typeof Radio
+    );
+}
 const RadioGroup: FC<IRadioGroup> = ({ children, name, onChange, value }) => {
     const checkChildren = useCallback(
         (children: ReactNode): ReactNode =>
             Children.map(children, (child, index) => {
                 if (isReactElementType(child)) {
-                    if (child.type === Radio) {
+                    if (isRadioType(child)) {
                         return cloneElement(child, {
                             name,
                             key: index,
                             onChange,
-                            onClick: onChange,
-                            // checked: child.props.value === value,
+                            // onClick: onChange,
+                            checked: child.props.value === value,
                         });
                     } else {
                         return child.props.children
