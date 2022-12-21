@@ -11,7 +11,7 @@ import { createPortal } from 'react-dom';
 
 import Mask from '@/components/Mask/Mask';
 
-import type { drawerProps } from './DrawerType';
+// import type { drawerProps } from './DrawerType';
 
 const Drawer = ({
     children,

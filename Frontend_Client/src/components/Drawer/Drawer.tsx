@@ -97,7 +97,7 @@ const DrawerInternal = ({
         return children;
     }, [InternalActiveSwitch]);
 
-    return createPortal(
+    const portalElement = (
         <div className='drawer-wrapper' css={drawerWrapperStyle}>
             {withMask && (
                 <Mask
@@ -114,9 +114,10 @@ const DrawerInternal = ({
                     {childrenDestroyedOnClose}
                 </div>
             </div>
-        </div>,
-        document.body
+        </div>
     );
+
+    return createPortal(portalElement, document.body);
 };
 
 const Drawer = ({ activeSwitch, keepMounted = true, onClose, ...props }: drawerProps) => {

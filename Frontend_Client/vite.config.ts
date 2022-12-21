@@ -1,21 +1,22 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import type { Options } from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react';
+import autoprefixer from 'autoprefixer';
 import path from 'path';
-import WindiCSS from 'vite-plugin-windicss'
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import autoprefixer from "autoprefixer"
-import type { Options } from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import WindiCSS from 'vite-plugin-windicss';
 
 const reactSetting: Options = {
-    jsxImportSource: "@emotion/react",
-    jsxRuntime: "automatic",
+    jsxImportSource: '@emotion/react',
+    jsxRuntime: 'automatic',
     // babel: {
     //     plugins: ["@emotion/babel-plugin"]
     // },
-}
+};
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    base: './',
     plugins: [
         react(reactSetting),
         WindiCSS(),
@@ -35,7 +36,8 @@ export default defineConfig({
              * @default: __svg__icons__dom__
              */
             customDomId: '__svg__icons__dom__',
-        })],
+        }),
+    ],
     css: {
         // modules:{
         //     localsConvention: "camelCaseOnly",
@@ -43,15 +45,13 @@ export default defineConfig({
         postcss: {
             plugins: [
                 autoprefixer({
-                    grid: "no-autoplace",
+                    grid: 'no-autoplace',
                 }),
-            ]
-        }
+            ],
+        },
     },
     resolve: {
-        alias: [
-            { find: "@", replacement: path.resolve(__dirname, "src") },
-        ]
+        alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
     },
     esbuild: {
         // jsxFactory:"jsx",
@@ -59,7 +59,7 @@ export default defineConfig({
 
         // jsxInject:`/** @jsx jsx */\n import { jsx } from '@emotion/react'`,
         define: {
-            this: 'window'
+            this: 'window',
         },
-    }
-})
+    },
+});

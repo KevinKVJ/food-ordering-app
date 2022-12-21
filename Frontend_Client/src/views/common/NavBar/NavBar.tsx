@@ -47,7 +47,7 @@ const NavBar = () => {
         <div css={wrapper}>
             <div css={[navStyles]}>
                 <FlexLayout className='navbar-left'>
-                    <Logo></Logo>
+                    <Logo />
                     <DeliveryDropDown />
                     <AddressDTypeDropDown />
                 </FlexLayout>

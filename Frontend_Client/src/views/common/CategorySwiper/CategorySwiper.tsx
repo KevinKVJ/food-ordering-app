@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+// import { min } from 'lodash';
 import {
     Children,
     FC,
@@ -13,7 +14,6 @@ import type { Settings } from 'react-slick';
 import SVGIcon from '@/components/SvgIcon';
 import Swiper from '@/components/Swiper/Swiper';
 import { SwiperRefTypes } from '@/components/Swiper/SwiperType';
-import { min } from 'lodash';
 
 interface ICSwiperProps extends PropsWithChildren {
     showSlides?: number;
@@ -28,7 +28,8 @@ const CategorySwiper: FC<ICSwiperProps> = ({
     const [prevValid, setPrevValid] = useState(true);
     const [nextValid, setNextValid] = useState(true);
     const [currentSlide, setCurrentSlide] = useState(initialSlide);
-    const [currentPage, setCurrentPage] = useState(
+    /* currentPage */
+    const [, setCurrentPage] = useState(
         Math.floor(initialSlide / (showSlides as number) + 1)
     );
     const swiper1Ref = useRef<SwiperRefTypes>(null);

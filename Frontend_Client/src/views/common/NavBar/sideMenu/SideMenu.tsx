@@ -26,10 +26,10 @@ const SideMenu: FC<ISideMenuProps> = ({ sideMenuSwitch, sideMenuOnClose, ...prop
         <div className='side-menu-wrapper' {...props}>
             <Drawer
                 activeSwitch={sideMenuSwitch}
-                onClose={() => {
-                    sideMenuOnClose();
+                onClose={
+                    () => sideMenuOnClose()
                     // console.log('lululala');
-                }}
+                }
             >
                 <div className='side-menu-content-wrapper'>
                     <div className='side-menu-content'>
