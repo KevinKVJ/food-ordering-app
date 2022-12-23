@@ -6,8 +6,6 @@ import Drawer from '@/components/Drawer/Drawer';
 import SvgIcon from '@/components/SvgIcon';
 // import FlexLayout from '@/components/FlexLayout/FlexLayout';
 
-const ShoppingCartContent = () => <div className='sc-content'>6666666</div>;
-
 const ShoppingCart = ({ ...props }) => {
     // eslint-disable-next-line no-unused-vars
     const [amount, setAmount] = useState(0);
@@ -31,6 +29,12 @@ const ShoppingCart = ({ ...props }) => {
             cursor: pointer;
         `,
         []
+    );
+
+    const ShoppingCartContent = () => (
+        <div className='sc-content'>
+            <div>666</div>
+        </div>
     );
 
     return (
