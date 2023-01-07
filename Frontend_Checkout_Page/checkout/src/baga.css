@@ -1,0 +1,23 @@
+.broadage {
+    width: 100px;
+    height: 800px;
+    background-color: rgb(247, 42, 42);
+    will-change: filter;
+}
+
+.title {
+    width: 1200px;
+    height: 60px;
+    background-color:aquamarine;
+    will-change: filter;
+}
+.content {
+    width: 1200px;
+    height: 800px;
+    background-color: rgb(225, 225, 237);
+    will-change: filter;
+}
+
+.wrapper {
+    display:flex;
+}
