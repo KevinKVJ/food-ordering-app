@@ -1,24 +1,84 @@
-.broadage {
-    width: 100px;
-    height: 800px;
-    background-color: rgb(247, 42, 42);
+.background {
+    background-color:#F5F3F1;
+    width: 1400px;
+    /* height: 1000px; */
     will-change: filter;
 }
-
+/* .main-body{
+    width: 1600px;
+    height: 1200px;
+    
+} */
 .title {
-    width: 1200px;
+    /* width: 1400px; */
     height: 60px;
-    background-color:aquamarine;
+    background-color: #ffffff;
     will-change: filter;
+    margin:0 auto;
+    border-color: blue;
+    border-width: 2px;
+    border-style: solid;
 }
 .content {
     width: 1200px;
-    height: 800px;
-    background-color: rgb(225, 225, 237);
+    height: 1000px;
+    background-color:#ffffff;
     will-change: filter;
+    margin:0 auto;
+}
+
+.checkout{
+    padding: 20px 100px;
 }
 
 .wrapper {
     display:flex;
-    
+
+}
+
+.block {
+    width: 1200px;
+    height: 200px;
+    background-color:rgb(255, 255, 255);
+    will-change: filter;
+
+}
+.payment-method{
+    display:flex;
+    border-color: blue;
+    border-width: 2px;
+    border-style: solid;
+}
+.address {
+    text-align: left;
+}
+.display-inline{
+    display: inline;
+}
+.small-title{
+    /* width: 1000px; */
+    font-size: 20px;
+    text-align: left;
+}
+.sum{
+    width: 1000px;
+    font-size: 20px;
+    text-align: left;
+}
+
+.amount{
+    width: 180px;
+    text-align-last: right;
+}
+
+.place-order-button{
+    width: 1200px;
+    background-color: crimson;
+
+}
+.voucher-box{
+    border-style: dashed;
+    border-color:crimson;
+    width: 300px;
+    height: 40px;
 }
