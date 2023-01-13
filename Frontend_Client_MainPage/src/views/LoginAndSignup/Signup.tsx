@@ -147,6 +147,14 @@ const Signup = () => {
                     </div>
                     <div className='inputs'>
                         <InputWithTitle
+                            className='full-name'
+                            title='FULL NAME'
+                            inputPlaceholder='Full Name'
+                            inputType={'text'}
+                            value={phone}
+                            onChange={e => setPhone(e.target.value)}
+                        />
+                        <InputWithTitle
                             className='phone'
                             title='PHONE'
                             inputPlaceholder='Phone number'
@@ -155,18 +163,10 @@ const Signup = () => {
                             onChange={e => setPhone(e.target.value)}
                         />
                         <InputWithTitle
-                            className='password'
-                            title='PASSWORD'
-                            inputPlaceholder='Phone number'
-                            inputType={'password'}
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                        />
-                        <InputWithTitle
-                            className='password'
-                            title='PASSWORD'
-                            inputPlaceholder='Phone number'
-                            inputType={'password'}
+                            className='email'
+                            title='EMAIL'
+                            inputPlaceholder='Email'
+                            inputType={'text'}
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                         />

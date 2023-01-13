@@ -1,4 +1,4 @@
-import { css, Global } from '@emotion/react';
+import { css } from '@emotion/react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,8 +9,6 @@ const Login = () => {
     const [phone, setPhone] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const dontHaveAccountPrompt = "Don't have an account? ";
-
-    const globalCss = css``;
     /* background: ${props =>
                 `rgba(0,0,0,0.7) url(${props.bkg}) no-repeat center / cover`}; */
     const loginCss = css`
@@ -139,12 +137,11 @@ const Login = () => {
 
     return (
         <>
-            <Global styles={globalCss} />
             <div className='container' css={loginCss}>
                 <div className='login-window'>
                     <div className='logo'></div>
                     <div className='titles'>
-                        <div className='title'>Log In to MealWrap</div>
+                        <div className='title'>Log In to XXX</div>
                         <div className='sub-title'>
                             Enter your email and password below
                         </div>

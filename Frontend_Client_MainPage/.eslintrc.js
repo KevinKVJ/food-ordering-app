@@ -112,7 +112,10 @@ module.exports = {
         'jsx-a11y/no-static-element-interactions': 'off',
         'react-hooks/exhaustive-deps': 'off',
         'prettier/prettier': ['error', {}, { usePrettierrc: true }],
-        'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.tsx', '.ts'] }],
+        'react/jsx-filename-extension': [
+            1,
+            { extensions: ['.js', '.jsx', '.tsx', '.ts'] },
+        ],
         'no-console': ['warn', { allow: ['warn', 'error'] }],
         // 'multiline-ternary': ['error', 'never'],
     },
