@@ -10,10 +10,19 @@ const IndexPage = ({ className }: { className?: string }) => {
     const [mainDesc] = useState('(Description...)');
 
     const indexPageStyle = css`
-        width: 100%;
-        .content_wrapper {
-            outline: 1px solid;
+        background-color: #f5f3f1;
 
+        width: 100%;
+
+        .navbar {
+            margin-bottom: 1px;
+
+            background-color: #fff;
+        }
+
+        .content_wrapper {
+            /* outline: 1px solid; */
+            background-color: #fff;
             width: 1000px;
             min-height: calc(100vh - 72px);
             padding: 30px 24px;
@@ -33,6 +42,8 @@ const IndexPage = ({ className }: { className?: string }) => {
 
             .main_desc {
                 font-weight: 600;
+
+                color: #767676;
             }
         }
 
@@ -52,6 +63,7 @@ const IndexPage = ({ className }: { className?: string }) => {
             font-weight: 700;
             font-size: 20px;
         }
+
         .marchant_content_block {
             white-space: pre;
 
@@ -67,7 +79,9 @@ const IndexPage = ({ className }: { className?: string }) => {
     `;
     return (
         <div css={indexPageStyle} className={className}>
-            <NavBar />
+            <div className='navbar'>
+                <NavBar />
+            </div>
             <div className='content_wrapper'>
                 <div className='title_desc'>
                     <div className='main_title'>{mainTitle}</div>
@@ -79,28 +93,11 @@ const IndexPage = ({ className }: { className?: string }) => {
                     <div className='marchant_content_block'>
                         <div className='mcb_grid'>
                             <MerchantInfoBlock
-                                title='lalala'
                                 desc='xixixi xixixi    xixixi'
-                            />
-                            <MerchantInfoBlock
                                 title='lalala'
-                                desc='xixixi xixixi    xixixi'
-                            />
-                            <MerchantInfoBlock
-                                title='lalala'
-                                desc='xixixi xixixi    xixixi'
-                            />
-                            <MerchantInfoBlock
-                                title='lalala'
-                                desc='xixixi xixixi    xixixi'
-                            />
-                            <MerchantInfoBlock
-                                title='lalala'
-                                desc='xixixi xixixi    xixixi'
-                            />
-                            <MerchantInfoBlock
-                                title='lalala'
-                                desc='xixixi xixixi    xixixi'
+                                info='xixixixi'
+                                starRating='4.8'
+                                merchantLink='https://www.google.com'
                             />
                         </div>
                     </div>

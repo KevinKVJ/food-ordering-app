@@ -27,14 +27,14 @@ const NavBar = () => {
             css`
                 max-width: 1280px;
                 margin: 0 auto;
+                padding: 0 20px;
 
                 height: 70px;
+
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 /* outline: 1px solid; */
-
-                padding: 0 20px;
             `,
         []
     );
