@@ -5,6 +5,7 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import WindiCSS from 'vite-plugin-windicss';
+import macrosPlugin from "vite-plugin-babel-macros"
 
 const reactSetting: Options = {
     jsxImportSource: '@emotion/react',
@@ -37,6 +38,7 @@ export default defineConfig({
              */
             customDomId: '__svg__icons__dom__',
         }),
+        macrosPlugin(),
     ],
     css: {
         // modules:{
