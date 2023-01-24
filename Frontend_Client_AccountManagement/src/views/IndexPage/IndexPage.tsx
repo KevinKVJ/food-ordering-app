@@ -1,20 +1,52 @@
 import { css } from '@emotion/react';
 
 import NavBar from '../common/NavBar/NavBar';
+import PasswordSetting from './parts/PasswordSetting';
+import PaymentSetting from './parts/PaymentSetting';
+import UserProfile from './parts/UserProfile';
 
 const IndexPage = () => {
     const indexPageStyle = css`
-        .content {
+        /* box-sizing: content-box; */
+        > .content {
             margin: 0 auto;
             width: 700px;
-        }
 
-        .block {
-            padding: 35px;
+            > * {
+                margin-bottom: 40px;
 
-            > .main_title {
-                font-weight: 700;
-                font-size: 24px;
+                &:first-of-type {
+                    margin-top: 20px;
+                }
+
+                &:last-of-type {
+                    margin-bottom: 20px;
+                }
+            }
+
+            .payment_content {
+                display: flex;
+
+                .methods,
+                .cash {
+                    flex-grow: 1;
+                    flex-basis: 50%;
+                    flex-shrink: 1;
+                    outline: 1px solid;
+                }
+
+                .split_vertical_line {
+                    border-right: 2px solid;
+                    margin: 0 20px;
+                }
+
+                .cash {
+                    .cash_prompt {
+                        color: #a9a9a9;
+                        font-size: 12px;
+                        word-break: pre;
+                    }
+                }
             }
         }
     `;
@@ -25,59 +57,11 @@ const IndexPage = () => {
                 <NavBar />
             </div>
             <div className='content'>
-                <div className='user_profile block'>
-                    <div className='main_title'>User Profile</div>
-                    <div className='user_profile_content'>
-                        <div className='full_name'>
-                            <div className='subtitle'>Full Name</div>
-                        </div>
-                        <div className='email'>
-                            <div className='subtitle'>Email</div>
-                        </div>
-                        <div className='phone_number'>
-                            <div className='subtitle'>
-                                Phone Number <span>Required</span>
-                            </div>
-                        </div>
-                        <div className='country'>
-                            <div className='subtitle'>Country</div>
-                        </div>
-                    </div>
-                </div>
-                <div className='password_setting block'>
-                    <div className='main_title'>Password Setting</div>
-                    <div className='password_setting_content'>
-                        <div className='ori_pwd'>
-                            <div className='subtitle'>Original Password</div>
-                        </div>
-                        <div className='new_pwd'>
-                            <div className='subtitle'>New Password</div>
-                        </div>
-                        <div className='cfm_new_pwd'>
-                            <div className='subtitle'>Confirm New Password</div>
-                        </div>
-                    </div>
-                </div>
-                <div className='payment block'>
-                    <div className='main_title'>Payment</div>
-                    <div className='payment_content'>
-                        <div className='methods'>
-                            <div className='saved'>
-                                <div className='subtitle smaller'>
-                                    Saved Payment Method
-                                </div>
-                            </div>
-                            <div className='add_new'>
-                                <div className='subtitle smaller'>
-                                    Add New Payment Method
-                                </div>
-                            </div>
-                        </div>
-                        <div className='cash'>
-                            <div className='subtitle larger'>Cash</div>
-                        </div>
-                    </div>
-                </div>
+                <UserProfile />
+
+                <PasswordSetting />
+
+                <PaymentSetting />
             </div>
         </div>
     );
