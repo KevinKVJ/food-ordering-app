@@ -6,15 +6,34 @@ import AccountSettingBlock from './AccountSettingBlock';
 
 const paymentStyle = css`
     .payment_content {
+        display: flex;
+
+        .methods,
+        .cash {
+            flex-grow: 1;
+            flex-basis: 50%;
+            flex-shrink: 1;
+        }
+
+        .split_vertical_line {
+            border-right: 2px solid;
+            margin: 0 20px;
+        }
+
+        .cash {
+            .cash_prompt {
+                color: #a9a9a9;
+                font-size: 12px;
+                word-break: pre;
+            }
+        }
+
         .subtitle {
             font-size: 14px;
             font-weight: 600;
 
             &.larger {
                 font-size: 18px;
-            }
-            &.smaller {
-                font-size: 13px;
             }
         }
     }
@@ -27,10 +46,10 @@ const PaymentSetting = ({ className }: { className?: string }) => {
                 <div className='payment_content'>
                     <div className='methods'>
                         <div className='saved'>
-                            <div className='subtitle smaller'>Saved Payment Method</div>
+                            <div className='subtitle'>Saved Payment Method</div>
                         </div>
                         <div className='add_new'>
-                            <div className='subtitle smaller'>Add New Payment Method</div>
+                            <div className='subtitle'>Add New Payment Method</div>
                         </div>
                     </div>
                     <div className='split_vertical_line' />

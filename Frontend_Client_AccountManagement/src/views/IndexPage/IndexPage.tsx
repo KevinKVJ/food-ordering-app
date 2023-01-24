@@ -23,31 +23,6 @@ const IndexPage = () => {
                     margin-bottom: 20px;
                 }
             }
-
-            .payment_content {
-                display: flex;
-
-                .methods,
-                .cash {
-                    flex-grow: 1;
-                    flex-basis: 50%;
-                    flex-shrink: 1;
-                    outline: 1px solid;
-                }
-
-                .split_vertical_line {
-                    border-right: 2px solid;
-                    margin: 0 20px;
-                }
-
-                .cash {
-                    .cash_prompt {
-                        color: #a9a9a9;
-                        font-size: 12px;
-                        word-break: pre;
-                    }
-                }
-            }
         }
     `;
 
