@@ -24,7 +24,7 @@
 }
 .content {
     width: 1200px;
-    height: 1000px;
+    /* height: 1000px; */
     background-color:#ffffff;
     will-change: filter;
     margin:0 auto;
@@ -34,6 +34,8 @@
     padding: 20px 100px;
     font-size:larger;
     font-weight: 750;
+    display:flex;
+    justify-content: center;
 }
 
 .horizontal-ruler{
