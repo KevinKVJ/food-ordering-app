@@ -22,7 +22,11 @@ function App() {
       <div className='background'>
 
         <div className='title'>
-          <div className="">back</div>
+          <div className="back-button">
+            <div></div>
+            <div>back</div>
+          </div>
+          <div className='shopping cart'>shopping</div>
         </div>
 
 
