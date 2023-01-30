@@ -3,6 +3,7 @@
     width: 1400px;
     /* height: 1000px; */
     will-change: filter;
+    margin: 0 auto
 }
 /* .main-body{
     width: 1600px;
@@ -15,6 +16,8 @@
     background-color: #ffffff;
     will-change: filter;
     margin:0 auto;
+    display: flex;
+    justify-content:space-between;
     /* border-color: blue;
     border-width: 2px;
     border-style: solid; */
