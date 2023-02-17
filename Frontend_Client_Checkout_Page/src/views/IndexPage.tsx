@@ -217,6 +217,7 @@ const IndexPage = () => {
                 text-align: center;
 
                 color: #fff;
+                font-weight: 600;
 
                 /* margin: 20px 0; */
             }
