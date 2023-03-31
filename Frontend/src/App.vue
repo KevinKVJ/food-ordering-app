@@ -1,19 +1,23 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 // import HelloWorld from "./components/HelloWorld.vue";
-import MainContainer from "@/components/Layout/NLayoutContainer.vue";
-import { RouterView } from "vue-router";
+// import MainContainer from "@/components/Layout/NLayoutContainer.vue";
+import { RouterView } from 'vue-router';
+// import http from '@/http/request';
+// http.get('/api/v1/product/all').then(req => {
+//     console.log(req);
+// });
 </script>
 
-    
 <template>
     <!-- <main-container/> -->
-    <router-view></router-view>
+    <router-view />
 </template>
 
 <style lang="scss">
-html,body{
+html,
+body {
     height: 100%;
 }
 #app {
@@ -46,7 +50,6 @@ html,body{
     background: #e5e9f2;
 } */
 </style>
-
 
 <!-- <div class="common-layout">
         <n-space vertical size="large">

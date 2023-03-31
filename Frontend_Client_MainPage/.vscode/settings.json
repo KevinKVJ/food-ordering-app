@@ -1,0 +1,32 @@
+{
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    //粘贴时候自动统一代码格式
+    "editor.formatOnPaste": false,
+    //显示eslint状态
+    "eslint.alwaysShowStatus": true,
+    //搬运文件时候，自动更新文件路径
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    // "prettier.eslintIntegration": true,
+    "editor.fontLigatures": true,
+    "editor.letterSpacing": -0.15,
+    // "editor.fontFamily": "Operator Mono Lig",
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "name": "italic font",
+                "scope": [
+                    "support.class.component.tsx",
+                    "support.class.component.jsx",
+                    "support.class.component.js",
+                ],
+                "settings": {
+                    "fontStyle": "italic",
+                    // "foreground": "#A2E57B",
+                    "foreground": "#ffcbcb",
+                    // "foreground": "#a9dc76",
+                }
+            }
+        ]
+    }
+    
+}
